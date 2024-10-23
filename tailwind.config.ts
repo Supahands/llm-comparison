@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 import type { Config } from "tailwindcss";
 
 const config: Config = {
@@ -10,6 +11,16 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        llm: {
+          background: "#F9F5F1",
+          grey1: "#424242",
+          grey4: "#F7F7F7",
+          neutral90: "#DADADA",
+          brand: "#E76C6C",
+          primary50: "#6B66FA",
+          neutral95: "#F7F7F7",
+          response: "#687076",
+        },
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
@@ -95,6 +106,6 @@ const config: Config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
 };
 export default config;
