@@ -17,7 +17,7 @@ help:
 # Build the Docker image
 .PHONY: build
 build:
-	docker build -t $(IMAGE_NAME):latest .
+	docker build --platform linux/amd64/v8 -t $(IMAGE_NAME):latest . 
 	docker tag $(IMAGE_NAME):latest $(IMAGE_URI):latest
 
 # Push the Docker image to ECR
@@ -33,12 +33,12 @@ pull: login
 # Start the Docker Compose services
 .PHONY: up
 up:
-	docker-compose up -d
+	docker compose up -d
 
 # Stop the Docker Compose services
 .PHONY: down
 down:
-	docker-compose down
+	docker compose down
 
 # Log in to ECR
 .PHONY: login
