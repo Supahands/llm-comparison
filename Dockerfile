@@ -2,8 +2,6 @@
 # Use for production and staging
 FROM node:20-alpine
 
-ARG ENV_FILE
-
 WORKDIR /app
 
 # Set NODE_ENV to production
@@ -28,4 +26,4 @@ RUN npm run build && npm cache clean --force
 EXPOSE 3000
 
 # Start the application
-CMD ["yarn", "start"]
+CMD ["npm", "start"]
