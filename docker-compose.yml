@@ -1,0 +1,5 @@
+services:
+  web:
+    image: 885807555562.dkr.ecr.us-west-2.amazonaws.com/llm-evaluator:latest
+    ports:
+      - "3000:3000"
