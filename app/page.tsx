@@ -14,28 +14,6 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ""
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ""
 const supabase = createClient(supabaseUrl,  supabaseKey)
 
-const frameworks = [
-  {
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-];
 
 export default function Home() {
   const [selectedModel1, setSelectedModel1] = useState<string>("");

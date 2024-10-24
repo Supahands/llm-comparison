@@ -25,7 +25,8 @@ const config = {
           neutral90: "#DADADA",
           brand: "#E76C6C",
           grey2: "#888888",
-          grey1: "#151718"
+          grey1: "#151718",
+          background: "#F9F5F1"
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
