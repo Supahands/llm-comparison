@@ -1,19 +1,28 @@
 "use client";
 
+import useAppStore from "@/hooks/store/useAppStore";
+import { Button } from "../ui/button";
+
 interface PromptSelectorProps {
   prompts: string[];
 }
 
 export default function PromptSelector({ prompts }: PromptSelectorProps) {
+  const { setPrompt } = useAppStore();
+
   return (
     <div className="grid grid-cols-2 gap-2">
       {prompts.map((prompt) => (
-        <div
+        <Button
+          onClick={(e) => {
+            e.preventDefault();
+            setPrompt(prompt);
+          }}
           key={prompt}
-          className="w-full rounded-xl border border-solid border-llm-neutral90 hover:bg-llm-neutral90 bg-llm-grey4 text-llm-grey1 py-3 px-5 cursor-pointer"
+          className="w-full rounded-xl border border-solid border-llm-neutral90 hover:bg-llm-blurple4 bg-llm-grey4 text-llm-grey1 py-3 px-5 cursor-pointer"
         >
           {prompt}
-        </div>
+        </Button>
       ))}
     </div>
   );

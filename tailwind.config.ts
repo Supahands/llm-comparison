@@ -26,7 +26,11 @@ const config = {
           brand: "#E76C6C",
           grey2: "#888888",
           grey1: "#151718",
-          background: "#F9F5F1"
+          background: "#F9F5F1",
+          blurple4: "#EBE8F5",
+          response: "#687076",
+          btn: "#E76C6C",
+          btn_hover: "#C93939",
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
