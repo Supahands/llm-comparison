@@ -8,6 +8,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Send } from "lucide-react";
 import { ScrollArea } from "../ui/scroll-area";
 import ReactMarkdown from "react-markdown";
+import PromptSelector from "./promp-selector";
 
 type Message = {
   id: number;
@@ -111,6 +112,8 @@ const generateMessages = (): Message[] => {
   return messages;
 };
 
+const prompts = ['What are the most popular car brands in Japan?', 'Gather the top insights on the Southeast Asian vehicle market', 'Give me the latest updates on the US Presidential elections', 'Compare the education system in the UK vs the USA']
+
 export default function Comparison() {
   const [messages, setMessages] = useState<Message[]>([]);
 
@@ -151,7 +154,8 @@ export default function Comparison() {
             ))}
           </ScrollArea>
         </CardContent>
-        <CardFooter>
+        <CardFooter className="flex flex-col gap-2">
+          <PromptSelector prompts={prompts} />
           <div
             onSubmit={(e) => {
               e.preventDefault();
@@ -161,7 +165,7 @@ export default function Comparison() {
           >
             <Input
               type="text"
-              placeholder="Type your message..."
+              placeholder="Select a question to get started or ask your own here"
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               className="w-full pr-12 h-fit px-5 py-4 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0"
@@ -169,7 +173,7 @@ export default function Comparison() {
             <Button
               type="submit"
               size="icon"
-              className="absolute right-1 top-1/2 -translate-y-1/2 rounded-full w-8 h-8 p-0"
+              className="absolute right-5 top-1/2 -translate-y-1/2 rounded-full w-8 h-8 p-0 bg-llm-primary50"
             >
               <Send className="h-4 w-4" />
               <span className="sr-only">Send message</span>

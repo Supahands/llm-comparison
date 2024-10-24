@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/popover"
 
 // Define the type for an item
-interface ComboBoxItem {
+export interface ComboBoxItem {
   value: string
   label: string
 }
@@ -54,7 +54,7 @@ export function ComboBox({ items, onItemSelect }: ComboBoxProps) {
           className="w-[200px] justify-between"
         >
           {value
-            ? items.find((item) => item.value === value)?.label
+            ? items.find((item) => item.label === value)?.label
             : "Select item..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -68,7 +68,7 @@ export function ComboBox({ items, onItemSelect }: ComboBoxProps) {
               {items.map((item) => (
                 <CommandItem
                   key={item.value}
-                  value={item.value}
+                  value={item.label}
                   onSelect={handleSelect}
                 >
                   <Check
