@@ -1,15 +1,7 @@
 "use client";
 
 import Comparison from "@/components/composition/comparison";
-import { ebGaramond } from "./layout";
 import { Card, CardContent } from "@/components/ui/card";
-import { ComboBox, ComboBoxItem } from "@/components/ui/combo-box";
-import { useEffect, useState } from "react";
-import { createClient } from "@supabase/supabase-js";
-import AvailableModel, {
-  createAvailableModel,
-} from "@/lib/types/availableModel";
-import { DATABASE_TABLE } from "@/lib/constants/databaseTables";
 import ModelSelector from "@/components/composition/model-selector";
 import { LinkPreview } from "@/components/ui/link-preview";
 import Title from "@/components/ui/title";

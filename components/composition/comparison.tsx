@@ -6,8 +6,6 @@ import { Input } from "@/components/ui/input";
 
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Send } from "lucide-react";
-import { ScrollArea } from "../ui/scroll-area";
-import ReactMarkdown from "react-markdown";
 import PromptSelector from "./promp-selector";
 import { Message } from "@/lib/types/message";
 import ModelResponses from "./model-responses";

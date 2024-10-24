@@ -14,8 +14,8 @@ export const createAvailableModel = (data: { id: number; provider: string; model
     model_name: data.model_name,
     toComboBoxItem() {
       return {
-        value: data.id.toString(), // Assuming `value` needs to be a string
-        label: `${data.model_name}`, // Customize the label
+        value: data.id.toString(),
+        label: `${data.model_name}`,
       } as ComboBoxItem;
     }
   };
