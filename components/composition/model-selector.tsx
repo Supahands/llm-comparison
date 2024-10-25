@@ -44,7 +44,7 @@ export default function ModelSelector() {
       </div>
       <div>
         <div>Model 2</div>
-				<ComboBox
+        <ComboBox
           items={availableModels}
           onItemSelect={setSelectedModel2}
         ></ComboBox>
