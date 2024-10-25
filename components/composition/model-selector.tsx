@@ -10,7 +10,7 @@ import { DATABASE_TABLE } from "@/lib/constants/databaseTables";
 export default function ModelSelector() {
   const [availableModels, setAvailableModels] = useState<ComboBoxItem[]>([]);
   const { setSelectedModel1, setSelectedModel2 } = useAppStore();
-
+  
   const getAvailableModels = async () => {
     const { data, error } = await supabaseClient.from(DATABASE_TABLE.AVAILABLE_MODELS).select();
     if (error) {

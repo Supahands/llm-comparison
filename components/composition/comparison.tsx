@@ -36,39 +36,50 @@ const randomMarkdownMessages = [
 ];
 
 export default function Comparison() {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const { prompt, setPrompt, selectedModel1, selectedModel2 } = useAppStore();
-
   const {
-    isPending: isPendingModel1,
-    isSuccess: isSuccessModel1,
-    data: dataModel1,
-    mutate: mutateModel1,
-    isError,
-  } = useMutation({
+    prompt,
+    setPrompt,
+    selectedModel1,
+    selectedModel2,
+    setResponseModel1,
+    setResponseModel2,
+  } = useAppStore();
+
+  const { mutate: mutateModel1 } = useMutation({
+    mutationKey: ["model1"],
     mutationFn: (data: MessageRequest) => {
       return axios.post(`${API_URL}/message`, data);
     },
-    onSuccess: async (data) => {
+    onSuccess: async (response) => {
+      const data = response.data;
+      const choices = data.choices;
+      const responseModel1Content =
+        (choices[0]?.message?.content as string) || "";
+      setResponseModel1(responseModel1Content);
       console.log("data1", data);
+    },
+    onError: (error) => {
+      console.log("error1", error);
     },
   });
 
-  const {
-    isPending: isPendingModel2,
-    isSuccess: isSuccessModel2,
-    data: dataModel2,
-    mutate: mutateModel2,
-  } = useMutation({
+  const { mutate: mutateModel2 } = useMutation({
+    mutationKey: ["model2"],
     mutationFn: (data: MessageRequest) => {
       return axios.post(`${API_URL}/message`, data);
     },
-    onSuccess: async (data) => {
+    onSuccess: async (response) => {
+      const data = response.data;
+      const choices = data.choices;
+      const responseModel2Content =
+        (choices[0]?.message?.content as string) || "";
+      setResponseModel2(responseModel2Content);
       console.log("data2", data);
     },
-    onError: () => {
-      populateMessages()
-    }
+    onError: (error) => {
+      console.log("error2", error);
+    },
+    onSettled: () => {},
   });
 
   const [newMessage, setNewMessage] = useState<string>("");
@@ -92,50 +103,18 @@ export default function Comparison() {
   }, [prompt, selectedModel2]);
 
   useEffect(() => {
-    if (prompt && selectedModel1 && selectedModel2) {
+    if (prompt) {
       mutateModel1(payloadModel1);
       mutateModel2(payloadModel2);
     }
-  }, [prompt, selectedModel1, selectedModel2]);
-
-  const populateMessages = () => {
-    const newMessages: Message[] = [];
-
-    for (let i = 0; i < 10; i++) {
-      // Create 10 random messages
-      const randomMsgA =
-        randomMarkdownMessages[
-          Math.floor(Math.random() * randomMarkdownMessages.length)
-        ];
-      const randomMsgB =
-        randomMarkdownMessages[
-          Math.floor(Math.random() * randomMarkdownMessages.length)
-        ];
-
-      const newMessageObject: Message = {
-        id: Date.now() + i, // Generate a unique ID by adding `i`
-        prompt: newMessage,
-        responseA: randomMsgA,
-        responseB: randomMsgB,
-      };
-
-      newMessages.push(newMessageObject);
-    }
-
-    // Add the new messages to the list
-    setMessages((prevMessages) => [...prevMessages, ...newMessages]);
-  }
+  }, [prompt]);
 
   return (
     <div className="mx-auto mt-4 w-full flex-grow">
       <Card className=" w-full mx-auto border rounded-lg  bg-white flex-grow h-full flex flex-col">
         <CardContent className="flex flex-col flex-grow overflow-hidden p-1 h-full">
           <PromptDisplay />
-          <ModelResponses
-            isPendingModel1={isPendingModel1}
-            isPendingModel2={isPendingModel2}
-            messages={messages}
-          />
+          <ModelResponses />
         </CardContent>
         <CardFooter className="flex flex-col gap-2 pb-4">
           {selectedModel1 && selectedModel2 && (
