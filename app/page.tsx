@@ -10,8 +10,8 @@ import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
-    <div className="bg-llm-background h-full">
-      <div className="flex flex-col">
+    <div className="bg-llm-background h-full min-h-screen flex flex-col">
+      <div className="flex flex-col mt-4">
         <div className="flex flex-row gap-4 w-full">
           <section className="w-full">
             <Title>How it works</Title>
@@ -40,7 +40,7 @@ export default function Home() {
         </div>
       </div>
       <Comparison />
-      <div className="flex flex-row w-full justify-between mt-4">
+      <div className="flex flex-row w-full justify-between mt-4 mb-4">
         <LinkPreview url="https://supa.so">
           <Image src={`svg/logo.svg`} alt="SUPA logo" width={93} height={26} />
         </LinkPreview>
