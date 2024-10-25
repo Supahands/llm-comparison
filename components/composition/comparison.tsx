@@ -1,42 +1,19 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Send } from "lucide-react";
 import PromptSelector from "./promp-selector";
-import { Message } from "@/lib/types/message";
+import { Message, MessageRequest } from "@/lib/types/message";
 import ModelResponses from "./model-responses";
 import PromptDisplay from "../ui/chat/prompt-display";
 import useAppStore from "@/hooks/store/useAppStore";
-
-const generateMessages = (): Message[] => {
-  const messages: Message[] = [];
-  const prompt = "What are the most popular car brands in Japan?";
-
-  messages.push({
-    id: Math.random() * 1000,
-    prompt,
-    responseA: `The most popular vehicle make and model in Japan can vary depending on the year and the source of the data. However, based on historical sales data and market research, the following are some of the most popular vehicle makes and models in Japan:
-\n1. **Toyota Corolla**: The Toyota Corolla is one of the best-selling cars in Japan, and it has been a popular choice for many years. It is a compact sedan that is known for its reliability, fuel efficiency, and affordability.
-\n2. **Toyota Prius**: The Toyota Prius is a hybrid electric vehicle that is very popular in Japan. It is known for its fuel efficiency and environmental friendliness, and it has been a top seller in Japan for many years.
-\n3. **Honda Fit**: The Honda Fit is a subcompact car that is popular in Japan due to its compact size, fuel efficiency, and affordability. It is also known for its spacious interior and versatile cargo area.
-\n4. **Nissan Note**: The Nissan Note is a subcompact car that is popular in Japan due to its stylish design, fuel efficiency, and affordability. It is also known for its advanced safety features and comfortable ride.
-\n5. **Toyota Aqua**: The Toyota Aqua is a hybrid electric vehicle that is popular in Japan due to its fuel efficiency and environmental friendliness. It is a compact car that is known for its stylish design and advanced safety features.
-`,
-    responseB: `According to data from the Japan Automobile Dealers Association, the top 5 best-selling cars in Japan in 2022 were:
-      \n1. **Toyota Corolla** (83,477 units sold)
-      \n2. **Toyota Prius** (73,011 units sold)
-      \n3. **Honda Fit** (64,162 units sold)
-      \n4. **Nissan Note** (59,329 units sold)
-      \n5. **Toyota Aqua** (55,919 units sold)
-It's worth noting that the popularity of vehicles in Japan can vary depending on the region and the time of year, so these figures are subject to change.`,
-  });
-
-  return messages;
-};
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { API_URL } from "@/lib/constants/urls";
 
 const prompts = [
   "What are the most popular car brands in Japan?",
@@ -47,11 +24,36 @@ const prompts = [
 
 export default function Comparison() {
   const [messages, setMessages] = useState<Message[]>([]);
-  const { prompt, setPrompt } = useAppStore();
+  const { prompt, setPrompt, selectedModel1, selectedModel2 } = useAppStore();
 
-  useEffect(() => {
-    setMessages(generateMessages());
-  }, []);
+  const {
+    isPending: isPendingModel1,
+    isSuccess: isSuccessModel1,
+    data: dataModel1,
+    mutate: mutateModel1,
+  } = useMutation({
+    mutationFn: (data: MessageRequest) => {
+      return axios.post(`${API_URL}/message`, data);
+    },
+    onSuccess: async (data) => {
+      console.log("data1", data);
+    },
+  });
+
+  const {
+    isPending: isPendingModel2,
+    isSuccess: isSuccessModel2,
+    data: dataModel2,
+    mutate: mutateModel2,
+
+  } = useMutation({
+    mutationFn: (data: MessageRequest) => {
+      return axios.post(`${API_URL}/message`, data);
+    },
+    onSuccess: async (data) => {
+      console.log("data2", data);
+    },
+  });
 
   const [newMessage, setNewMessage] = useState<string>("");
 
@@ -59,23 +61,43 @@ export default function Comparison() {
     setPrompt(newMessage);
   }, [newMessage]);
 
-  const handlePromptSelect = (val: string) => {
-    setPrompt(val);
-  }
+  useEffect(() => {
+    console.log('isPendingModel1', isPendingModel1)
+    console.log('isPendingModel2', isPendingModel2)
+  }, [isPendingModel1, isPendingModel2])
+
+  const payloadModel1 = useMemo<MessageRequest>(() => {
+    return {
+      model: selectedModel1,
+      message: prompt,
+    };
+  }, [prompt, selectedModel1]);
+
+  const payloadModel2 = useMemo<MessageRequest>(() => {
+    return {
+      model: selectedModel2,
+      message: prompt,
+    };
+  }, [prompt, selectedModel2]);
 
   useEffect(() => {
-    //trigger prompt update
-  }, [prompt])
+    if (prompt && selectedModel1 && selectedModel2) {
+      mutateModel1(payloadModel1);
+      mutateModel2(payloadModel2);
+    }
+  }, [prompt, selectedModel1, selectedModel2]);
 
   return (
     <div className="mx-auto mt-4">
       <Card className=" w-full mx-auto border rounded-lg  bg-white">
         <CardContent className="flex flex-col h-[500px] overflow-hidden p-1">
-          <PromptDisplay/>
-          <ModelResponses messages={messages} />
+          <PromptDisplay />
+          <ModelResponses isPendingModel1={isPendingModel1} isPendingModel2={isPendingModel2} messages={[]}/>
         </CardContent>
         <CardFooter className="flex flex-col gap-2">
-          <PromptSelector prompts={prompts} />
+          {selectedModel1 && selectedModel2 && (
+            <PromptSelector prompts={prompts} />
+          )}
           <form
             onSubmit={(e) => {
               e.preventDefault();

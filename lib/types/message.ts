@@ -4,3 +4,8 @@ export type Message = {
   responseA: string;
   responseB: string;
 };
+
+export type MessageRequest = {
+  message: string;
+  model: string
+}
