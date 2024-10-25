@@ -4,14 +4,16 @@ import { useEffect, useState } from "react";
 import AvailableModel, {
   createAvailableModel,
 } from "@/lib/types/availableModel";
-import { supabase } from "@/lib/supabase/init";
+import { supabaseClient } from "@/lib/supabase/supabaseClient";
 
 export default function ModelSelector() {
   const [availableModels, setAvailableModels] = useState<ComboBoxItem[]>([]);
   const { setSelectedModel1, setSelectedModel2 } = useAppStore();
 
   const getAvailableModels = async () => {
-    const { data, error } = await supabase.from("available_models").select();
+    const { data, error } = await supabaseClient
+      .from("available_models")
+      .select();
     if (error) {
       console.log("error fetching", error);
       return;
@@ -43,7 +45,7 @@ export default function ModelSelector() {
       </div>
       <div>
         <div>Model 2</div>
-				<ComboBox
+        <ComboBox
           items={availableModels}
           onItemSelect={setSelectedModel2}
         ></ComboBox>
