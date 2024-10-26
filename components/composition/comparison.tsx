@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -14,6 +14,7 @@ import useAppStore from "@/hooks/store/useAppStore";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { API_URL } from "@/lib/constants/urls";
+import { Textarea } from "../ui/textarea";
 
 const prompts = [
   "What are the most popular car brands in Japan?",
@@ -43,7 +44,10 @@ export default function Comparison() {
     selectedModel2,
     setResponseModel1,
     setResponseModel2,
+    setIsComparingModel,
   } = useAppStore();
+
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const { mutate: mutateModel1 } = useMutation({
     mutationKey: ["model1"],
@@ -106,8 +110,17 @@ export default function Comparison() {
     if (prompt) {
       mutateModel1(payloadModel1);
       mutateModel2(payloadModel2);
+      setIsComparingModel(true);
     }
   }, [prompt]);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      // TypeScript now recognizes textareaRef.current as HTMLTextAreaElement
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [newMessage]);
 
   return (
     <div className="mx-auto mt-4 w-full flex-grow">
@@ -127,13 +140,24 @@ export default function Comparison() {
             }}
             className="relative w-full "
           >
-            <Input
-              type="text"
+            <Textarea
+              ref={textareaRef}
+              value={newMessage}
               disabled={!(selectedModel1 && selectedModel2)}
               placeholder="Select a question to get started or ask your own here"
-              value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
-              className="w-full pr-12 h-fit px-5 py-4 focus:ring-0 focus:ring-offset-0 border border-solid focus:border-llm-primary50 focus-visible:ring-0 focus-visible:ring-offset-0"
+              rows={1}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  setPrompt(newMessage);
+                }
+              }}
+              style={{
+                minHeight: "1.75rem",
+                maxHeight: "6rem", 
+              }}
+              className="flex-grow resize-none rounded-md px-5 w-full py-3 pr-12 focus:ring-0 focus:ring-offset-0 border border-solid focus:border-llm-primary50 focus-visible:ring-0 focus-visible:ring-offset-0 "
             />
             <Button
               type="submit"
@@ -143,7 +167,6 @@ export default function Comparison() {
               onClick={handleSendPrompt}
             >
               <Send className="h-4 w-4" />
-              <span className="sr-only">Send message</span>
             </Button>
           </form>
         </CardFooter>

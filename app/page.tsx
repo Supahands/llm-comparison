@@ -32,7 +32,7 @@ export default function Home() {
           <section className="w-full">
             <Title>Select models to compare</Title>
             <Card className="w-full h-[104px]">
-              <CardContent>
+              <CardContent className="">
                 <ModelSelector />
               </CardContent>
             </Card>
