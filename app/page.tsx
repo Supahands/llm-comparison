@@ -7,32 +7,21 @@ import { LinkPreview } from "@/components/ui/link-preview";
 import Title from "@/components/ui/title";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import DescriptionCard from "@/components/composition/description-card";
 
 export default function Home() {
   return (
-    <div className="bg-llm-background h-full">
-      <div className="flex flex-col">
+    <div className="bg-llm-background h-full min-h-screen flex flex-col">
+      <div className="flex flex-col mt-4">
         <div className="flex flex-row gap-4 w-full">
           <section className="w-full">
-            <Title>How it works</Title>
-            <Card className="w-full h-[104px]">
-              <CardContent className="p-4 h-full">
-                This is a simple LLM Comparison Tool built by{" "}
-                <LinkPreview url="https://supa.so">
-                  <span className="underline underline-offset-2">SUPA</span>
-                </LinkPreview>{" "}
-                where users can input prompts and compare the outputs of two
-                different LLMs in a blind test format. This will allow users to
-                objectively assess the performance of two models without bias.
-                Learn more
-              </CardContent>
-            </Card>
+            <DescriptionCard />
           </section>
 
           <section className="w-full">
             <Title>Select models to compare</Title>
             <Card className="w-full h-[104px]">
-              <CardContent>
+              <CardContent className="">
                 <ModelSelector />
               </CardContent>
             </Card>
@@ -40,7 +29,7 @@ export default function Home() {
         </div>
       </div>
       <Comparison />
-      <div className="flex flex-row w-full justify-between mt-4">
+      <div className="flex flex-row w-full justify-between mt-4 mb-4">
         <LinkPreview url="https://supa.so">
           <Image src={`svg/logo.svg`} alt="SUPA logo" width={93} height={26} />
         </LinkPreview>
