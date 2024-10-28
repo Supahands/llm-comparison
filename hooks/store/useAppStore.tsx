@@ -10,6 +10,8 @@ const useAppStore = create<AppState>((set) => ({
   isPendingModel1: false,
   isPendingModel2: false,
   isComparingModel: false,
+  userChoices: [],
+  selectedChoice: undefined,
 
   setSelectedModel1: (model: string) =>
     set((_state: AppState) => ({ selectedModel1: model })),
@@ -32,7 +34,15 @@ const useAppStore = create<AppState>((set) => ({
       responseModel2: "",
       isPendingModel1: false,
       isPendingModel2: false,
+      selectedChoice: undefined,
+      isComparingModel: false
     })),
+  addUserChoices: (choice) => set((state: AppState) => ({
+    userChoices: [...state.userChoices, choice]
+  })),
+  setSelectedChoice: (choice) => set((_state: AppState) => ({
+    selectedChoice: choice
+  }))
 }));
 
 export default useAppStore;

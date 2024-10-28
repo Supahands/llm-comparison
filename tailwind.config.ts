@@ -31,6 +31,7 @@ const config = {
           response: "#687076",
           btn: "#E76C6C",
           btn_hover: "#C93939",
+          primary95: '#EBE8F5'
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -87,7 +88,11 @@ const config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
+  plugins: [
+    require("tailwindcss-animate"),
+    require("@tailwindcss/typography"),
+    require("@tailwindcss/line-clamp"),
+  ],
 } satisfies Config;
 
 export default config;

@@ -4,9 +4,7 @@ import { ScrollArea } from "../ui/scroll-area";
 import ReactMarkdown from "react-markdown";
 import { Skeleton } from "../ui/skeleton";
 import useAppStore from "@/hooks/store/useAppStore";
-import {
-  useIsMutating,
-} from "@tanstack/react-query";
+import { useIsMutating } from "@tanstack/react-query";
 import { useMemo } from "react";
 
 export default function ModelResponses() {
@@ -21,12 +19,12 @@ export default function ModelResponses() {
   });
 
   const isPendingModel1 = useMemo(() => {
-    return mutationModel1 > 0 
-  }, [mutationModel1])
+    return mutationModel1 > 0;
+  }, [mutationModel1]);
 
   const isPendingModel2 = useMemo(() => {
-    return mutationModel2 > 0 
-  }, [mutationModel2])
+    return mutationModel2 > 0;
+  }, [mutationModel2]);
 
   const calculateMaxHeight = () => {
     return `calc(100vh - 460px)`;

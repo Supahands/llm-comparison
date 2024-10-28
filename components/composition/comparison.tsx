@@ -2,12 +2,10 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Send } from "lucide-react";
 import PromptSelector from "./promp-selector";
-import { Message, MessageRequest } from "@/lib/types/message";
+import { MessageRequest } from "@/lib/types/message";
 import ModelResponses from "./model-responses";
 import PromptDisplay from "../ui/chat/prompt-display";
 import useAppStore from "@/hooks/store/useAppStore";
@@ -15,6 +13,7 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { API_URL } from "@/lib/constants/urls";
 import { Textarea } from "../ui/textarea";
+import WinnerSelector from "./winner-selector";
 
 const prompts = [
   "What are the most popular car brands in Japan?",
@@ -23,25 +22,15 @@ const prompts = [
   "Compare the education system in the UK vs the USA",
 ];
 
-const randomMarkdownMessages = [
-  "## Hello! 🌟\n\nThis is a sample markdown message.",
-  "**Here’s a bold statement**",
-  "1. First item\n2. Second item\n3. Third item",
-  "> This is a quote",
-  "`const codeSnippet = 'example'`",
-  "Check out [OpenAI](https://openai.com)!",
-  "This is **another** markdown message.",
-  "Here's some `inline code` for you.",
-  "### Section Header\nWith some description.",
-  "> This is another quote block with more information.",
-];
-
 export default function Comparison() {
   const {
     prompt,
-    setPrompt,
     selectedModel1,
     selectedModel2,
+    isComparingModel,
+    userChoices,
+    reset,
+    setPrompt,
     setResponseModel1,
     setResponseModel2,
     setIsComparingModel,
@@ -108,6 +97,7 @@ export default function Comparison() {
 
   useEffect(() => {
     if (prompt) {
+      reset()
       mutateModel1(payloadModel1);
       mutateModel2(payloadModel2);
       setIsComparingModel(true);
@@ -116,7 +106,6 @@ export default function Comparison() {
 
   useEffect(() => {
     if (textareaRef.current) {
-      // TypeScript now recognizes textareaRef.current as HTMLTextAreaElement
       textareaRef.current.style.height = "auto";
       textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
@@ -133,6 +122,7 @@ export default function Comparison() {
           {selectedModel1 && selectedModel2 && (
             <PromptSelector prompts={prompts} />
           )}
+          <WinnerSelector />
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -143,26 +133,27 @@ export default function Comparison() {
             <Textarea
               ref={textareaRef}
               value={newMessage}
-              disabled={!(selectedModel1 && selectedModel2)}
-              placeholder="Select a question to get started or ask your own here"
+              disabled={!(selectedModel1 && selectedModel2) || isComparingModel}
+              placeholder={userChoices.length === 0 ? "Select a question to get started or ask your own here" : 'Ask another question'}
               onChange={(e) => setNewMessage(e.target.value)}
               rows={1}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault();
                   setPrompt(newMessage);
+                  setNewMessage("")
                 }
               }}
               style={{
-                minHeight: "1.75rem",
-                maxHeight: "6rem", 
+                minHeight: "3rem",
+                maxHeight: "6rem",
               }}
               className="flex-grow resize-none rounded-md px-5 w-full py-3 pr-12 focus:ring-0 focus:ring-offset-0 border border-solid focus:border-llm-primary50 focus-visible:ring-0 focus-visible:ring-offset-0 "
             />
             <Button
               type="submit"
               size="icon"
-              disabled={!(selectedModel1 && selectedModel2)}
+              disabled={!(selectedModel1 && selectedModel2) || isComparingModel}
               className="absolute right-5 top-1/2 -translate-y-1/2 rounded-full w-8 h-8 p-0 bg-llm-primary50"
               onClick={handleSendPrompt}
             >

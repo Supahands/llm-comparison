@@ -28,10 +28,11 @@ export interface ComboBoxItem {
 // Define the props interface
 interface ComboBoxProps {
   items: ComboBoxItem[]
-  onItemSelect?: (selectedValue: string) => void
+  onItemSelect?: (selectedValue: string) => void,
+  disabled?: boolean
 }
 
-export function ComboBox({ items, onItemSelect }: ComboBoxProps) {
+export function ComboBox({ items, onItemSelect, disabled }: ComboBoxProps) {
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState("")
 
@@ -52,6 +53,7 @@ export function ComboBox({ items, onItemSelect }: ComboBoxProps) {
           role="combobox"
           aria-expanded={open}
           className="w-[200px] justify-between"
+          disabled={disabled}
         >
           {value
             ? items.find((item) => item.label === value)?.label

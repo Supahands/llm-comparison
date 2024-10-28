@@ -10,8 +10,12 @@ import { EyeClosed, EyeOff } from "lucide-react";
 
 export default function ModelSelector() {
   const [availableModels, setAvailableModels] = useState<ComboBoxItem[]>([]);
-  const { isComparingModel, setSelectedModel1, setSelectedModel2 } =
-    useAppStore();
+  const {
+    isComparingModel,
+    userChoices,
+    setSelectedModel1,
+    setSelectedModel2,
+  } = useAppStore();
   const [showModelSelector, setShowModelSelector] = useState<boolean>(true);
 
   const getAvailableModels = async () => {
@@ -39,10 +43,6 @@ export default function ModelSelector() {
   }, []);
 
   useEffect(() => {
-    console.log("showModelSelector", showModelSelector);
-  }, [showModelSelector]);
-
-  useEffect(() => {
     if (isComparingModel) {
       setShowModelSelector(false);
     }
@@ -58,11 +58,19 @@ export default function ModelSelector() {
       >
         <div>
           <div>Model 1</div>
-          <ComboBox items={availableModels} onItemSelect={setSelectedModel1} />
+          <ComboBox
+            items={availableModels}
+            onItemSelect={setSelectedModel1}
+            disabled={isComparingModel || userChoices.length > 0}
+          />
         </div>
         <div>
           <div>Model 2</div>
-          <ComboBox items={availableModels} onItemSelect={setSelectedModel2} />
+          <ComboBox
+            items={availableModels}
+            onItemSelect={setSelectedModel2}
+            disabled={isComparingModel || userChoices.length > 0}
+          />
         </div>
       </div>
       <div
@@ -77,7 +85,11 @@ export default function ModelSelector() {
       </div>
 
       {/* for button */}
-      <div className={`${isComparingModel ? '' : 'hidden'}`}>
+      <div
+        className={`${
+          isComparingModel || userChoices.length > 0 ? "" : "hidden"
+        }`}
+      >
         <button
           className={`p-2`}
           onClick={() => setShowModelSelector(!showModelSelector)}
