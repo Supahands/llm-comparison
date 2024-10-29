@@ -1,42 +1,20 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Send } from "lucide-react";
 import PromptSelector from "./promp-selector";
-import { Message } from "@/lib/types/message";
+import { MessageRequest } from "@/lib/types/message";
 import ModelResponses from "./model-responses";
 import PromptDisplay from "../ui/chat/prompt-display";
 import useAppStore from "@/hooks/store/useAppStore";
-
-const generateMessages = (): Message[] => {
-  const messages: Message[] = [];
-  const prompt = "What are the most popular car brands in Japan?";
-
-  messages.push({
-    id: Math.random() * 1000,
-    prompt,
-    responseA: `The most popular vehicle make and model in Japan can vary depending on the year and the source of the data. However, based on historical sales data and market research, the following are some of the most popular vehicle makes and models in Japan:
-\n1. **Toyota Corolla**: The Toyota Corolla is one of the best-selling cars in Japan, and it has been a popular choice for many years. It is a compact sedan that is known for its reliability, fuel efficiency, and affordability.
-\n2. **Toyota Prius**: The Toyota Prius is a hybrid electric vehicle that is very popular in Japan. It is known for its fuel efficiency and environmental friendliness, and it has been a top seller in Japan for many years.
-\n3. **Honda Fit**: The Honda Fit is a subcompact car that is popular in Japan due to its compact size, fuel efficiency, and affordability. It is also known for its spacious interior and versatile cargo area.
-\n4. **Nissan Note**: The Nissan Note is a subcompact car that is popular in Japan due to its stylish design, fuel efficiency, and affordability. It is also known for its advanced safety features and comfortable ride.
-\n5. **Toyota Aqua**: The Toyota Aqua is a hybrid electric vehicle that is popular in Japan due to its fuel efficiency and environmental friendliness. It is a compact car that is known for its stylish design and advanced safety features.
-`,
-    responseB: `According to data from the Japan Automobile Dealers Association, the top 5 best-selling cars in Japan in 2022 were:
-      \n1. **Toyota Corolla** (83,477 units sold)
-      \n2. **Toyota Prius** (73,011 units sold)
-      \n3. **Honda Fit** (64,162 units sold)
-      \n4. **Nissan Note** (59,329 units sold)
-      \n5. **Toyota Aqua** (55,919 units sold)
-It's worth noting that the popularity of vehicles in Japan can vary depending on the region and the time of year, so these figures are subject to change.`,
-  });
-
-  return messages;
-};
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { API_URL } from "@/lib/constants/urls";
+import { Textarea } from "../ui/textarea";
+import WinnerSelector from "./winner-selector";
+import { v4 as uuidv4 } from "uuid";
 
 const prompts = [
   "What are the most popular car brands in Japan?",
@@ -46,12 +24,63 @@ const prompts = [
 ];
 
 export default function Comparison() {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const { prompt, setPrompt } = useAppStore();
+  const {
+    prompt,
+    selectedModel1,
+    selectedModel2,
+    isComparingModel,
+    userChoices,
+    reset,
+    setPrompt,
+    setResponseModel1,
+    setResponseModel2,
+    setResponseTime1,
+    setResponseTime2,
+    setIsComparingModel,
+    sessionId,
+    setSessionId,
+  } = useAppStore();
 
-  useEffect(() => {
-    setMessages(generateMessages());
-  }, []);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const { mutate: mutateModel1 } = useMutation({
+    mutationKey: ["model1"],
+    mutationFn: (data: MessageRequest) => {
+      return axios.post(`${API_URL}/message`, data);
+    },
+    onSuccess: async (response) => {
+      const data = response.data;
+      const choices = data.choices;
+      const responseModel1Content =
+        (choices[0]?.message?.content as string) || "";
+      setResponseModel1(responseModel1Content);
+      setResponseTime1(data.usage.response_time);
+      console.log("data1", data);
+    },
+    onError: (error) => {
+      console.log("error1", error);
+    },
+  });
+
+  const { mutate: mutateModel2 } = useMutation({
+    mutationKey: ["model2"],
+    mutationFn: (data: MessageRequest) => {
+      return axios.post(`${API_URL}/message`, data);
+    },
+    onSuccess: async (response) => {
+      const data = response.data;
+      const choices = data.choices;
+      const responseModel2Content =
+        (choices[0]?.message?.content as string) || "";
+      setResponseModel2(responseModel2Content);
+      setResponseTime2(data.usage.response_time);
+      console.log("data2", data);
+    },
+    onError: (error) => {
+      console.log("error2", error);
+    },
+    onSettled: () => {},
+  });
 
   const [newMessage, setNewMessage] = useState<string>("");
 
@@ -59,23 +88,55 @@ export default function Comparison() {
     setPrompt(newMessage);
   }, [newMessage]);
 
-  const handlePromptSelect = (val: string) => {
-    setPrompt(val);
-  }
+  const payloadModel1 = useMemo<MessageRequest>(() => {
+    return {
+      model: selectedModel1,
+      message: prompt,
+    };
+  }, [prompt, selectedModel1]);
+
+  const payloadModel2 = useMemo<MessageRequest>(() => {
+    return {
+      model: selectedModel2,
+      message: prompt,
+    };
+  }, [prompt, selectedModel2]);
 
   useEffect(() => {
-    //trigger prompt update
-  }, [prompt])
+    if (prompt) {
+      reset();
+      mutateModel1(payloadModel1);
+      mutateModel2(payloadModel2);
+      setIsComparingModel(true);
+    }
+  }, [prompt]);
+
+  useEffect(() => {
+    if (sessionId === "") {
+      const uuid = uuidv4();
+      setSessionId(uuid);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+    }
+  }, [newMessage]);
 
   return (
-    <div className="mx-auto mt-4">
-      <Card className=" w-full mx-auto border rounded-lg  bg-white">
-        <CardContent className="flex flex-col h-[500px] overflow-hidden p-1">
-          <PromptDisplay/>
-          <ModelResponses messages={messages} />
+    <div className="mx-auto mt-4 w-full flex-grow">
+      <Card className=" w-full mx-auto border rounded-lg  bg-white flex-grow h-full flex flex-col">
+        <CardContent className="flex flex-col flex-grow overflow-hidden p-1 h-full">
+          <PromptDisplay />
+          <ModelResponses />
         </CardContent>
-        <CardFooter className="flex flex-col gap-2">
-          <PromptSelector prompts={prompts} />
+        <CardFooter className="flex flex-col gap-2 pb-4">
+          {selectedModel1 && selectedModel2 && (
+            <PromptSelector prompts={prompts} />
+          )}
+          <WinnerSelector />
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -83,21 +144,38 @@ export default function Comparison() {
             }}
             className="relative w-full "
           >
-            <Input
-              type="text"
-              placeholder="Select a question to get started or ask your own here"
+            <Textarea
+              ref={textareaRef}
               value={newMessage}
+              disabled={!(selectedModel1 && selectedModel2) || isComparingModel}
+              placeholder={
+                userChoices.length === 0
+                  ? "Select a question to get started or ask your own here"
+                  : "Ask another question"
+              }
               onChange={(e) => setNewMessage(e.target.value)}
-              className="w-full pr-12 h-fit px-5 py-4 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+              rows={1}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  setPrompt(newMessage);
+                  setNewMessage("");
+                }
+              }}
+              style={{
+                minHeight: "3rem",
+                maxHeight: "6rem",
+              }}
+              className="flex-grow resize-none rounded-md px-5 w-full py-3 pr-12 focus:ring-0 focus:ring-offset-0 border border-solid focus:border-llm-primary50 focus-visible:ring-0 focus-visible:ring-offset-0 "
             />
             <Button
               type="submit"
               size="icon"
+              disabled={!(selectedModel1 && selectedModel2) || isComparingModel}
               className="absolute right-5 top-1/2 -translate-y-1/2 rounded-full w-8 h-8 p-0 bg-llm-primary50"
               onClick={handleSendPrompt}
             >
               <Send className="h-4 w-4" />
-              <span className="sr-only">Send message</span>
             </Button>
           </form>
         </CardFooter>

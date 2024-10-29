@@ -27,10 +27,15 @@ const chartData: dataProps[] = [
   { task: "Q4", timeModelA: 2.8, timeModelB: 9.1 },
 ];
 
-interface dataProps {
+export interface dataProps {
+  // [x: string]: any;
   task: string;
   timeModelA: number;
   timeModelB: number;
+}
+
+interface timeProps {
+  allResponseTime: dataProps[];
 }
 
 const chartConfig = {
@@ -44,7 +49,7 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function ModelResponseTime() {
+export function ModelResponseTime({ allResponseTime }: timeProps) {
   return (
     <Card className="rounded-xl">
       <CardHeader>
@@ -53,7 +58,7 @@ export function ModelResponseTime() {
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="min-h-[50px]">
-          <BarChart accessibilityLayer data={chartData}>
+          <BarChart accessibilityLayer data={allResponseTime}>
             <CartesianGrid vertical={false} />
             <XAxis
               dataKey="task"
