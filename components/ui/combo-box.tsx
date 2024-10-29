@@ -18,6 +18,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import useAppStore from "@/hooks/store/useAppStore"
 
 // Define the type for an item
 export interface ComboBoxItem {
@@ -29,10 +30,11 @@ export interface ComboBoxItem {
 interface ComboBoxProps {
   items: ComboBoxItem[]
   onItemSelect?: (selectedValue: string) => void,
-  disabled?: boolean
+  disabled?: boolean,
+  defaultValue?: string,
 }
 
-export function ComboBox({ items, onItemSelect, disabled }: ComboBoxProps) {
+export function ComboBox({ items, onItemSelect, disabled, defaultValue }: ComboBoxProps) {
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState("")
 
@@ -45,6 +47,12 @@ export function ComboBox({ items, onItemSelect, disabled }: ComboBoxProps) {
     }
   }
 
+  React.useEffect(() => {
+    if (defaultValue) {
+      handleSelect(defaultValue)
+    }
+  }, [defaultValue])
+  
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -52,7 +60,7 @@ export function ComboBox({ items, onItemSelect, disabled }: ComboBoxProps) {
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between"
+          className="w-[250px] justify-between"
           disabled={disabled}
         >
           {value

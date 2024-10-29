@@ -14,7 +14,7 @@ export default function Home() {
     <div className="bg-llm-background h-full min-h-screen flex flex-col">
       <div className="flex flex-col mt-4">
         <div className="flex flex-row gap-4 w-full">
-          <section className="w-full">
+          <section className="w-full z-50">
             <DescriptionCard />
           </section>
 

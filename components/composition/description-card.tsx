@@ -11,7 +11,7 @@ export default function DescriptionCard() {
       <Card className="w-full h-[104px]">
         <CardContent className="p-4 h-full">
           This is a simple LLM Comparison Tool built by{" "}
-          <LinkPreview url="https://supa.so">
+          <LinkPreview url="https://supa.so" className="z-50">
             <span className="underline underline-offset-2">SUPA</span>
           </LinkPreview>{" "}
           where users can input prompts and compare the outputs of two different
