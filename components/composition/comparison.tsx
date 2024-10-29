@@ -97,7 +97,7 @@ export default function Comparison() {
 
   useEffect(() => {
     if (prompt) {
-      reset()
+      reset();
       mutateModel1(payloadModel1);
       mutateModel2(payloadModel2);
       setIsComparingModel(true);
@@ -116,6 +116,7 @@ export default function Comparison() {
       <Card className=" w-full mx-auto border rounded-lg  bg-white flex-grow h-full flex flex-col">
         <CardContent className="flex flex-col flex-grow overflow-hidden p-1 h-full">
           <PromptDisplay />
+          
           <ModelResponses />
         </CardContent>
         <CardFooter className="flex flex-col gap-2 pb-4">
@@ -134,14 +135,18 @@ export default function Comparison() {
               ref={textareaRef}
               value={newMessage}
               disabled={!(selectedModel1 && selectedModel2) || isComparingModel}
-              placeholder={userChoices.length === 0 ? "Select a question to get started or ask your own here" : 'Ask another question'}
+              placeholder={
+                userChoices.length === 0
+                  ? "Select a question to get started or ask your own here"
+                  : "Ask another question"
+              }
               onChange={(e) => setNewMessage(e.target.value)}
               rows={1}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault();
                   setPrompt(newMessage);
-                  setNewMessage("")
+                  setNewMessage("");
                 }
               }}
               style={{
