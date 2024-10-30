@@ -9,6 +9,7 @@ export interface AppState {
   isPendingModel1: boolean;
   isPendingModel2: boolean;
   isComparingModel: boolean;
+  availableModels: ComboBoxItem[];
 
   userChoices: UserChoice[];
   selectedChoice: ComboBoxItem | undefined;
@@ -23,6 +24,7 @@ export interface AppState {
   setIsComparingModel: (isComparing: boolean) => void;
   addUserChoices: (choice: UserChoice) => void;
   setSelectedChoice: (choice: ComboBoxItem) => void;
+  setAvailableModels: (models: ComboBoxItem[]) => void;
 
   reset: () => void;
 }

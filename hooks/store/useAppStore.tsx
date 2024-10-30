@@ -1,3 +1,4 @@
+import { ComboBoxItem } from "@/components/ui/combo-box";
 import { AppState } from "@/lib/types/app-state";
 import { create } from "zustand";
 
@@ -12,6 +13,7 @@ const useAppStore = create<AppState>((set) => ({
   isComparingModel: false,
   userChoices: [],
   selectedChoice: undefined,
+  availableModels: [],
 
   setSelectedModel1: (model: string) =>
     set((_state: AppState) => ({ selectedModel1: model })),
@@ -28,6 +30,8 @@ const useAppStore = create<AppState>((set) => ({
     set((_state: AppState) => ({ isPendingModel2: isPending })),
   setIsComparingModel: (isComparing: boolean) =>
     set((_state: AppState) => ({ isComparingModel: isComparing })),
+  setAvailableModels: (models: ComboBoxItem[]) =>
+    set((_state: AppState) => ({ availableModels: models })),
   reset: () =>
     set((state: AppState) => ({
       responseModel1: "",

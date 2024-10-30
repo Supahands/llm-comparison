@@ -9,7 +9,7 @@ import React, {
   useState,
 } from "react";
 import { AnimatePresence, MotionConfig, Variants, motion } from "framer-motion";
-import { ArrowLeftIcon } from "lucide-react";
+import { ArrowLeftIcon, XIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -119,10 +119,7 @@ export function FloatingPanelTrigger({
     <motion.button
       ref={triggerRef}
       layoutId={`floating-panel-trigger-${uniqueId}`}
-      className={cn(
-        "h-9 items-center bg-white px-3 w-full",
-        className
-      )}
+      className={cn("h-9 items-center bg-white px-3 w-full", className)}
       style={{ borderRadius: 8 }}
       onClick={handleClick}
       whileHover={{ scale: 1.05 }}
@@ -192,18 +189,18 @@ export function FloatingPanelContent({
             initial={{ backdropFilter: "blur(0px)" }}
             animate={{ backdropFilter: "blur(4px)" }}
             exit={{ backdropFilter: "blur(0px)" }}
-            className="fixed inset-0 z-40"
+            className="fixed inset-0 z-40 "
           />
           <motion.div
             ref={contentRef}
             layoutId={`floating-panel-${uniqueId}`}
             className={cn(
-              "fixed z-50 w-1/2 overflow-hidden border border-zinc-950/10 bg-white shadow-lg outline-none dark:border-zinc-50/10 dark:bg-zinc-800",
+              "fixed z-50 w-1/2 overflow-hidden border whitespace-pre-wrap border-zinc-950/10 bg-white shadow-lg outline-none dark:border-zinc-50/10 dark:bg-zinc-800 px-4 pb-4",
               className
             )}
             style={{
               borderRadius: 12,
-              left: triggerRect ? "30%" : "50%",
+              left: "25%",
               top: triggerRect ? triggerRect.bottom + 8 : "50%",
               transformOrigin: "top",
             }}
@@ -216,7 +213,8 @@ export function FloatingPanelContent({
             aria-labelledby={`floating-panel-title-${uniqueId}`}
           >
             <FloatingPanelTitle>{title}</FloatingPanelTitle>
-            {children}
+            <FloatingPanelCloseButton></FloatingPanelCloseButton>
+            <div className=" max-h-[400px] overflow-auto pt-2"> {children}</div>
           </motion.div>
         </>
       )}
@@ -238,7 +236,7 @@ function FloatingPanelTitle({ children }: FloatingPanelTitleProps) {
     >
       <motion.div
         layoutId={`floating-panel-label-${uniqueId}`}
-        className="text-sm font-semibold text-zinc-900 dark:text-zinc-100"
+        className="text-md font-semibold text-zinc-900 dark:text-zinc-100 text-center"
         id={`floating-panel-title-${uniqueId}`}
       >
         {children}
@@ -406,13 +404,13 @@ export function FloatingPanelCloseButton({
   return (
     <motion.button
       type="button"
-      className={cn("flex items-center", className)}
+      className={cn("flex items-center fixed top-4 right-4", className)}
       onClick={closeFloatingPanel}
       aria-label="Close floating panel"
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
     >
-      <ArrowLeftIcon size={16} className="text-zinc-900 dark:text-zinc-100" />
+      <XIcon size={16} className="text-zinc-900 dark:text-zinc-100" />
     </motion.button>
   );
 }
