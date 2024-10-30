@@ -6,15 +6,18 @@ import AvailableModel, {
 } from "@/lib/types/availableModel";
 import { supabaseClient } from "@/lib/supabase/supabaseClient";
 import { DATABASE_TABLE } from "@/lib/constants/databaseTables";
-import { EyeClosed, EyeOff } from "lucide-react";
-
+import { Dices, EyeClosed, EyeOff } from "lucide-react";
 export default function ModelSelector() {
-  const [availableModels, setAvailableModels] = useState<ComboBoxItem[]>([]);
+
   const {
     isComparingModel,
+    availableModels,
     userChoices,
+    selectedModel1,
+    selectedModel2,
     setSelectedModel1,
     setSelectedModel2,
+    setAvailableModels,
   } = useAppStore();
   const [showModelSelector, setShowModelSelector] = useState<boolean>(true);
 
@@ -26,7 +29,7 @@ export default function ModelSelector() {
       console.log("error fetching", error);
       return;
     }
-    const availableModels: AvailableModel[] =
+    const models: AvailableModel[] =
       data?.map((x) =>
         createAvailableModel({
           id: x.id,
@@ -34,8 +37,16 @@ export default function ModelSelector() {
           model_name: x.model_name,
         })
       ) || [];
-    const items = availableModels.map((x) => x.toComboBoxItem());
+    const items = models.map((x) => x.toComboBoxItem());
     setAvailableModels(items);
+  };
+
+  const randomizeModel = () => {
+    if (availableModels.length === 0) return;
+    const model1 = availableModels[Math.floor(Math.random() * availableModels.length)];
+    const model2 = availableModels[Math.floor(Math.random() * availableModels.length)];
+    setSelectedModel1(model1.label);
+    setSelectedModel2(model2.label);
   };
 
   useEffect(() => {
@@ -62,6 +73,7 @@ export default function ModelSelector() {
             items={availableModels}
             onItemSelect={setSelectedModel1}
             disabled={isComparingModel || userChoices.length > 0}
+            defaultValue={selectedModel1}
           />
         </div>
         <div>
@@ -70,8 +82,10 @@ export default function ModelSelector() {
             items={availableModels}
             onItemSelect={setSelectedModel2}
             disabled={isComparingModel || userChoices.length > 0}
+            defaultValue={selectedModel2}
           />
         </div>
+        <Dices onClick={randomizeModel} className="w-9 h-9 text-llm-grey1 self-end cursor-pointer mb-1 hover:bg-llm-primary95 p-2 rounded-lg"></Dices>
       </div>
       <div
         className={`p-4 h-full ${
