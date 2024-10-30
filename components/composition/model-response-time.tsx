@@ -1,7 +1,14 @@
 "use client";
 
 import { TrendingUp } from "lucide-react";
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  LabelList,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 import {
   Card,
@@ -14,6 +21,8 @@ import {
 import {
   ChartConfig,
   ChartContainer,
+  ChartLegend,
+  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
@@ -28,7 +37,6 @@ const chartData: dataProps[] = [
 ];
 
 export interface dataProps {
-  // [x: string]: any;
   task: string;
   timeModelA: number;
   timeModelB: number;
@@ -41,53 +49,75 @@ interface timeProps {
 const chartConfig = {
   timeModelA: {
     label: "Model A",
-    color: "#395b50",
+    color: "#6B66FA",
   },
   timeModelB: {
     label: "Model B",
-    color: "#c5d1eb",
+    color: "#461353",
   },
 } satisfies ChartConfig;
 
 export function ModelResponseTime({ allResponseTime }: timeProps) {
+  const maxDataValue = Math.max(
+    ...allResponseTime.flatMap((data) => [data.timeModelA, data.timeModelB])
+  );
+  const adaptiveMax = maxDataValue * 1.1;
+
   return (
-    <Card className="rounded-xl">
+    <Card className="rounded-xl w-1/2">
       <CardHeader>
-        <CardTitle>Bar Chart - Multiple</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <CardTitle>Response Time Comparison</CardTitle>
+        <CardDescription>
+          Compare Each Model Response Time for Each Question.
+        </CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="min-h-[50px]">
+        <ChartContainer config={chartConfig} className="min-h-[10px]">
           <BarChart accessibilityLayer data={allResponseTime}>
             <CartesianGrid vertical={false} />
             <XAxis
+              className="font-bold text-sm"
               dataKey="task"
               tickLine={false}
               tickMargin={10}
               axisLine={false}
             />
-            <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+            <YAxis domain={[0, adaptiveMax]} type="number" hide />
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent className="w-40" />}
+            />
             <Bar
               dataKey="timeModelA"
               fill={chartConfig.timeModelA.color}
               radius={4}
-            />
+            >
+              <LabelList
+                dataKey="timeModelB"
+                position="top"
+                offset={10}
+                className="text-sm font-light"
+              />
+            </Bar>
             <Bar
               dataKey="timeModelB"
               fill={chartConfig.timeModelB.color}
               radius={4}
+            >
+              <LabelList
+                dataKey="timeModelB"
+                position="top"
+                offset={10}
+                className="text-sm font-light"
+              />
+            </Bar>
+            <ChartLegend
+              className="text-base font-semibold"
+              content={<ChartLegendContent />}
             />
           </BarChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
-        </div>
-      </CardFooter>
     </Card>
   );
 }

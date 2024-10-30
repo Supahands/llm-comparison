@@ -14,10 +14,64 @@ import { supabaseClient } from "@/lib/supabase/supabaseClient";
 import { Message } from "@/lib/types/message";
 import { DATABASE_TABLE } from "@/lib/constants/databaseTables";
 import { dataProps } from "@/components/composition/model-response-time";
+import { MetricsComposed } from "@/components/composition/metrics-composed";
+
+interface databaseProps {
+  id: number;
+  model_1: string;
+  model_2: string;
+  response_model_1: string;
+  response_model_2: string;
+  prompt: string;
+  selected_choice: string;
+  session_id: string;
+  response_time_1: number;
+  response_time_2: number;
+}
+
+export interface metricsProps {
+  task: string;
+  modelA: number;
+  modelB: number;
+  draw: number;
+  reject: number;
+}
 
 const ResultPage = ({ params }: { params: { slug: string } }) => {
   const [allMessage, setAllMessage] = React.useState<Message[]>([]);
   const [allResponseTime, setAllResponseTime] = React.useState<dataProps[]>([]);
+  const [statProportion, setStatProportion] = React.useState<metricsProps[]>(
+    []
+  );
+
+  const calculateProportion = (data: databaseProps[]) => {
+    const modelA = data.reduce((counter, x) => {
+      if (x.selected_choice === "A") counter += 1;
+      return counter;
+    }, 0);
+    const modelB = data.reduce((counter, x) => {
+      if (x.selected_choice === "B") counter += 1;
+      return counter;
+    }, 0);
+    const draw = data.reduce((counter, x) => {
+      if (x.selected_choice === "AB") counter += 1;
+      return counter;
+    }, 0);
+    const reject = data.reduce((counter, x) => {
+      if (x.selected_choice === "!AB") counter += 1;
+      return counter;
+    }, 0);
+
+    setStatProportion([
+      {
+        task: "summary",
+        modelA: (modelA / data.length) * 100,
+        modelB: (modelB / data.length) * 100,
+        draw: (draw / data.length) * 100,
+        reject: (reject / data.length) * 100,
+      },
+    ]);
+  };
 
   const getData = async () => {
     const { data, error } = await supabaseClient
@@ -40,7 +94,8 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
         };
       })
     );
-    let i = 0;
+
+    let i = 1;
     setAllResponseTime(
       data?.map((x) => {
         return {
@@ -50,6 +105,8 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
         };
       })
     );
+
+    calculateProportion(data);
 
     console.log(allMessage);
     console.log(allResponseTime);
@@ -63,7 +120,10 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
     <div className="bg-llm-background h-full space-y-5 pt-7 pb-7 pl-10 pr-10">
       <h1 className="font-bold text-2xl">LLM Comparison Result</h1>
       <ResultComparison allMessage={allMessage} />
-      <ModelResponseTime allResponseTime={allResponseTime} />
+      <div className="flex justify-stretch gap-5">
+        <ModelResponseTime allResponseTime={allResponseTime} />
+        <MetricsComposed allMetricsComposed={statProportion} />
+      </div>
       <div className="flex flex-row w-full justify-between mt-4">
         <LinkPreview url="https://supa.so">
           <Image src={`svg/logo.svg`} alt="SUPA logo" width={93} height={26} />
