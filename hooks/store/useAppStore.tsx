@@ -3,6 +3,7 @@ import { AppState } from "@/lib/types/app-state";
 import { create } from "zustand";
 
 const useAppStore = create<AppState>((set) => ({
+  sessionId: "",
   selectedModel1: "",
   selectedModel2: "",
   prompt: "",
@@ -13,8 +14,16 @@ const useAppStore = create<AppState>((set) => ({
   isComparingModel: false,
   userChoices: [],
   selectedChoice: undefined,
+  responseTime1: 0,
+  responseTime2: 0,
   availableModels: [],
 
+  setSessionId: (sessionId: string) =>
+    set((_state: AppState) => ({ sessionId: sessionId })),
+  setResponseTime1: (response_time: number) =>
+    set((_state: AppState) => ({ responseTime1: response_time })),
+  setResponseTime2: (response_time: number) =>
+    set((_state: AppState) => ({ responseTime2: response_time })),
   setSelectedModel1: (model: string) =>
     set((_state: AppState) => ({ selectedModel1: model })),
   setSelectedModel2: (model: string) =>
@@ -39,14 +48,16 @@ const useAppStore = create<AppState>((set) => ({
       isPendingModel1: false,
       isPendingModel2: false,
       selectedChoice: undefined,
-      isComparingModel: false
+      isComparingModel: false,
     })),
-  addUserChoices: (choice) => set((state: AppState) => ({
-    userChoices: [...state.userChoices, choice]
-  })),
-  setSelectedChoice: (choice) => set((_state: AppState) => ({
-    selectedChoice: choice
-  }))
+  addUserChoices: (choice) =>
+    set((state: AppState) => ({
+      userChoices: [...state.userChoices, choice],
+    })),
+  setSelectedChoice: (choice) =>
+    set((_state: AppState) => ({
+      selectedChoice: choice,
+    })),
 }));
 
 export default useAppStore;

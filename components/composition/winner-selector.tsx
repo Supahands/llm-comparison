@@ -3,6 +3,8 @@
 import useAppStore from "@/hooks/store/useAppStore";
 import { Button } from "../ui/button";
 import { ComboBoxItem } from "../ui/combo-box";
+import { supabaseClient } from "@/lib/supabase/supabaseClient";
+import { DATABASE_TABLE } from "@/lib/constants/databaseTables";
 
 const userInputs: ComboBoxItem[] = [
   {
@@ -28,10 +30,15 @@ export default function WinnerSelector() {
     selectedChoice,
     responseModel1,
     responseModel2,
+    selectedModel1,
+    selectedModel2,
+    responseTime1,
+    responseTime2,
     prompt,
     addUserChoices,
     setIsComparingModel,
     setSelectedChoice,
+    sessionId,
   } = useAppStore();
 
   const handleUserChoice = (choice: ComboBoxItem) => {
@@ -40,6 +47,31 @@ export default function WinnerSelector() {
       choice: choice.value,
     });
     setIsComparingModel(false);
+  };
+
+  const handleDataSaving = async (choice: string) => {
+    const { data, error } = await supabaseClient
+      .from(DATABASE_TABLE.RESPONSE_TABLE)
+      .insert([
+        {
+          session_id: sessionId,
+          selected_choice: choice,
+          model_1: selectedModel1,
+          model_2: selectedModel2,
+          response_model_1: responseModel1,
+          response_model_2: responseModel2,
+          prompt: prompt,
+          response_time_1: responseTime1,
+          response_time_2: responseTime2,
+        },
+      ]);
+
+    if (error) {
+      console.log("error fetching", error);
+      return;
+    }
+
+    console.log(data);
   };
 
   return (
@@ -53,6 +85,7 @@ export default function WinnerSelector() {
                 e.preventDefault();
                 handleUserChoice(input);
                 setSelectedChoice(input);
+                handleDataSaving(input.value);
               }}
               disabled={!!selectedChoice}
               className={

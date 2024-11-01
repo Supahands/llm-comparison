@@ -8,8 +8,13 @@ import Title from "@/components/ui/title";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import DescriptionCard from "@/components/composition/description-card";
+import { useRouter } from "next/navigation";
+import useAppStore from "@/hooks/store/useAppStore";
 
 export default function Home() {
+  const router = useRouter();
+  const { sessionId } = useAppStore();
+
   return (
     <div className="bg-llm-background h-full min-h-screen flex flex-col">
       <div className="flex flex-col mt-4">
@@ -33,7 +38,12 @@ export default function Home() {
         <LinkPreview url="https://supa.so">
           <Image src={`svg/logo.svg`} alt="SUPA logo" width={93} height={26} />
         </LinkPreview>
-        <Button className="bg-llm-btn hover:bg-llm-btn_hover text-white rounded-2xl">End evaluation and see results</Button>
+        <Button
+          className="bg-llm-btn hover:bg-llm-btn_hover text-white rounded-2xl"
+          onClick={() => router.push(`/result/${sessionId}`)}
+        >
+          End evaluation and see results
+        </Button>
       </div>
     </div>
   );

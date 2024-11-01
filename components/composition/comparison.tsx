@@ -14,6 +14,7 @@ import axios from "axios";
 import { API_URL } from "@/lib/constants/urls";
 import { Textarea } from "../ui/textarea";
 import WinnerSelector from "./winner-selector";
+import { v4 as uuidv4 } from "uuid";
 
 const prompts = [
   "What are the most popular car brands in Japan?",
@@ -33,7 +34,11 @@ export default function Comparison() {
     setPrompt,
     setResponseModel1,
     setResponseModel2,
+    setResponseTime1,
+    setResponseTime2,
     setIsComparingModel,
+    sessionId,
+    setSessionId,
   } = useAppStore();
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -49,6 +54,7 @@ export default function Comparison() {
       const responseModel1Content =
         (choices[0]?.message?.content as string) || "";
       setResponseModel1(responseModel1Content);
+      setResponseTime1(data.usage.response_time);
       console.log("data1", data);
     },
     onError: (error) => {
@@ -67,6 +73,7 @@ export default function Comparison() {
       const responseModel2Content =
         (choices[0]?.message?.content as string) || "";
       setResponseModel2(responseModel2Content);
+      setResponseTime2(data.usage.response_time);
       console.log("data2", data);
     },
     onError: (error) => {
@@ -103,6 +110,13 @@ export default function Comparison() {
       setIsComparingModel(true);
     }
   }, [prompt]);
+
+  useEffect(() => {
+    if (sessionId === "") {
+      const uuid = uuidv4();
+      setSessionId(uuid);
+    }
+  }, []);
 
   useEffect(() => {
     if (textareaRef.current) {

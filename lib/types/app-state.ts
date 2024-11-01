@@ -1,6 +1,7 @@
 import { ComboBoxItem } from "@/components/ui/combo-box";
 
 export interface AppState {
+  sessionId: string;
   selectedModel1: string;
   selectedModel2: string;
   prompt: string;
@@ -9,13 +10,18 @@ export interface AppState {
   isPendingModel1: boolean;
   isPendingModel2: boolean;
   isComparingModel: boolean;
+  responseTime1: number;
+  responseTime2: number;
   availableModels: ComboBoxItem[];
 
   userChoices: UserChoice[];
   selectedChoice: ComboBoxItem | undefined;
 
+  setSessionId: (model: string) => void;
   setSelectedModel1: (model: string) => void;
   setSelectedModel2: (model: string) => void;
+  setResponseTime1: (model: number) => void;
+  setResponseTime2: (model: number) => void;
   setPrompt: (prompt: string) => void;
   setResponseModel1: (response: string) => void;
   setResponseModel2: (response: string) => void;
@@ -30,6 +36,6 @@ export interface AppState {
 }
 
 export type UserChoice = {
-  prompt: string,
-  choice: string
-}
+  prompt: string;
+  choice: string;
+};
