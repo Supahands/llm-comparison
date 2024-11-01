@@ -11,14 +11,14 @@ import { Progress } from "@/components/ui/progress";
 
 const OverallPage = () => {
   return (
-    <Card>
+    <Card className="w-full rounded-xl">
       <CardHeader>
         <CardTitle>Head-to-Head Comparison</CardTitle>
         <CardDescription>Winning rate and other metrics </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col">
-          <div className="flex justify-between mb-">
+          <div className="flex justify-between mb-3">
             <p>24</p>
             <p>Wins</p>
             <p>44</p>

@@ -44,27 +44,33 @@ export interface dataProps {
 
 interface timeProps {
   allResponseTime: dataProps[];
+  modelA: string;
+  modelB: string;
 }
 
-const chartConfig = {
-  timeModelA: {
-    label: "Model A",
-    color: "#6B66FA",
-  },
-  timeModelB: {
-    label: "Model B",
-    color: "#461353",
-  },
-} satisfies ChartConfig;
+export function ModelResponseTime({
+  allResponseTime,
+  modelA,
+  modelB,
+}: timeProps) {
+  const chartConfig = {
+    timeModelA: {
+      label: modelA,
+      color: "#6B66FA",
+    },
+    timeModelB: {
+      label: modelB,
+      color: "#461353",
+    },
+  } satisfies ChartConfig;
 
-export function ModelResponseTime({ allResponseTime }: timeProps) {
   const maxDataValue = Math.max(
     ...allResponseTime.flatMap((data) => [data.timeModelA, data.timeModelB])
   );
   const adaptiveMax = maxDataValue * 1.1;
 
   return (
-    <Card className="rounded-xl w-1/2">
+    <Card className="rounded-xl w-full">
       <CardHeader>
         <CardTitle>Response Time Comparison (s)</CardTitle>
         <CardDescription>

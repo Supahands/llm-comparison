@@ -15,9 +15,11 @@ import ReactMarkdown from "react-markdown";
 
 interface dataProps {
   allMessage: Message[];
+  modelA: string;
+  modelB: string;
 }
 
-const ResultComparison = ({ allMessage }: dataProps) => {
+const ResultComparison = ({ allMessage, modelA, modelB }: dataProps) => {
   return (
     <div className="flex-row w-full border flex-grow bg-white rounded-xl">
       <Carousel>
@@ -35,8 +37,8 @@ const ResultComparison = ({ allMessage }: dataProps) => {
                 <div className="flex gap-4 mb-4">
                   <div className="w-full space-y-1">
                     <div className="model-b-response ">
-                      <div className="w-fit bg-llm-neutral95 text-black p-1 my-2">
-                        Model A
+                      <div className="w-fit bg-llm-neutral95 text-black font-bold text-lg p-1 my-2">
+                        {modelA}
                       </div>
                       <div
                         className={`p-5 rounded-lg bg-llm-grey4 text-llm-response border-2 border-solid 
@@ -55,8 +57,8 @@ const ResultComparison = ({ allMessage }: dataProps) => {
                   </div>
                   <div className="w-full space-y-1 ">
                     <div className="model-b-response ">
-                      <div className="w-fit bg-llm-neutral95 text-black p-1 my-2">
-                        Model B
+                      <div className="w-fit bg-llm-neutral95 text-black font-bold text-lg p-1 my-2">
+                        {modelB}
                       </div>
                       <div
                         className={`p-5 rounded-lg bg-llm-grey4 text-llm-response border-2 border-solid border-llm-neutral90 ${

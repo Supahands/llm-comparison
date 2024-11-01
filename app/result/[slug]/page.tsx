@@ -44,6 +44,8 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
   const [statProportion, setStatProportion] = React.useState<metricsProps[]>(
     []
   );
+  const [modelA, setModelA] = React.useState<string>("");
+  const [modelB, setModelB] = React.useState<string>("");
 
   const calculateProportion = (data: databaseProps[]) => {
     const modelA = data.reduce((counter, x) => {
@@ -96,6 +98,9 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
       })
     );
 
+    setModelA(data[0].model_1);
+    setModelB(data[0].model_2);
+
     let i = 1;
     setAllResponseTime(
       data?.map((x) => {
@@ -108,9 +113,6 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
     );
 
     calculateProportion(data);
-
-    console.log(allMessage);
-    console.log(allResponseTime);
   };
 
   useEffect(() => {
@@ -120,12 +122,27 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
   return (
     <div className="bg-llm-background h-full space-y-5 pt-7 pb-7 pl-10 pr-10">
       <h1 className="font-bold text-2xl">LLM Comparison Result</h1>
-      <ResultComparison allMessage={allMessage} />
-      <div className="flex justify-stretch gap-5">
-        <ModelResponseTime allResponseTime={allResponseTime} />
-        <MetricsComposed allMetricsComposed={statProportion} />
+      <ResultComparison
+        allMessage={allMessage}
+        modelA={modelA}
+        modelB={modelB}
+      />
+      <div className="flex justify-stretch gap-4">
+        <ModelResponseTime
+          allResponseTime={allResponseTime}
+          modelA={modelA}
+          modelB={modelB}
+        />
+        <MetricsComposed
+          allMetricsComposed={statProportion}
+          modelA={modelA}
+          modelB={modelB}
+        />
       </div>
-      <div className="flex justify-stretch gap-5">{/* <OverallPage /> */}</div>
+      {/* <div className="flex justify-stretch gap-4">
+        <OverallPage />
+        <OverallPage />
+      </div> */}
       <div className="flex flex-row w-full justify-between mt-4">
         <LinkPreview url="https://supa.so">
           <Image src={`svg/logo.svg`} alt="SUPA logo" width={93} height={26} />
