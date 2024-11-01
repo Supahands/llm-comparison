@@ -39,6 +39,8 @@ export default function ModelSelector() {
       ) || [];
     const items = models.map((x) => x.toComboBoxItem());
     setAvailableModels(items);
+    setSelectedModel1('qwen2.5')
+    setSelectedModel2('llama3.2')
   };
 
   const randomizeModel = () => {
