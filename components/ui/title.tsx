@@ -1,4 +1,4 @@
-import { ebGaramond } from "@/app/layout";
+import { ebGaramond } from "@/app/font-import";
 import { ReactNode } from "react";
 
 type TitleProps = {

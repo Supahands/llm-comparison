@@ -1,21 +1,10 @@
 "use client";
 
-import { Lato, EB_Garamond } from "next/font/google";
 import { ConfirmDialogProvider } from "@omit/react-confirm-dialog";
 import "./globals.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { lato } from "./font-import";
 
-export const lato = Lato({
-  subsets: ["latin"],
-  display: "auto",
-  weight: ["400", "700", "900"],
-});
-
-export const ebGaramond = EB_Garamond({
-  subsets: ["latin"],
-  display: "auto",
-  weight: ["400", "700", "600"],
-});
 
 const queryClient = new QueryClient();
 
