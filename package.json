@@ -78,6 +78,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/react-lottie": "^1.2.10",
     "eslint": "^8",
     "eslint-config-next": "14.2.15",
     "postcss": "^8",

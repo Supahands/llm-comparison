@@ -17,7 +17,7 @@ help:
 # Build the Docker image
 .PHONY: build
 build:
-	docker build --platform linux/amd64/v8 -t $(IMAGE_NAME):latest . 
+	docker build --platform linux/amd64 -t $(IMAGE_NAME):latest . 
 	docker tag $(IMAGE_NAME):latest $(IMAGE_URI):latest
 
 # Push the Docker image to ECR
