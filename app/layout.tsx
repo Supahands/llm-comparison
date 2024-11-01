@@ -29,7 +29,7 @@ export default function RootLayout({
       <QueryClientProvider client={queryClient}>
         <ConfirmDialogProvider>
           <body
-            className={`${lato.className} antialiased h-full px-16 bg-llm-background`}
+            className={`${lato.className} antialiased h-full px-10 bg-llm-background`}
           >
             {children}
           </body>

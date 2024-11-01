@@ -130,6 +130,7 @@ export default function Comparison() {
       <Card className=" w-full mx-auto border rounded-lg  bg-white flex-grow h-full flex flex-col">
         <CardContent className="flex flex-col flex-grow overflow-hidden p-1 h-full">
           <PromptDisplay />
+          
           <ModelResponses />
         </CardContent>
         <CardFooter className="flex flex-col gap-2 pb-4">

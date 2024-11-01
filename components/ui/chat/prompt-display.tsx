@@ -1,8 +1,6 @@
 import useAppStore from "@/hooks/store/useAppStore";
 import {
-  FloatingPanelCloseButton,
   FloatingPanelContent,
-  FloatingPanelFooter,
   FloatingPanelRoot,
   FloatingPanelTrigger,
 } from "../floating-panel";
@@ -22,9 +20,6 @@ export default function PromptDisplay() {
         </FloatingPanelTrigger>
         <FloatingPanelContent>
           {prompt}
-          <FloatingPanelFooter>
-            <FloatingPanelCloseButton />
-          </FloatingPanelFooter>
         </FloatingPanelContent>
       </FloatingPanelRoot>
     </div>
