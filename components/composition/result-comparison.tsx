@@ -61,12 +61,13 @@ const ResultComparison = ({ allMessage, modelA, modelB }: dataProps) => {
                         {modelB}
                       </div>
                       <div
-                        className={`p-5 rounded-lg bg-llm-grey4 text-llm-response border-2 border-solid border-llm-neutral90 ${
-                          item.choice?.includes("B") &&
-                          !item.choice?.includes("!")
-                            ? "border-green-600"
-                            : "border-llm-btn_hover"
-                        }`}
+                        className={`p-5 rounded-lg bg-llm-grey4 text-llm-response border-2 border-solid 
+                      ${
+                        item.choice?.includes("B") &&
+                        !item.choice?.includes("!")
+                          ? "border-green-600"
+                          : "border-llm-btn_hover"
+                      }`}
                       >
                         <ReactMarkdown className="prose dark:prose-invert">
                           {item.response2}

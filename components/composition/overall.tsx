@@ -17,10 +17,26 @@ const OverallPage = () => {
         <CardDescription>Winning rate and other metrics </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-col">
+        <div className="flex flex-col mb-3">
           <div className="flex justify-between mb-3">
             <p>24</p>
             <p>Wins</p>
+            <p>44</p>
+          </div>
+          <Progress value={33} />
+        </div>
+        <div className="flex flex-col mb-3">
+          <div className="flex justify-between mb-3">
+            <p>24</p>
+            <p>Avg. Response Time (s)</p>
+            <p>44</p>
+          </div>
+          <Progress value={33} />
+        </div>
+        <div className="flex flex-col mb-3">
+          <div className="flex justify-between mb-3">
+            <p>24</p>
+            <p>Avg. Token Generation Time (s)</p>
             <p>44</p>
           </div>
           <Progress value={33} />
