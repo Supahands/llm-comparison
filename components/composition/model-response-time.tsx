@@ -66,9 +66,9 @@ export function ModelResponseTime({ allResponseTime }: timeProps) {
   return (
     <Card className="rounded-xl w-1/2">
       <CardHeader>
-        <CardTitle>Response Time Comparison</CardTitle>
+        <CardTitle>Response Time Comparison (s)</CardTitle>
         <CardDescription>
-          Compare Each Model Response Time for Each Question.
+          Compare Each Model Response Time (in seconds) for Each Question.
         </CardDescription>
       </CardHeader>
       <CardContent>

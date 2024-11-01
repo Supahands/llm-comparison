@@ -18,7 +18,7 @@ const OverallPage = () => {
       </CardHeader>
       <CardContent>
         <div className="flex flex-col">
-          <div className="flex justify-between mb-3">
+          <div className="flex justify-between mb-">
             <p>24</p>
             <p>Wins</p>
             <p>44</p>

@@ -15,6 +15,7 @@ import { Message } from "@/lib/types/message";
 import { DATABASE_TABLE } from "@/lib/constants/databaseTables";
 import { dataProps } from "@/components/composition/model-response-time";
 import { MetricsComposed } from "@/components/composition/metrics-composed";
+import OverallPage from "@/components/composition/overall";
 
 interface databaseProps {
   id: number;
@@ -65,10 +66,10 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
     setStatProportion([
       {
         task: "summary",
-        modelA: (modelA / data.length) * 100,
-        modelB: (modelB / data.length) * 100,
-        draw: (draw / data.length) * 100,
-        reject: (reject / data.length) * 100,
+        modelA: Number(((modelA / data.length) * 100).toFixed(2)),
+        modelB: Number(((modelB / data.length) * 100).toFixed(2)),
+        draw: Number(((draw / data.length) * 100).toFixed(2)),
+        reject: Number(((reject / data.length) * 100).toFixed(2)),
       },
     ]);
   };
@@ -100,8 +101,8 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
       data?.map((x) => {
         return {
           task: `Q${i++}`,
-          timeModelA: x.response_time_1,
-          timeModelB: x.response_time_2,
+          timeModelA: Number((x.response_time_1 / 1000).toFixed(2)),
+          timeModelB: Number((x.response_time_2 / 1000).toFixed(2)),
         };
       })
     );
@@ -124,6 +125,7 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
         <ModelResponseTime allResponseTime={allResponseTime} />
         <MetricsComposed allMetricsComposed={statProportion} />
       </div>
+      <div className="flex justify-stretch gap-5">{/* <OverallPage /> */}</div>
       <div className="flex flex-row w-full justify-between mt-4">
         <LinkPreview url="https://supa.so">
           <Image src={`svg/logo.svg`} alt="SUPA logo" width={93} height={26} />
