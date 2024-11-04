@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/chart";
 import { metricsProps } from "@/app/result/[slug]/page";
 import { ViewBox } from "recharts/types/util/types";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const description = "A stacked bar chart with a legend";
 
@@ -42,12 +43,14 @@ interface componentProps {
   allMetricsComposed: metricsProps[] | undefined;
   modelA: string;
   modelB: string;
+  isLoading: boolean;
 }
 
 export function MetricsComposed({
   allMetricsComposed,
   modelA,
   modelB,
+  isLoading,
 }: componentProps) {
   const chartConfig = {
     modelA: {
@@ -80,91 +83,115 @@ export function MetricsComposed({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="min-h-[10px]">
-          <BarChart
-            accessibilityLayer
-            data={allMetricsComposed}
-            layout="vertical"
-          >
-            <CartesianGrid horizontal={false} />
-            <YAxis
-              dataKey="month"
-              type="category"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-              tickFormatter={(value) => value.slice(0, 3)}
-              hide
-            />
-            <XAxis dataKey="desktop" domain={[0, 100]} type="number" hide />
-            <ChartTooltip
-              cursor={false}
-              content={
-                <ChartTooltipContent indicator="line" className="w-40" />
-              }
-            />
-            <Bar
-              dataKey="modelA"
+        {isLoading ? (
+          <div className="flex flex-col">
+            <Skeleton className="w-full h-96 p-4 border border-gray-200 rounded-xl mb-3" />
+            <div className="flex justify-center gap-4">
+              <div className="flex gap-2">
+                <Skeleton className="w-4 h-4  border border-gray-200 rounded-xl" />
+                <Skeleton className="w-20 h-4  border border-gray-200 rounded-xl" />
+              </div>
+              <div className="flex gap-2">
+                <Skeleton className="w-4 h-4  border border-gray-200 rounded-xl" />
+                <Skeleton className="w-20 h-4  border border-gray-200 rounded-xl" />
+              </div>
+              <div className="flex gap-2">
+                <Skeleton className="w-4 h-4  border border-gray-200 rounded-xl" />
+                <Skeleton className="w-20 h-4  border border-gray-200 rounded-xl" />
+              </div>
+              <div className="flex gap-2">
+                <Skeleton className="w-4 h-4  border border-gray-200 rounded-xl" />
+                <Skeleton className="w-20 h-4  border border-gray-200 rounded-xl" />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <ChartContainer config={chartConfig} className="min-h-[10px]">
+            <BarChart
+              accessibilityLayer
+              data={allMetricsComposed}
               layout="vertical"
-              fill="var(--color-modelA)"
-              stackId="a"
             >
-              <LabelList
-                className="text-xl font-bold"
-                position="middle"
-                fill="#ffffff"
+              <CartesianGrid horizontal={false} />
+              <YAxis
+                dataKey="month"
+                type="category"
+                tickLine={false}
+                tickMargin={10}
+                axisLine={false}
+                tickFormatter={(value) => value.slice(0, 3)}
+                hide
+              />
+              <XAxis dataKey="desktop" domain={[0, 100]} type="number" hide />
+              <ChartTooltip
+                cursor={false}
+                content={
+                  <ChartTooltipContent indicator="line" className="w-40" />
+                }
+              />
+              <Bar
                 dataKey="modelA"
-                formatter={renderLabel}
-              ></LabelList>
-            </Bar>
-            <Bar
-              dataKey="modelB"
-              layout="vertical"
-              fill="var(--color-modelB)"
-              stackId="a"
-            >
-              <LabelList
-                className="text-xl font-bold"
-                position="middle"
-                fill="#ffffff"
-                formatter={renderLabel}
+                layout="vertical"
+                fill="var(--color-modelA)"
+                stackId="a"
+              >
+                <LabelList
+                  className="text-xl font-bold"
+                  position="middle"
+                  fill="#ffffff"
+                  dataKey="modelA"
+                  formatter={renderLabel}
+                ></LabelList>
+              </Bar>
+              <Bar
                 dataKey="modelB"
-              ></LabelList>
-            </Bar>
-            <Bar
-              dataKey="draw"
-              layout="vertical"
-              fill="var(--color-draw)"
-              stackId="a"
-            >
-              <LabelList
-                className="text-xl font-bold"
-                position="middle"
-                fill="#ffffff"
+                layout="vertical"
+                fill="var(--color-modelB)"
+                stackId="a"
+              >
+                <LabelList
+                  className="text-xl font-bold"
+                  position="middle"
+                  fill="#ffffff"
+                  formatter={renderLabel}
+                  dataKey="modelB"
+                ></LabelList>
+              </Bar>
+              <Bar
                 dataKey="draw"
-                formatter={renderLabel}
-              ></LabelList>
-            </Bar>
-            <Bar
-              dataKey="reject"
-              layout="vertical"
-              fill="var(--color-reject)"
-              stackId="a"
-            >
-              <LabelList
-                className="text-xl font-bold"
-                position="middle"
-                fill="#ffffff"
+                layout="vertical"
+                fill="var(--color-draw)"
+                stackId="a"
+              >
+                <LabelList
+                  className="text-xl font-bold"
+                  position="middle"
+                  fill="#ffffff"
+                  dataKey="draw"
+                  formatter={renderLabel}
+                ></LabelList>
+              </Bar>
+              <Bar
                 dataKey="reject"
-                formatter={renderLabel}
-              ></LabelList>
-            </Bar>
-            <ChartLegend
-              className="text-base font-semibold"
-              content={<ChartLegendContent />}
-            />
-          </BarChart>
-        </ChartContainer>
+                layout="vertical"
+                fill="var(--color-reject)"
+                stackId="a"
+              >
+                <LabelList
+                  className="text-xl font-bold"
+                  position="middle"
+                  fill="#ffffff"
+                  dataKey="reject"
+                  formatter={renderLabel}
+                ></LabelList>
+              </Bar>
+              <ChartLegend
+                className="text-base font-semibold"
+                content={<ChartLegendContent />}
+              />
+            </BarChart>
+          </ChartContainer>
+        )}
       </CardContent>
     </Card>
   );

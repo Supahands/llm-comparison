@@ -39,6 +39,9 @@ export default function WinnerSelector() {
     setIsComparingModel,
     setSelectedChoice,
     sessionId,
+    promptToken,
+    completionToken1,
+    completionToken2,
   } = useAppStore();
 
   const handleUserChoice = (choice: ComboBoxItem) => {
@@ -63,6 +66,9 @@ export default function WinnerSelector() {
           prompt: prompt,
           response_time_1: responseTime1,
           response_time_2: responseTime2,
+          prompt_token: promptToken,
+          completion_token_1: completionToken1,
+          completion_token_2: completionToken2,
         },
       ]);
 

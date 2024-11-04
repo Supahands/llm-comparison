@@ -39,6 +39,9 @@ export default function Comparison() {
     setIsComparingModel,
     sessionId,
     setSessionId,
+    setPromptToken,
+    setCompletionToken1,
+    setCompletionToken2,
   } = useAppStore();
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -55,6 +58,8 @@ export default function Comparison() {
         (choices[0]?.message?.content as string) || "";
       setResponseModel1(responseModel1Content);
       setResponseTime1(data.usage.response_time);
+      setPromptToken(data.usage.prompt_tokens);
+      setCompletionToken1(data.usage.completion_tokens);
       console.log("data1", data);
     },
     onError: (error) => {
@@ -74,6 +79,8 @@ export default function Comparison() {
         (choices[0]?.message?.content as string) || "";
       setResponseModel2(responseModel2Content);
       setResponseTime2(data.usage.response_time);
+      setPromptToken(data.usage.prompt_tokens);
+      setCompletionToken2(data.usage.completion_tokens);
       console.log("data2", data);
     },
     onError: (error) => {
@@ -130,7 +137,7 @@ export default function Comparison() {
       <Card className=" w-full mx-auto border rounded-lg  bg-white flex-grow h-full flex flex-col">
         <CardContent className="flex flex-col flex-grow overflow-hidden p-1 h-full">
           <PromptDisplay />
-          
+
           <ModelResponses />
         </CardContent>
         <CardFooter className="flex flex-col gap-2 pb-4">

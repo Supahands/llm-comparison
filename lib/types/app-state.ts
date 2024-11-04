@@ -13,6 +13,9 @@ export interface AppState {
   responseTime1: number;
   responseTime2: number;
   availableModels: ComboBoxItem[];
+  promptToken: number;
+  completionToken1: number;
+  completionToken2: number;
 
   userChoices: UserChoice[];
   selectedChoice: ComboBoxItem | undefined;
@@ -31,6 +34,9 @@ export interface AppState {
   addUserChoices: (choice: UserChoice) => void;
   setSelectedChoice: (choice: ComboBoxItem) => void;
   setAvailableModels: (models: ComboBoxItem[]) => void;
+  setPromptToken: (promptToken: number) => void;
+  setCompletionToken1: (completionToken: number) => void;
+  setCompletionToken2: (completionToken: number) => void;
 
   reset: () => void;
 }
