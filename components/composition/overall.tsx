@@ -84,9 +84,6 @@ const OverallPage = ({
           />
         </div>
       </CardContent>
-      <CardFooter>
-        <p>Card Footers</p>
-      </CardFooter>
     </Card>
   );
 };
