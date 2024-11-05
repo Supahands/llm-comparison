@@ -17,7 +17,6 @@ export interface AppState {
   userChoices: UserChoice[];
   selectedChoice: ComboBoxItem | undefined;
   isStopped: boolean;
-  winnerSelectorId: string;
 
   setSessionId: (model: string) => void;
   setSelectedModel1: (model: string) => void;
@@ -34,7 +33,6 @@ export interface AppState {
   setSelectedChoice: (choice: ComboBoxItem) => void;
   setAvailableModels: (models: ComboBoxItem[]) => void;
   setIsStopped: (isStopped: boolean) => void;
-  setWinnerSelectorId: (id: string) => void;
   reset: () => void;
 }
 
