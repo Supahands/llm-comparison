@@ -16,6 +16,7 @@ import { DATABASE_TABLE } from "@/lib/constants/databaseTables";
 import { dataProps } from "@/components/composition/model-response-time";
 import { MetricsComposed } from "@/components/composition/metrics-composed";
 import OverallPage from "@/components/composition/overall";
+import { useRouter } from "next/navigation";
 
 interface databaseProps {
   id: number;
@@ -41,6 +42,7 @@ export interface metricsProps {
 }
 
 const ResultPage = ({ params }: { params: { slug: string } }) => {
+  const router = useRouter();
   const [allMessage, setAllMessage] = React.useState<Message[]>([]);
   const [allResponseTime, setAllResponseTime] = React.useState<dataProps[]>([]);
   const [statProportion, setStatProportion] = React.useState<metricsProps[]>(
@@ -61,6 +63,39 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
     React.useState<number>(0);
   const [avgTokenPerResponseTimeB, setAvgTokenPerResponseTimeB] =
     React.useState<number>(0);
+
+  const handleDownloadMetadata = () => {
+    // Convert JSON data to a string
+    const jsonString = JSON.stringify({
+      message: allMessage,
+      response_time: allResponseTime,
+      performance_metrics: statProportion,
+      latest_metrics: {
+        model_a: modelA,
+        model_b: modelB,
+        model_a_wins: winRateModelA,
+        model_b_wins: winRateModelB,
+        average_response_time_model_a: winRateModelA,
+        average_response_time_model_b: winRateModelB,
+        average_token_output_model_a: averageTokenA,
+        average_token_output_model_b: averageTokenB,
+        average_token_generated_per_second_model_a: avgTokenPerResponseTimeA,
+        average_token_generated_per_second_model_b: avgTokenPerResponseTimeB,
+      },
+    });
+
+    // Create a Blob with the JSON data
+    const blob = new Blob([jsonString], { type: "application/json" });
+
+    // Create a download link and click it to start the download
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "data.json"; // Name of the downloaded file
+    link.click();
+
+    // Clean up the URL object
+    URL.revokeObjectURL(link.href);
+  };
 
   const calculateProportion = (data: databaseProps[] | null) => {
     const modelA = data
@@ -101,7 +136,11 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
 
   async function fetchDataBySessionId(sessionId: string) {
     const { data, error } = await supabaseClient
-      .from(DATABASE_TABLE.RESPONSE_TABLE)
+      .from(
+        process.env.NEXT_PUBLIC_RESPONSE_TABLE
+          ? process.env.NEXT_PUBLIC_RESPONSE_TABLE
+          : ""
+      )
       .select()
       .eq("session_id", sessionId);
 
@@ -113,7 +152,11 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
       `and(model_1.eq.${modelA},model_2.eq.${modelB}),and(model_1.eq.${modelB},model_2.eq.${modelA})`
     );
     const { data, error } = await supabaseClient
-      .from(DATABASE_TABLE.RESPONSE_TABLE)
+      .from(
+        process.env.NEXT_PUBLIC_RESPONSE_TABLE
+          ? process.env.NEXT_PUBLIC_RESPONSE_TABLE
+          : ""
+      )
       .select()
       .or(
         `and(model_1.eq.${modelA},model_2.eq.${modelB}),and(model_1.eq.${modelB},model_2.eq.${modelA})`
@@ -206,12 +249,14 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
       data
         ? data.map(
             (x: {
+              id: number;
               prompt: any;
               response_model_1: any;
               response_model_2: any;
               selected_choice: any;
             }) => {
               return {
+                id: x.id,
                 prompt: x.prompt,
                 response1: x.response_model_1,
                 response2: x.response_model_2,
@@ -229,9 +274,14 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
     setAllResponseTime(
       data
         ? data.map(
-            (x: { response_time_1: number; response_time_2: number }) => {
+            (x: {
+              id: number;
+              response_time_1: number;
+              response_time_2: number;
+            }) => {
               return {
                 task: `Q${i++}`,
+                id: x.id,
                 timeModelA: Number((x.response_time_1 / 1000).toFixed(2)),
                 timeModelB: Number((x.response_time_2 / 1000).toFixed(2)),
               };
@@ -291,9 +341,24 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
         <LinkPreview url="https://supa.so">
           <Image src={`svg/logo.svg`} alt="SUPA logo" width={93} height={26} />
         </LinkPreview>
-        <Button className="bg-llm-btn hover:bg-llm-btn_hover text-white rounded-2xl">
-          Export the Metadata
-        </Button>
+        <div className="flex gap-4">
+          <Button
+            onClick={() => router.push(`/`)}
+            className="bg-llm-primary50 hover:bg-llm-primary50_hover text-white rounded-2xl"
+          >
+            Back To Home
+          </Button>
+          <Button
+            onClick={() => {
+              if (!isLoading) {
+                handleDownloadMetadata();
+              }
+            }}
+            className="bg-llm-btn hover:bg-llm-btn_hover text-white rounded-2xl"
+          >
+            Export the Metadata
+          </Button>
+        </div>
       </div>
     </div>
   );

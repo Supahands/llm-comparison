@@ -54,11 +54,11 @@ export function MetricsComposed({
 }: componentProps) {
   const chartConfig = {
     modelA: {
-      label: modelA,
+      label: `${modelA} won`,
       color: "#6B66FA",
     },
     modelB: {
-      label: modelB,
+      label: `${modelB} won`,
       color: "#461353",
     },
     draw: {
@@ -72,7 +72,8 @@ export function MetricsComposed({
   } satisfies ChartConfig;
 
   const renderLabel = (props: any) => {
-    return `${props}%`;
+    if (props === 0) return "";
+    else return `${props}%`;
   };
   return (
     <Card className="rounded-xl w-full">

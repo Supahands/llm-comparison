@@ -21,6 +21,7 @@ const config = {
       colors: {
         llm: {
           primary50: "#6B66FA",
+          primary50_hover: "#0E07DA",
           grey4: "#F7F7F7",
           neutral90: "#DADADA",
           brand: "#E76C6C",
@@ -31,7 +32,7 @@ const config = {
           response: "#687076",
           btn: "#E76C6C",
           btn_hover: "#C93939",
-          primary95: '#EBE8F5'
+          primary95: "#EBE8F5",
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

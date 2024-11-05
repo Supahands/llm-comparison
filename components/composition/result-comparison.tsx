@@ -2,6 +2,7 @@
 
 import React, { useEffect } from "react";
 import { Message } from "@/lib/types/message";
+import { FaThumbsUp, FaThumbsDown } from "react-icons/fa6";
 
 import {
   Carousel,
@@ -60,8 +61,14 @@ const ResultComparison = ({
                   <div className="flex gap-4 mb-4">
                     <div className="w-full space-y-1">
                       <div className="model-b-response ">
-                        <div className="w-fit bg-llm-neutral95 text-black font-bold text-lg p-1 my-2">
+                        <div className="w-fit flex items-center gap-4 bg-llm-neutral95 text-black font-bold text-lg p-1 my-2">
                           {modelA}
+                          {item.choice?.includes("A") &&
+                          !item.choice?.includes("!") ? (
+                            <FaThumbsUp color="green" />
+                          ) : (
+                            <FaThumbsDown color="red" />
+                          )}
                         </div>
                         <div
                           className={`p-5 rounded-lg bg-llm-grey4 text-llm-response border-2 border-solid 
@@ -80,8 +87,14 @@ const ResultComparison = ({
                     </div>
                     <div className="w-full space-y-1 ">
                       <div className="model-b-response ">
-                        <div className="w-fit bg-llm-neutral95 text-black font-bold text-lg p-1 my-2">
+                        <div className="w-fit flex items-center gap-4 bg-llm-neutral95 text-black font-bold text-lg p-1 my-2">
                           {modelB}
+                          {item.choice?.includes("B") &&
+                          !item.choice?.includes("!") ? (
+                            <FaThumbsUp color="green" />
+                          ) : (
+                            <FaThumbsDown color="red" />
+                          )}
                         </div>
                         <div
                           className={`p-5 rounded-lg bg-llm-grey4 text-llm-response border-2 border-solid 

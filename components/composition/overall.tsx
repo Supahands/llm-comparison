@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 
+import { Skeleton } from "@/components/ui/skeleton";
 interface componentProps {
   modelA: string;
   modelB: string;
@@ -44,45 +45,88 @@ const OverallPage = ({
         <CardDescription>Winning rate and other metrics </CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-col mb-3">
-          <div className="flex justify-between justify-self-center mb-5 text-xl font-semibold">
-            <p>{modelA}</p>
-            <p>{modelB}</p>
+        {isLoading ? (
+          <div className="flex flex-col">
+            <div className="flex justify-between mb-3">
+              <Skeleton className="w-32 h-5  border border-gray-200 rounded-xl" />
+              <Skeleton className="w-32 h-5  border border-gray-200 rounded-xl" />
+            </div>
+            <div className="flex justify-between mb-3">
+              <Skeleton className="w-5 h-5  border border-gray-200 rounded-xl" />
+              <Skeleton className="w-32 h-5  border border-gray-200 rounded-xl" />
+              <Skeleton className="w-5 h-5  border border-gray-200 rounded-xl" />
+            </div>
+            <div className="flex justify-between mb-3">
+              <Skeleton className="w-full h-5  border border-gray-200 rounded-xl" />
+            </div>
+            <div className="flex justify-between mb-3">
+              <Skeleton className="w-5 h-5  border border-gray-200 rounded-xl" />
+              <Skeleton className="w-32 h-5  border border-gray-200 rounded-xl" />
+              <Skeleton className="w-5 h-5  border border-gray-200 rounded-xl" />
+            </div>
+            <div className="flex justify-between mb-3">
+              <Skeleton className="w-full h-5  border border-gray-200 rounded-xl" />
+            </div>
+            <div className="flex justify-between mb-3">
+              <Skeleton className="w-5 h-5  border border-gray-200 rounded-xl" />
+              <Skeleton className="w-32 h-5  border border-gray-200 rounded-xl" />
+              <Skeleton className="w-5 h-5  border border-gray-200 rounded-xl" />
+            </div>
+            <div className="flex justify-between mb-3">
+              <Skeleton className="w-full h-5  border border-gray-200 rounded-xl" />
+            </div>
+            <div className="flex justify-between mb-3">
+              <Skeleton className="w-5 h-5  border border-gray-200 rounded-xl" />
+              <Skeleton className="w-32 h-5  border border-gray-200 rounded-xl" />
+              <Skeleton className="w-5 h-5  border border-gray-200 rounded-xl" />
+            </div>
+            <div className="flex justify-between mb-3">
+              <Skeleton className="w-full h-5  border border-gray-200 rounded-xl" />
+            </div>
           </div>
-          <div className="flex justify-between justify-self-center mb-3">
-            <p>{totalWinA}</p>
-            <p>Wins</p>
-            <p>{totalWinB}</p>
+        ) : (
+          <div>
+            <div className="flex flex-col mb-3">
+              <div className="flex justify-between justify-self-center mb-5 text-xl font-semibold">
+                <p>{modelA}</p>
+                <p>{modelB}</p>
+              </div>
+              <div className="flex justify-between justify-self-center mb-3">
+                <p>{totalWinA}</p>
+                <p>Wins</p>
+                <p>{totalWinB}</p>
+              </div>
+              <Progress value={totalWinA} max={totalWinA + totalWinB} />
+            </div>
+            <div className="flex flex-col mb-3">
+              <div className="flex justify-between mb-3">
+                <p>{avgTime1}</p>
+                <p>Avg. Response Time (s)</p>
+                <p>{avgTime2}</p>
+              </div>
+              <Progress value={avgTime1} max={avgTime1 + avgTime2} />
+            </div>
+            <div className="flex flex-col mb-3">
+              <div className="flex justify-between mb-3">
+                <p>{avgTokenA}</p>
+                <p>Avg. Token Generated</p>
+                <p>{avgTokenB}</p>
+              </div>
+              <Progress value={avgTokenA} max={avgTokenA + avgTokenB} />
+            </div>
+            <div className="flex flex-col mb-3">
+              <div className="flex justify-between mb-3">
+                <p>{avgTokenPerTimeA}</p>
+                <p>Avg. Token Generated per second</p>
+                <p>{avgTokenPerTimeB}</p>
+              </div>
+              <Progress
+                value={avgTokenPerTimeA}
+                max={avgTokenPerTimeA + avgTokenPerTimeB}
+              />
+            </div>
           </div>
-          <Progress value={totalWinA} max={totalWinA + totalWinB} />
-        </div>
-        <div className="flex flex-col mb-3">
-          <div className="flex justify-between mb-3">
-            <p>{avgTime1}</p>
-            <p>Avg. Response Time (s)</p>
-            <p>{avgTime2}</p>
-          </div>
-          <Progress value={avgTime1} max={avgTime1 + avgTime2} />
-        </div>
-        <div className="flex flex-col mb-3">
-          <div className="flex justify-between mb-3">
-            <p>{avgTokenA}</p>
-            <p>Avg. Token Generated</p>
-            <p>{avgTokenB}</p>
-          </div>
-          <Progress value={avgTokenA} max={avgTokenA + avgTokenB} />
-        </div>
-        <div className="flex flex-col mb-3">
-          <div className="flex justify-between mb-3">
-            <p>{avgTokenPerTimeA}</p>
-            <p>Avg. Token Generated per second</p>
-            <p>{avgTokenPerTimeB}</p>
-          </div>
-          <Progress
-            value={avgTokenPerTimeA}
-            max={avgTokenPerTimeA + avgTokenPerTimeB}
-          />
-        </div>
+        )}
       </CardContent>
     </Card>
   );
