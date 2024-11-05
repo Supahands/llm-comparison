@@ -42,7 +42,7 @@ export default function Home() {
 
   const handleDataSaving = async (choice: string) => {
     const { error } = await supabaseClient
-      .from(DATABASE_TABLE.RESPONSE_TABLE)
+      .from(process.env.NEXT_PUBLIC_RESPONSE_TABLE ?? "")
       .insert([
         {
           session_id: sessionId,
