@@ -19,6 +19,7 @@ export interface AppState {
 
   userChoices: UserChoice[];
   selectedChoice: ComboBoxItem | undefined;
+  isStopped: boolean;
 
   setSessionId: (model: string) => void;
   setSelectedModel1: (model: string) => void;
@@ -37,7 +38,7 @@ export interface AppState {
   setPromptToken: (promptToken: number) => void;
   setCompletionToken1: (completionToken: number) => void;
   setCompletionToken2: (completionToken: number) => void;
-
+  setIsStopped: (isStopped: boolean) => void;
   reset: () => void;
 }
 
