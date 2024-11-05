@@ -35,6 +35,10 @@ export default function WinnerSelector() {
     addUserChoices,
     setIsComparingModel,
     setSelectedChoice,
+    sessionId,
+    promptToken,
+    completionToken1,
+    completionToken2,
   } = useAppStore();
 
   const handleUserChoice = (choice: ComboBoxItem) => {

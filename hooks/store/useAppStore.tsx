@@ -17,9 +17,19 @@ const useAppStore = create<AppState>((set) => ({
   responseTime1: 0,
   responseTime2: 0,
   availableModels: [],
+  promptToken: 0,
+  completionToken1: 0,
+  completionToken2: 0,
   isStopped: true,
+
   setSessionId: (sessionId: string) =>
     set((_state: AppState) => ({ sessionId: sessionId })),
+  setPromptToken: (promptToken: number) =>
+    set((_state: AppState) => ({ promptToken: promptToken })),
+  setCompletionToken1: (completionToken1: number) =>
+    set((_state: AppState) => ({ completionToken1: completionToken1 })),
+  setCompletionToken2: (completionToken2: number) =>
+    set((_state: AppState) => ({ completionToken2: completionToken2 })),
   setResponseTime1: (response_time: number) =>
     set((_state: AppState) => ({ responseTime1: response_time })),
   setResponseTime2: (response_time: number) =>

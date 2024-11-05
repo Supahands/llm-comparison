@@ -1,6 +1,9 @@
 "use client";
 
 import { TrendingUp } from "lucide-react";
+
+import { Skeleton } from "@/components/ui/skeleton";
+
 import {
   Bar,
   BarChart,
@@ -46,12 +49,14 @@ interface timeProps {
   allResponseTime: dataProps[];
   modelA: string;
   modelB: string;
+  isLoading: boolean;
 }
 
 export function ModelResponseTime({
   allResponseTime,
   modelA,
   modelB,
+  isLoading,
 }: timeProps) {
   const chartConfig = {
     timeModelA: {
@@ -78,51 +83,67 @@ export function ModelResponseTime({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig} className="min-h-[10px]">
-          <BarChart accessibilityLayer data={allResponseTime}>
-            <CartesianGrid vertical={false} />
-            <XAxis
-              className="font-bold text-sm"
-              dataKey="task"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-            />
-            <YAxis domain={[0, adaptiveMax]} type="number" hide />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent className="w-40" />}
-            />
-            <Bar
-              dataKey="timeModelA"
-              fill={chartConfig.timeModelA.color}
-              radius={4}
-            >
-              <LabelList
-                dataKey="timeModelB"
-                position="top"
-                offset={10}
-                className="text-sm font-light"
+        {isLoading ? (
+          <div className="flex flex-col">
+            <Skeleton className="w-full h-96 p-4 border border-gray-200 rounded-xl mb-3" />
+            <div className="flex justify-center gap-4">
+              <div className="flex gap-2">
+                <Skeleton className="w-4 h-4  border border-gray-200 rounded-xl" />
+                <Skeleton className="w-20 h-4  border border-gray-200 rounded-xl" />
+              </div>
+              <div className="flex gap-2">
+                <Skeleton className="w-4 h-4  border border-gray-200 rounded-xl" />
+                <Skeleton className="w-20 h-4  border border-gray-200 rounded-xl" />
+              </div>
+            </div>
+          </div>
+        ) : (
+          <ChartContainer config={chartConfig} className="min-h-[10px]">
+            <BarChart accessibilityLayer data={allResponseTime}>
+              <CartesianGrid vertical={false} />
+              <XAxis
+                className="font-bold text-sm"
+                dataKey="task"
+                tickLine={false}
+                tickMargin={10}
+                axisLine={false}
               />
-            </Bar>
-            <Bar
-              dataKey="timeModelB"
-              fill={chartConfig.timeModelB.color}
-              radius={4}
-            >
-              <LabelList
-                dataKey="timeModelB"
-                position="top"
-                offset={10}
-                className="text-sm font-light"
+              <YAxis domain={[0, adaptiveMax]} type="number" hide />
+              <ChartTooltip
+                cursor={false}
+                content={<ChartTooltipContent className="w-40" />}
               />
-            </Bar>
-            <ChartLegend
-              className="text-base font-semibold"
-              content={<ChartLegendContent />}
-            />
-          </BarChart>
-        </ChartContainer>
+              <Bar
+                dataKey="timeModelA"
+                fill={chartConfig.timeModelA.color}
+                radius={4}
+              >
+                <LabelList
+                  dataKey="timeModelB"
+                  position="top"
+                  offset={10}
+                  className="text-sm font-light"
+                />
+              </Bar>
+              <Bar
+                dataKey="timeModelB"
+                fill={chartConfig.timeModelB.color}
+                radius={4}
+              >
+                <LabelList
+                  dataKey="timeModelB"
+                  position="top"
+                  offset={10}
+                  className="text-sm font-light"
+                />
+              </Bar>
+              <ChartLegend
+                className="text-base font-semibold"
+                content={<ChartLegendContent />}
+              />
+            </BarChart>
+          </ChartContainer>
+        )}
       </CardContent>
     </Card>
   );
