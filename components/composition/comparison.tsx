@@ -110,7 +110,7 @@ export default function Comparison() {
 
   const handleDataSaving = async (choice: string) => {
     const { data, error } = await supabaseClient
-      .from(DATABASE_TABLE.RESPONSE_TABLE)
+      .from(process.env.NEXT_PUBLIC_RESPONSE_TABLE ?? "")
       .insert([
         {
           session_id: sessionId,
@@ -200,7 +200,11 @@ export default function Comparison() {
               onChange={(e) => setNewMessage(e.target.value)}
               rows={1}
               onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey && newMessage.trim().length !== 0) {
+                if (
+                  e.key === "Enter" &&
+                  !e.shiftKey &&
+                  newMessage.trim().length !== 0
+                ) {
                   e.preventDefault();
                   handleSendPrompt();
                 }
@@ -214,7 +218,11 @@ export default function Comparison() {
             <Button
               type="submit"
               size="icon"
-              disabled={!(selectedModel1 && selectedModel2) || isComparingModel || newMessage.trim().length === 0}
+              disabled={
+                !(selectedModel1 && selectedModel2) ||
+                isComparingModel ||
+                newMessage.trim().length === 0
+              }
               className="absolute right-5 top-1/2 -translate-y-1/2 rounded-full w-8 h-8 p-0 bg-llm-primary50 focus-visible:outline-llm-primary50"
               onClick={handleSendPrompt}
             >
