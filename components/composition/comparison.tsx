@@ -63,7 +63,6 @@ export default function Comparison() {
         (choices[0]?.message?.content as string) || "";
       setResponseModel1(responseModel1Content);
       setResponseTime1(data.usage.response_time);
-      console.log("data1", data);
     },
     onError: (error) => {
       console.log("error1", error);
@@ -82,7 +81,6 @@ export default function Comparison() {
         (choices[0]?.message?.content as string) || "";
       setResponseModel2(responseModel2Content);
       setResponseTime2(data.usage.response_time);
-      console.log("data2", data);
     },
     onError: (error) => {
       console.log("error2", error);
@@ -124,8 +122,6 @@ export default function Comparison() {
       console.log("error fetching", error);
       return;
     }
-
-    console.log(data);
   };
 
   const payloadModel1 = useMemo<MessageRequest>(() => {
