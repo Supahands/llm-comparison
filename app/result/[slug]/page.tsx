@@ -148,9 +148,6 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
   }
 
   async function fetchDataAllTime(modelA: string, modelB: string) {
-    console.log(
-      `and(model_1.eq.${modelA},model_2.eq.${modelB}),and(model_1.eq.${modelB},model_2.eq.${modelA})`
-    );
     const { data, error } = await supabaseClient
       .from(
         process.env.NEXT_PUBLIC_RESPONSE_TABLE
@@ -216,15 +213,6 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
       Number((totalTokenB / responseTimeB / 1000).toFixed(2))
     );
 
-    console.log(winA);
-    console.log(winB);
-    console.log(totalTokenA / data.length);
-    console.log(totalTokenB / data.length);
-    console.log(Number((responseTimeA / data.length / 1000).toFixed(2)));
-    console.log(Number((responseTimeB / data.length / 1000).toFixed(2)));
-    console.log(Number((totalTokenA / responseTimeA / 1000).toFixed(2)));
-    console.log(Number((totalTokenB / responseTimeB / 1000).toFixed(2)));
-
     return;
   }
 
@@ -237,7 +225,6 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
       data ? data[0].model_1 : "",
       data ? data[0].model_2 : ""
     );
-    console.log(dataAllTime);
 
     if (error) {
       console.log("error fetching", error);
