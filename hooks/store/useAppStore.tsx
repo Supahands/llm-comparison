@@ -17,7 +17,7 @@ const useAppStore = create<AppState>((set) => ({
   responseTime1: 0,
   responseTime2: 0,
   availableModels: [],
-
+  isStopped: true,
   setSessionId: (sessionId: string) =>
     set((_state: AppState) => ({ sessionId: sessionId })),
   setResponseTime1: (response_time: number) =>
@@ -41,6 +41,8 @@ const useAppStore = create<AppState>((set) => ({
     set((_state: AppState) => ({ isComparingModel: isComparing })),
   setAvailableModels: (models: ComboBoxItem[]) =>
     set((_state: AppState) => ({ availableModels: models })),
+  setIsStopped: (isStopped: boolean) =>
+    set((_state: AppState) => ({ isStopped })),
   reset: () =>
     set((state: AppState) => ({
       responseModel1: "",

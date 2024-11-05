@@ -7,7 +7,7 @@ import { Send } from "lucide-react";
 import PromptSelector from "./promp-selector";
 import { MessageRequest } from "@/lib/types/message";
 import ModelResponses from "./model-responses";
-import PromptDisplay from "../ui/chat/prompt-display";
+import PromptDisplay from "./prompt-display";
 import useAppStore from "@/hooks/store/useAppStore";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
@@ -15,6 +15,8 @@ import { API_URL } from "@/lib/constants/urls";
 import { Textarea } from "../ui/textarea";
 import WinnerSelector from "./winner-selector";
 import { v4 as uuidv4 } from "uuid";
+import { supabaseClient } from "@/lib/supabase/supabaseClient";
+import { DATABASE_TABLE } from "@/lib/constants/databaseTables";
 
 const prompts = [
   "What are the most popular car brands in Japan?",
@@ -30,6 +32,12 @@ export default function Comparison() {
     selectedModel2,
     isComparingModel,
     userChoices,
+    responseModel1,
+    responseModel2,
+    responseTime1,
+    responseTime2,
+    selectedChoice,
+    setIsStopped,
     reset,
     setPrompt,
     setResponseModel1,
@@ -55,7 +63,6 @@ export default function Comparison() {
         (choices[0]?.message?.content as string) || "";
       setResponseModel1(responseModel1Content);
       setResponseTime1(data.usage.response_time);
-      console.log("data1", data);
     },
     onError: (error) => {
       console.log("error1", error);
@@ -74,7 +81,6 @@ export default function Comparison() {
         (choices[0]?.message?.content as string) || "";
       setResponseModel2(responseModel2Content);
       setResponseTime2(data.usage.response_time);
-      console.log("data2", data);
     },
     onError: (error) => {
       console.log("error2", error);
@@ -85,8 +91,38 @@ export default function Comparison() {
   const [newMessage, setNewMessage] = useState<string>("");
 
   const handleSendPrompt = useCallback(() => {
+    if (!newMessage.trim()) {
+      return;
+    }
+    if (selectedChoice) {
+      handleDataSaving(selectedChoice.value);
+    }
     setPrompt(newMessage);
-  }, [newMessage]);
+    setNewMessage("");
+  }, [newMessage, selectedChoice]);
+
+  const handleDataSaving = async (choice: string) => {
+    const { data, error } = await supabaseClient
+      .from(DATABASE_TABLE.RESPONSE_TABLE)
+      .insert([
+        {
+          session_id: sessionId,
+          selected_choice: choice,
+          model_1: selectedModel1,
+          model_2: selectedModel2,
+          response_model_1: responseModel1,
+          response_model_2: responseModel2,
+          prompt: prompt,
+          response_time_1: responseTime1,
+          response_time_2: responseTime2,
+        },
+      ]);
+
+    if (error) {
+      console.log("error fetching", error);
+      return;
+    }
+  };
 
   const payloadModel1 = useMemo<MessageRequest>(() => {
     return {
@@ -130,7 +166,7 @@ export default function Comparison() {
       <Card className=" w-full mx-auto border rounded-lg  bg-white flex-grow h-full flex flex-col">
         <CardContent className="flex flex-col flex-grow overflow-hidden p-1 h-full">
           <PromptDisplay />
-          
+
           <ModelResponses />
         </CardContent>
         <CardFooter className="flex flex-col gap-2 pb-4">
@@ -157,10 +193,9 @@ export default function Comparison() {
               onChange={(e) => setNewMessage(e.target.value)}
               rows={1}
               onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
+                if (e.key === "Enter" && !e.shiftKey && newMessage.trim().length !== 0) {
                   e.preventDefault();
-                  setPrompt(newMessage);
-                  setNewMessage("");
+                  handleSendPrompt();
                 }
               }}
               style={{
@@ -172,8 +207,8 @@ export default function Comparison() {
             <Button
               type="submit"
               size="icon"
-              disabled={!(selectedModel1 && selectedModel2) || isComparingModel}
-              className="absolute right-5 top-1/2 -translate-y-1/2 rounded-full w-8 h-8 p-0 bg-llm-primary50"
+              disabled={!(selectedModel1 && selectedModel2) || isComparingModel || newMessage.trim().length === 0}
+              className="absolute right-5 top-1/2 -translate-y-1/2 rounded-full w-8 h-8 p-0 bg-llm-primary50 focus-visible:outline-llm-primary50"
               onClick={handleSendPrompt}
             >
               <Send className="h-4 w-4" />

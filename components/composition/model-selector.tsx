@@ -7,8 +7,9 @@ import AvailableModel, {
 import { supabaseClient } from "@/lib/supabase/supabaseClient";
 import { DATABASE_TABLE } from "@/lib/constants/databaseTables";
 import { Dices, EyeClosed, EyeOff } from "lucide-react";
-export default function ModelSelector() {
+import { Button } from "../ui/button";
 
+export default function ModelSelector() {
   const {
     isComparingModel,
     availableModels,
@@ -35,18 +36,21 @@ export default function ModelSelector() {
           id: x.id,
           provider: x.provider,
           model_name: x.model_name,
+          disabled: x.disabled
         })
       ) || [];
-    const items = models.map((x) => x.toComboBoxItem());
+    const items = models.filter(x => !x.disabled).map((x) => x.toComboBoxItem());
     setAvailableModels(items);
-    setSelectedModel1('qwen2.5')
-    setSelectedModel2('llama3.2')
+    setSelectedModel1("qwen2.5");
+    setSelectedModel2("llama3.2");
   };
 
   const randomizeModel = () => {
     if (availableModels.length === 0) return;
-    const model1 = availableModels[Math.floor(Math.random() * availableModels.length)];
-    const model2 = availableModels[Math.floor(Math.random() * availableModels.length)];
+    const model1 =
+      availableModels[Math.floor(Math.random() * availableModels.length)];
+    const model2 =
+      availableModels[Math.floor(Math.random() * availableModels.length)];
     setSelectedModel1(model1.label);
     setSelectedModel2(model2.label);
   };
@@ -87,7 +91,14 @@ export default function ModelSelector() {
             defaultValue={selectedModel2}
           />
         </div>
-        <Dices onClick={randomizeModel} className="w-9 h-9 text-llm-grey1 self-end cursor-pointer mb-1 hover:bg-llm-primary95 p-2 rounded-lg"></Dices>
+        <Button
+          size={"icon"}
+          disabled={isComparingModel || userChoices.length > 0}
+          className="rounded-lg w-8 h-8 p-1 bg-white hover:bg-llm-primary95 self-end mb-1 block focus-visible:outline-llm-primary50"
+          onClick={randomizeModel}
+        >
+          <Dices className=" text-llm-grey1 !w-full !h-6"></Dices>
+        </Button>
       </div>
       <div
         className={`p-4 h-full ${
