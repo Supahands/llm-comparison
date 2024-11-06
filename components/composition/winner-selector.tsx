@@ -30,11 +30,8 @@ export default function WinnerSelector() {
     selectedChoice,
     responseModel1,
     responseModel2,
-    selectedModel1,
-    selectedModel2,
-    responseTime1,
-    responseTime2,
     prompt,
+    setIsStopped,
     addUserChoices,
     setIsComparingModel,
     setSelectedChoice,
@@ -52,34 +49,6 @@ export default function WinnerSelector() {
     setIsComparingModel(false);
   };
 
-  const handleDataSaving = async (choice: string) => {
-    const { data, error } = await supabaseClient
-      .from(DATABASE_TABLE.RESPONSE_TABLE)
-      .insert([
-        {
-          session_id: sessionId,
-          selected_choice: choice,
-          model_1: selectedModel1,
-          model_2: selectedModel2,
-          response_model_1: responseModel1,
-          response_model_2: responseModel2,
-          prompt: prompt,
-          response_time_1: responseTime1,
-          response_time_2: responseTime2,
-          prompt_token: promptToken,
-          completion_token_1: completionToken1,
-          completion_token_2: completionToken2,
-        },
-      ]);
-
-    if (error) {
-      console.log("error fetching", error);
-      return;
-    }
-
-    console.log(data);
-  };
-
   return (
     <>
       {responseModel1 && responseModel2 && (
@@ -91,9 +60,8 @@ export default function WinnerSelector() {
                 e.preventDefault();
                 handleUserChoice(input);
                 setSelectedChoice(input);
-                handleDataSaving(input.value);
+                setIsStopped(false);
               }}
-              disabled={!!selectedChoice}
               className={
                 !selectedChoice
                   ? "w-full rounded-xl border border-solid border-llm-neutral90 hover:bg-llm-blurple4 bg-llm-grey4 text-llm-grey1 py-3 px-5 cursor-pointer "
@@ -101,7 +69,7 @@ export default function WinnerSelector() {
                       selectedChoice?.value === input.value
                         ? "bg-llm-primary95 text-llm-primary50 border-llm-primary50 hover:bg-llm-primary95"
                         : "bg-llm-grey2 text-white border-llm-grey2 hover:bg-llm-grey2"
-                    } border border-solid w-full rounded-xl py-3 px-5 cursor-pointer `
+                    } border border-solid w-full rounded-xl py-3 px-5 cursor-pointer !focus-visible:ring-llm-primary50 `
               }
             >
               {input.label}

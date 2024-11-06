@@ -344,7 +344,7 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
       />
       <div className="flex flex-row w-full justify-between mt-4">
         <LinkPreview url="https://supa.so">
-          <Image src={`svg/logo.svg`} alt="SUPA logo" width={93} height={26} />
+          <Image src={`/svg/logo.svg`} alt="SUPA logo" width={93} height={26} />
         </LinkPreview>
       </div>
     </div>
