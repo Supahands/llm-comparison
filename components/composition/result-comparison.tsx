@@ -4,17 +4,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { Message } from "@/lib/types/message";
 import { FaThumbsUp, FaThumbsDown } from "react-icons/fa6";
 
-import useEmblaCarousel from "embla-carousel-react";
-import AutoHeight from "embla-carousel-auto-height";
-import {
-  NextButton,
-  PrevButton,
-  usePrevNextButtons,
-} from "@/components/ui/EmblaCarouselArrowButtons";
-import {
-  DotButton,
-  useDotButton,
-} from "@/components/ui/EmblaCarouselDotButton";
 import {
   Carousel,
   CarouselContent,
@@ -33,8 +22,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -53,18 +48,6 @@ const ResultComparison = ({
   modelB,
   isLoading,
 }: dataProps) => {
-  const [emblaRef, emblaApi] = useEmblaCarousel({}, [AutoHeight()]);
-
-  const { selectedIndex, scrollSnaps, onDotButtonClick } =
-    useDotButton(emblaApi);
-
-  const {
-    prevBtnDisabled,
-    nextBtnDisabled,
-    onPrevButtonClick,
-    onNextButtonClick,
-  } = usePrevNextButtons(emblaApi);
-
   return (
     <div className="flex-row w-full border flex-grow bg-white rounded-xl">
       {isLoading ? (
@@ -83,125 +66,139 @@ const ResultComparison = ({
         </div>
       ) : (
         <div>
-          <Carousel>
-            <CarouselContent>
-              {allMessage.map((item, index) => (
-                <CarouselItem>
-                  <div className="flex flex-col w-full p-5">
-                    <div className="flex mb-2">
-                      {item.prompt && (
-                        <div className="bg-llm-grey4 p-1 mx-auto w-full text-center border border-solid border-llm-neutral90 rounded-xl text-llm-grey1 h-fit">
-                          {item.prompt}
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex gap-4 mb-4">
-                      <div className="w-full space-y-1">
-                        <div className="model-b-response ">
-                          <div className="flex justify-between items-center">
-                            <div className="w-fit flex flex-grow items-center gap-4 bg-llm-neutral95 text-black font-bold text-lg p-1 my-2 h-fit">
-                              {modelA}
-                              {item.choice?.includes("A") &&
-                              !item.choice?.includes("!") ? (
-                                <FaThumbsUp color="green" />
-                              ) : (
-                                <FaThumbsDown color="red" />
-                              )}
+          <Card className="w-full">
+            <CardHeader>
+              <CardTitle>Test Summary</CardTitle>
+              <CardDescription>
+                Prompt, Model Output, and Selected Choice
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Carousel>
+                <CarouselContent>
+                  {allMessage.map((item, index) => (
+                    <CarouselItem>
+                      <div className="flex flex-col w-full">
+                        <div className="flex mb-2">
+                          {item.prompt && (
+                            <div className="bg-llm-grey4 p-1 mx-auto w-full text-center border border-solid border-llm-neutral90 rounded-xl text-llm-grey1 h-fit">
+                              {item.prompt}
                             </div>
-                            <Dialog>
-                              <DialogTrigger asChild>
-                                <Button className="bg-llm-primary50 hover:bg-llm-primary50_hover text-base font-bold rounded-xl">
-                                  Model Output
-                                </Button>
-                              </DialogTrigger>
-                              <DialogContent
-                                className="min-w-fit h-5/6 overflow-y-auto"
-                                style={{ width: "600px" }}
-                              >
-                                <DialogHeader>
-                                  <DialogTitle>Model Output</DialogTitle>
-                                  <DialogDescription>
-                                    {modelA}
-                                  </DialogDescription>
-                                </DialogHeader>
-                                <div
-                                  className={`p-5 rounded-lg bg-llm-grey4 text-llm-response border-2 border-solid 
+                          )}
+                        </div>
+                        <div className="flex gap-4 mb-4">
+                          <div className="w-full space-y-1">
+                            <div className="model-b-response ">
+                              <div className="flex justify-between items-center">
+                                <div className="w-fit flex flex-grow items-center gap-4 bg-llm-neutral95 text-black font-bold text-lg p-1 my-2 h-fit">
+                                  {modelA}
+                                  {item.choice?.includes("A") &&
+                                  !item.choice?.includes("!") ? (
+                                    <FaThumbsUp color="green" />
+                                  ) : (
+                                    <FaThumbsDown color="red" />
+                                  )}
+                                </div>
+                                <Dialog>
+                                  <DialogTrigger asChild>
+                                    <Button className="bg-llm-primary50 hover:bg-llm-primary50_hover text-base font-bold rounded-xl">
+                                      Model Output
+                                    </Button>
+                                  </DialogTrigger>
+                                  <DialogContent
+                                    className="min-w-fit h-5/6 overflow-y-auto"
+                                    style={{ width: "600px" }}
+                                  >
+                                    <DialogHeader>
+                                      <DialogTitle>Model Output</DialogTitle>
+                                      <DialogDescription>
+                                        {modelA}
+                                      </DialogDescription>
+                                    </DialogHeader>
+                                    <div
+                                      className={`p-5 rounded-lg bg-llm-grey4 text-llm-response border-2 border-solid 
                       ${
                         item.choice?.includes("A") &&
                         !item.choice?.includes("!")
                           ? "border-green-600"
                           : "border-llm-btn_hover"
                       }`}
-                                >
-                                  <ReactMarkdown className="prose dark:prose-invert">
-                                    {item.response1}
-                                  </ReactMarkdown>
-                                </div>
-                                <DialogFooter>
-                                  <Button type="submit">Save changes</Button>
-                                </DialogFooter>
-                              </DialogContent>
-                            </Dialog>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="w-full space-y-1 ">
-                        <div className="model-b-response ">
-                          <div className="flex justify-between items-center">
-                            <div className="w-fit flex flex-grow items-center gap-4 bg-llm-neutral95 text-black font-bold text-lg p-1 my-2 h-fit">
-                              {modelB}
-                              {item.choice?.includes("B") &&
-                              !item.choice?.includes("!") ? (
-                                <FaThumbsUp color="green" />
-                              ) : (
-                                <FaThumbsDown color="red" />
-                              )}
+                                    >
+                                      <ReactMarkdown className="prose dark:prose-invert">
+                                        {item.response1}
+                                      </ReactMarkdown>
+                                    </div>
+                                    <DialogFooter>
+                                      <Button type="submit">
+                                        Save changes
+                                      </Button>
+                                    </DialogFooter>
+                                  </DialogContent>
+                                </Dialog>
+                              </div>
                             </div>
-                            <Dialog>
-                              <DialogTrigger asChild>
-                                <Button className="bg-llm-primary50 hover:bg-llm-primary50_hover text-base font-bold rounded-xl">
-                                  Model Output
-                                </Button>
-                              </DialogTrigger>
-                              <DialogContent
-                                className="min-w-fit h-5/6 overflow-y-auto"
-                                style={{ width: "600px" }}
-                              >
-                                <DialogHeader>
-                                  <DialogTitle>Model Output</DialogTitle>
-                                  <DialogDescription>
-                                    {modelB}
-                                  </DialogDescription>
-                                </DialogHeader>
-                                <div
-                                  className={`p-5 rounded-lg bg-llm-grey4 text-llm-response border-2 border-solid 
+                          </div>
+                          <div className="w-full space-y-1 ">
+                            <div className="model-b-response ">
+                              <div className="flex justify-between items-center">
+                                <div className="w-fit flex flex-grow items-center gap-4 bg-llm-neutral95 text-black font-bold text-lg p-1 my-2 h-fit">
+                                  {modelB}
+                                  {item.choice?.includes("B") &&
+                                  !item.choice?.includes("!") ? (
+                                    <FaThumbsUp color="green" />
+                                  ) : (
+                                    <FaThumbsDown color="red" />
+                                  )}
+                                </div>
+                                <Dialog>
+                                  <DialogTrigger asChild>
+                                    <Button className="bg-llm-primary50 hover:bg-llm-primary50_hover text-base font-bold rounded-xl">
+                                      Model Output
+                                    </Button>
+                                  </DialogTrigger>
+                                  <DialogContent
+                                    className="min-w-fit h-5/6 overflow-y-auto"
+                                    style={{ width: "600px" }}
+                                  >
+                                    <DialogHeader>
+                                      <DialogTitle>Model Output</DialogTitle>
+                                      <DialogDescription>
+                                        {modelB}
+                                      </DialogDescription>
+                                    </DialogHeader>
+                                    <div
+                                      className={`p-5 rounded-lg bg-llm-grey4 text-llm-response border-2 border-solid 
                       ${
                         item.choice?.includes("B") &&
                         !item.choice?.includes("!")
                           ? "border-green-600"
                           : "border-llm-btn_hover"
                       }`}
-                                >
-                                  <ReactMarkdown className="prose dark:prose-invert">
-                                    {item.response2}
-                                  </ReactMarkdown>
-                                </div>
-                                <DialogFooter>
-                                  <Button type="submit">Save changes</Button>
-                                </DialogFooter>
-                              </DialogContent>
-                            </Dialog>
+                                    >
+                                      <ReactMarkdown className="prose dark:prose-invert">
+                                        {item.response2}
+                                      </ReactMarkdown>
+                                    </div>
+                                    <DialogFooter>
+                                      <Button type="submit">
+                                        Save changes
+                                      </Button>
+                                    </DialogFooter>
+                                  </DialogContent>
+                                </Dialog>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious />
-            <CarouselNext />
-          </Carousel>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious />
+                <CarouselNext />
+              </Carousel>
+            </CardContent>
+          </Card>
         </div>
       )}
     </div>
