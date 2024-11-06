@@ -4,7 +4,7 @@ import { ScrollArea } from "../ui/scroll-area";
 import ReactMarkdown from "react-markdown";
 import useAppStore from "@/hooks/store/useAppStore";
 import { useIsMutating } from "@tanstack/react-query";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import remarkGfm from "remark-gfm";
 import Lottie from "react-lottie";
 import * as animationData from "../../public/animation/loading";
@@ -41,6 +41,14 @@ export default function ModelResponses() {
     },
   };
 
+  const randomizeResponses = useCallback(() => {
+    return Math.random() < 0.5 ? { model: responseModel1, otherModel: responseModel2 } : { model: responseModel2, otherModel: responseModel1 };
+  }, [responseModel1, responseModel2]);
+
+  const responses = useMemo(() => {
+    return randomizeResponses()
+  }, [randomizeResponses])
+
   return (
     <div>
       <ScrollArea
@@ -69,7 +77,7 @@ export default function ModelResponses() {
                     className="prose dark:prose-invert"
                     remarkPlugins={[remarkGfm]}
                   >
-                    {responseModel1}
+                    {responses.model}
                   </ReactMarkdown>
                 </div>
               </>
@@ -86,7 +94,7 @@ export default function ModelResponses() {
                     className="prose dark:prose-invert"
                     remarkPlugins={[remarkGfm]}
                   >
-                    {responseModel2}
+                    {responses.otherModel}
                   </ReactMarkdown>
                 </div>
               </>

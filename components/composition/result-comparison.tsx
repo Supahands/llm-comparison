@@ -15,6 +15,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 
 import ReactMarkdown from "react-markdown";
+import AutoHeight from "embla-carousel-auto-height";
 
 interface dataProps {
   allMessage: Message[];
@@ -46,10 +47,10 @@ const ResultComparison = ({
           </div>
         </div>
       ) : (
-        <Carousel>
-          <CarouselContent>
+        <Carousel plugins={[AutoHeight()]}>
+          <CarouselContent className="items-start">
             {allMessage.map((item, index) => (
-              <CarouselItem>
+              <CarouselItem key={index}>
                 <div className="flex flex-col w-full p-5">
                   <div className="mt-2 flex-1">
                     {item.prompt && (

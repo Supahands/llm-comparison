@@ -29,7 +29,7 @@ export default function DataConsentModal() {
 
   return (
     <Dialog open={isOpen}>
-      <DialogContent className="bg-llm-peach50 border-llm-peach50 max-w-full w-[811px]">
+			<DialogContent className="bg-llm-peach50 border-llm-peach50 lg:max-w-full lg:w-[811px]">
         <DialogHeader>
           <DialogTitle>
             <Image
@@ -57,7 +57,7 @@ export default function DataConsentModal() {
         <DialogFooter className="">
           <div className="w-full flex flex-row justify-between items-center">
             <Link
-              href={"https://www.google.com"}
+              href={"https://supa.so/llm-comparison-tool"}
               className="underline underline-offset-2 text-black focus-visible:outline-llm-primary50"
             >
               Learn more about our research
