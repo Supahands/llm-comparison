@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Message } from "@/lib/types/message";
 import { FaThumbsUp, FaThumbsDown } from "react-icons/fa6";
 
@@ -29,6 +29,26 @@ const ResultComparison = ({
   modelB,
   isLoading,
 }: dataProps) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [carouselHeight, setCarouselHeight] = useState("auto");
+  const carouselRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (carouselRef.current) {
+      setCarouselHeight(`${carouselRef.current.scrollHeight}px`);
+    }
+  }, [currentIndex]);
+
+  const nextSlide = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % allMessage.length);
+  };
+
+  const previousSlide = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? allMessage.length - 1 : prevIndex - 1
+    );
+  };
+
   return (
     <div className="flex-row w-full border flex-grow bg-white rounded-xl">
       {isLoading ? (
@@ -46,10 +66,15 @@ const ResultComparison = ({
           </div>
         </div>
       ) : (
-        <Carousel>
-          <CarouselContent>
+        <Carousel
+          style={{ height: carouselHeight, transition: "height 0.3s ease" }}
+        >
+          <CarouselContent
+            ref={carouselRef}
+            style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+          >
             {allMessage.map((item, index) => (
-              <CarouselItem>
+              <CarouselItem className="">
                 <div className="flex flex-col w-full p-5">
                   <div className="mt-2 flex-1">
                     {item.prompt && (
@@ -116,8 +141,8 @@ const ResultComparison = ({
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
+          <CarouselPrevious onClick={previousSlide} />
+          <CarouselNext onClick={nextSlide} />
         </Carousel>
       )}
     </div>
