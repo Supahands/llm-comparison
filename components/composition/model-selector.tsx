@@ -70,7 +70,7 @@ export default function ModelSelector() {
       {/* for selector */}
       <div
         className={`p-4 h-full ${
-          !showModelSelector ? "hidden" : "flex"
+          !showModelSelector ? "hidden" : "flex lg:flex-row flex-col"
         } items-center gap-4`}
       >
         <div>

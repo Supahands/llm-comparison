@@ -21,6 +21,8 @@ const useAppStore = create<AppState>((set) => ({
   completionToken1: 0,
   completionToken2: 0,
   isStopped: true,
+  roundCounter: 1,
+  hasRoundEnded: false,
 
   setSessionId: (sessionId: string) =>
     set((_state: AppState) => ({ sessionId: sessionId })),
@@ -53,6 +55,9 @@ const useAppStore = create<AppState>((set) => ({
     set((_state: AppState) => ({ availableModels: models })),
   setIsStopped: (isStopped: boolean) =>
     set((_state: AppState) => ({ isStopped })),
+  incrementRoundCounter: () =>
+    set((state: AppState) => ({ roundCounter: state.roundCounter + 1 })),
+  setRoundEnd:  (end) => set((_state: AppState) => ({ hasRoundEnded: end})),
   reset: () =>
     set((state: AppState) => ({
       responseModel1: "",
@@ -61,6 +66,7 @@ const useAppStore = create<AppState>((set) => ({
       isPendingModel2: false,
       selectedChoice: undefined,
       isComparingModel: false,
+      hasRoundEnded: false,
     })),
   addUserChoices: (choice) =>
     set((state: AppState) => ({

@@ -26,7 +26,7 @@ export default function PromptSelector({ prompts }: PromptSelectorProps) {
                   e.preventDefault();
                   setPrompt(prompt);
                 }}
-                className="w-full rounded-xl border border-solid border-llm-neutral90 hover:bg-llm-blurple4 bg-llm-grey4 text-llm-grey1 py-3 px-5 cursor-pointer focus-visible:outline-llm-primary50"
+                className="w-full overflow-hidden rounded-xl border border-solid border-llm-neutral90 hover:bg-llm-blurple4 bg-llm-grey4 text-llm-grey1 py-3 px-5 cursor-pointer focus-visible:outline-llm-primary50"
               >
                 {prompt}
               </Button>

@@ -16,6 +16,8 @@ export interface AppState {
   promptToken: number;
   completionToken1: number;
   completionToken2: number;
+  roundCounter: number;
+  hasRoundEnded: boolean;
 
   userChoices: UserChoice[];
   selectedChoice: ComboBoxItem | undefined;
@@ -39,6 +41,8 @@ export interface AppState {
   setCompletionToken1: (completionToken: number) => void;
   setCompletionToken2: (completionToken: number) => void;
   setIsStopped: (isStopped: boolean) => void;
+  setRoundEnd: (end: boolean) => void;
+  incrementRoundCounter: () => void;
   reset: () => void;
 }
 

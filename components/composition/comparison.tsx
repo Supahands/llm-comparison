@@ -16,7 +16,7 @@ import { Textarea } from "../ui/textarea";
 import WinnerSelector from "./winner-selector";
 import { v4 as uuidv4 } from "uuid";
 import { supabaseClient } from "@/lib/supabase/supabaseClient";
-import { DATABASE_TABLE } from "@/lib/constants/databaseTables";
+import DataConsentModal from "./data-consent-modal";
 
 const prompts = [
   "What are the most popular car brands in Japan?",
@@ -37,7 +37,8 @@ export default function Comparison() {
     responseTime1,
     responseTime2,
     selectedChoice,
-    setIsStopped,
+    hasRoundEnded,
+    incrementRoundCounter,
     reset,
     setPrompt,
     setResponseModel1,
@@ -103,6 +104,9 @@ export default function Comparison() {
     }
     if (selectedChoice) {
       handleDataSaving(selectedChoice.value);
+      if (hasRoundEnded) {
+        incrementRoundCounter();
+      }
     }
     setPrompt(newMessage);
     setNewMessage("");
@@ -170,6 +174,7 @@ export default function Comparison() {
 
   return (
     <div className="mx-auto mt-4 w-full flex-grow">
+      <DataConsentModal />
       <Card className=" w-full mx-auto border rounded-lg  bg-white flex-grow h-full flex flex-col">
         <CardContent className="flex flex-col flex-grow overflow-hidden p-1 h-full">
           <PromptDisplay />
