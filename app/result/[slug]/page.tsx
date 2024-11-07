@@ -18,7 +18,6 @@ import { MetricsComposed } from "@/components/composition/metrics-composed";
 import OverallPage from "@/components/composition/overall";
 import { useRouter } from "next/navigation";
 
-
 interface databaseProps {
   id: number;
   model_1: string;
@@ -208,10 +207,10 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
       Number((responseTimeB / data.length / 1000).toFixed(2))
     );
     setAvgTokenPerResponseTimeA(
-      Number((totalTokenA / responseTimeA / 1000).toFixed(2))
+      Number((totalTokenA / (responseTimeA / 1000)).toFixed(2))
     );
     setAvgTokenPerResponseTimeB(
-      Number((totalTokenB / responseTimeB / 1000).toFixed(2))
+      Number((totalTokenB / (responseTimeB / 1000)).toFixed(2))
     );
 
     return;

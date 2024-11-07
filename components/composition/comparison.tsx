@@ -52,6 +52,9 @@ export default function Comparison() {
     setPromptToken,
     setCompletionToken1,
     setCompletionToken2,
+    promptToken,
+    completionToken1,
+    completionToken2,
   } = useAppStore();
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -127,6 +130,9 @@ export default function Comparison() {
           prompt: prompt,
           response_time_1: responseTime1,
           response_time_2: responseTime2,
+          prompt_token: promptToken,
+          completion_token_1: completionToken1,
+          completion_token_2: completionToken2,
         },
       ]);
 
