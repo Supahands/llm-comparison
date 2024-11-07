@@ -35,6 +35,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 import ReactMarkdown from "react-markdown";
 import AutoHeight from "embla-carousel-auto-height";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface dataProps {
   allMessage: Message[];
@@ -49,6 +50,7 @@ const ResultComparison = ({
   modelB,
   isLoading,
 }: dataProps) => {
+  const isMobile = useIsMobile();
   return (
     <div className="flex-row w-full border flex-grow bg-white rounded-xl">
       {isLoading ? (
@@ -171,8 +173,14 @@ const ResultComparison = ({
                     </CarouselItem>
                   ))}
                 </CarouselContent>
-                <CarouselPrevious />
-                <CarouselNext />
+
+                {isMobile && (
+                  <div className="text-center text-sm">
+                    Swipe to view other responses
+                  </div>
+                )}
+                <CarouselPrevious className="hidden lg:inline-flex" />
+                <CarouselNext className="hidden lg:inline-flex" />
               </Carousel>
             </CardContent>
           </Card>
