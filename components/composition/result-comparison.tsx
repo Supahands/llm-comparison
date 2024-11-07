@@ -34,6 +34,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 
 import ReactMarkdown from "react-markdown";
+import AutoHeight from "embla-carousel-auto-height";
 
 interface dataProps {
   allMessage: Message[];

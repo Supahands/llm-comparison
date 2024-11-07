@@ -28,7 +28,7 @@ export default function Home() {
     responseTime1,
     responseTime2,
     prompt,
-    setIsStopped
+    setIsStopped,
   } = useAppStore();
 
   const defaultOptions = {
@@ -72,14 +72,14 @@ export default function Home() {
   return (
     <div className="bg-llm-background h-full min-h-screen flex flex-col">
       <div className="flex flex-col mt-4">
-        <div className="flex flex-row gap-4 w-full">
-          <section className="w-full z-40">
+        <div className="flex lg:flex-row flex-col gap-4 w-full">
+          <section className="w-full z-40 hidden lg:flex">
             <DescriptionCard />
           </section>
 
           <section className="w-full">
             <Title>Select models to compare</Title>
-            <Card className="w-full h-[104px]">
+            <Card className="w-full lg:h-[104px] h-fit">
               <CardContent className="">
                 <ModelSelector />
               </CardContent>
@@ -102,12 +102,14 @@ export default function Home() {
         >
           <div className="fixed pointer-events-none">
             <Lottie
-              eventListeners={[{
-                eventName: 'complete',
-                callback: () => {
-                  setIsStopped(true)
-                }
-              }]}
+              eventListeners={[
+                {
+                  eventName: "complete",
+                  callback: () => {
+                    setIsStopped(true);
+                  },
+                },
+              ]}
               width={300}
               height={150}
               options={defaultOptions}
