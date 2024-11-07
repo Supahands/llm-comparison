@@ -119,7 +119,7 @@ export function ModelResponseTime({
                 radius={4}
               >
                 <LabelList
-                  dataKey="timeModelB"
+                  dataKey="timeModelA"
                   position="top"
                   offset={10}
                   className="text-sm font-light"

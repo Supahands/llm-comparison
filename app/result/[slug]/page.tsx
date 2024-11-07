@@ -289,12 +289,24 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
   return (
     <div className="bg-llm-background h-full space-y-5 pt-7 pb-7 pl-10 pr-10">
       <h1 className="font-bold text-2xl">LLM Comparison Result</h1>
-      <ResultComparison
-        allMessage={allMessage}
-        modelA={modelA}
-        modelB={modelB}
-        isLoading={isLoading}
-      />
+      <div className="flex justify-between gap-4">
+        <Button
+          onClick={() => router.push(`/`)}
+          className="bg-llm-primary50 hover:bg-llm-primary50_hover text-white rounded-2xl"
+        >
+          Back To Home
+        </Button>
+        <Button
+          onClick={() => {
+            if (!isLoading) {
+              handleDownloadMetadata();
+            }
+          }}
+          className="bg-llm-btn hover:bg-llm-btn_hover text-white rounded-2xl"
+        >
+          Export the Metadata
+        </Button>
+      </div>
       <div className="flex justify-stretch gap-4">
         <ModelResponseTime
           allResponseTime={allResponseTime}
@@ -325,28 +337,16 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
         />
         {/* <OverallPage /> */}
       </div>
+      <ResultComparison
+        allMessage={allMessage}
+        modelA={modelA}
+        modelB={modelB}
+        isLoading={isLoading}
+      />
       <div className="flex flex-row w-full justify-between mt-4">
         <LinkPreview url="https://supa.so">
           <Image src={`/svg/logo.svg`} alt="SUPA logo" width={93} height={26} />
         </LinkPreview>
-        <div className="flex gap-4">
-          <Button
-            onClick={() => router.push(`/`)}
-            className="bg-llm-primary50 hover:bg-llm-primary50_hover text-white rounded-2xl"
-          >
-            Back To Home
-          </Button>
-          <Button
-            onClick={() => {
-              if (!isLoading) {
-                handleDownloadMetadata();
-              }
-            }}
-            className="bg-llm-btn hover:bg-llm-btn_hover text-white rounded-2xl"
-          >
-            Export the Metadata
-          </Button>
-        </div>
       </div>
     </div>
   );
