@@ -29,6 +29,9 @@ export default function Home() {
     responseTime2,
     prompt,
     setIsStopped,
+    promptToken,
+    completionToken1,
+    completionToken2,
   } = useAppStore();
 
   const defaultOptions = {
@@ -54,6 +57,9 @@ export default function Home() {
           prompt: prompt,
           response_time_1: responseTime1,
           response_time_2: responseTime2,
+          prompt_token: promptToken,
+          completion_token_1: completionToken1,
+          completion_token_2: completionToken2,
         },
       ]);
 
