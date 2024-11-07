@@ -85,7 +85,6 @@ export default function Comparison() {
       return axios.post(`${API_URL}/message`, data);
     },
     onSuccess: async (response) => {
-      console.log(response);
       const data = response.data;
       const choices = data.choices;
       const responseModel2Content =
