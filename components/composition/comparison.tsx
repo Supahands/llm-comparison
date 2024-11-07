@@ -66,7 +66,6 @@ export default function Comparison() {
     },
     onSuccess: async (response) => {
       const data = response.data;
-      console.log(response);
       const choices = data.choices;
       const responseModel1Content =
         (choices[0]?.message?.content as string) || "";
