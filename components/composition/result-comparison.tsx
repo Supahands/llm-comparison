@@ -128,11 +128,6 @@ const ResultComparison = ({
                                         {item.response1}
                                       </ReactMarkdown>
                                     </div>
-                                    <DialogFooter>
-                                      <Button type="submit">
-                                        Save changes
-                                      </Button>
-                                    </DialogFooter>
                                   </DialogContent>
                                 </Dialog>
                               </div>
@@ -179,11 +174,6 @@ const ResultComparison = ({
                                         {item.response2}
                                       </ReactMarkdown>
                                     </div>
-                                    <DialogFooter>
-                                      <Button type="submit">
-                                        Save changes
-                                      </Button>
-                                    </DialogFooter>
                                   </DialogContent>
                                 </Dialog>
                               </div>
