@@ -9,7 +9,7 @@ export default function DescriptionCard() {
   return (
     <div className="flex flex-col">
       <Title>How it works</Title>
-      <Card className="w-full lg:h-[104px] h-fit">
+      <Card className="w-full lg:min-h-[104px] h-fit">
         <CardContent className="p-4 h-full">
           This is a simple LLM Comparison Tool built by{" "}
           <LinkPreview
