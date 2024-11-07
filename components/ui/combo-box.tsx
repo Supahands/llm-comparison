@@ -64,7 +64,7 @@ export function ComboBox({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between focus-visible:outline-llm-primary50"
+          className="lg:w-[200px] w-[140px] lg:max-w-full overflow-hidden justify-between focus-visible:outline-llm-primary50"
           disabled={disabled}
         >
           {value

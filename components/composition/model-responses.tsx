@@ -52,7 +52,7 @@ export default function ModelResponses() {
   return (
     <div>
       <ScrollArea
-        className={`flex-grow p-4 overflow-y-auto`}
+        className={`flex-grow lg:p-4 p-1 overflow-y-auto`}
         style={{ maxHeight: calculateMaxHeight() }}
       >
         {(isPendingModel1 || isPendingModel2) && (

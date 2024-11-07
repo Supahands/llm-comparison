@@ -36,10 +36,12 @@ export default function ModelSelector() {
           id: x.id,
           provider: x.provider,
           model_name: x.model_name,
-          disabled: x.disabled
+          disabled: x.disabled,
         })
       ) || [];
-    const items = models.filter(x => !x.disabled).map((x) => x.toComboBoxItem());
+    const items = models
+      .filter((x) => !x.disabled)
+      .map((x) => x.toComboBoxItem());
     setAvailableModels(items);
     setSelectedModel1("qwen2.5");
     setSelectedModel2("llama3.2");
@@ -67,51 +69,53 @@ export default function ModelSelector() {
 
   return (
     <div className="flex flex-row justify-between items-center">
-      {/* for selector */}
-      <div
-        className={`p-4 h-full ${
-          !showModelSelector ? "hidden" : "flex lg:flex-row flex-col"
-        } items-center gap-4`}
-      >
-        <div>
-          <div>Model 1</div>
-          <ComboBox
-            items={availableModels}
-            onItemSelect={setSelectedModel1}
-            disabled={isComparingModel || userChoices.length > 0}
-            defaultValue={selectedModel1}
-          />
-        </div>
-        <div>
-          <div>Model 2</div>
-          <ComboBox
-            items={availableModels}
-            onItemSelect={setSelectedModel2}
-            disabled={isComparingModel || userChoices.length > 0}
-            defaultValue={selectedModel2}
-          />
-        </div>
-        <Button
-          size={"icon"}
-          disabled={isComparingModel || userChoices.length > 0}
-          className="rounded-lg w-8 h-8 p-1 bg-white hover:bg-llm-primary95 self-end mb-1 block focus-visible:outline-llm-primary50"
-          onClick={randomizeModel}
+      <div className="flex flex-col lg:flex-row">
+        <div
+          className={`p-4 h-full ${
+            !showModelSelector ? "hidden" : "flex flex-row"
+          } items-center gap-4`}
         >
-          <Dices className=" text-llm-grey1 !w-full !h-6"></Dices>
-        </Button>
-      </div>
-      <div
-        className={`p-4 h-full ${
-          !showModelSelector ? "flex" : "hidden"
-        } flex-row items-center justify-between gap-4`}
-      >
-        <div className="flex flex-col gap-2">
-          <div>Models have been randomized and hidden to remove bias.</div>
-          <div className="text-2xl">🤫</div>
+          <div className="flex flex-row gap-4">
+            <div>
+              <div>Model 1</div>
+              <ComboBox
+                items={availableModels}
+                onItemSelect={setSelectedModel1}
+                disabled={isComparingModel || userChoices.length > 0}
+                defaultValue={selectedModel1}
+              />
+            </div>
+            <div>
+              <div>Model 2</div>
+              <ComboBox
+                items={availableModels}
+                onItemSelect={setSelectedModel2}
+                disabled={isComparingModel || userChoices.length > 0}
+                defaultValue={selectedModel2}
+              />
+            </div>
+          </div>
+
+          <Button
+            size={"icon"}
+            disabled={isComparingModel || userChoices.length > 0}
+            className="rounded-lg w-8 h-8 p-1 bg-white hover:bg-llm-primary95 self-end mb-1 block focus-visible:outline-llm-primary50"
+            onClick={randomizeModel}
+          >
+            <Dices className=" text-llm-grey1 !w-full !h-6"></Dices>
+          </Button>
+        </div>
+        <div
+          className={`p-4 h-full ${
+            !showModelSelector ? "flex" : "hidden"
+          } flex-row items-center justify-between gap-4`}
+        >
+          <div className="flex flex-col gap-2">
+            <div>Models have been randomized and hidden to remove bias.</div>
+            <div className="text-2xl">🤫</div>
+          </div>
         </div>
       </div>
-
-      {/* for button */}
       <div
         className={`${
           isComparingModel || userChoices.length > 0 ? "" : "hidden"

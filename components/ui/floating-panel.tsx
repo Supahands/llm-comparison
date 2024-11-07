@@ -12,6 +12,7 @@ import { AnimatePresence, MotionConfig, Variants, motion } from "framer-motion";
 import { ArrowLeftIcon, XIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const TRANSITION = {
   type: "spring",
@@ -119,7 +120,7 @@ export function FloatingPanelTrigger({
     <motion.button
       ref={triggerRef}
       layoutId={`floating-panel-trigger-${uniqueId}`}
-      className={cn("h-9 items-center bg-white px-3 w-full", className)}
+      className={cn("h-9 items-center bg-white lg:px-3 px-1 w-full", className)}
       style={{ borderRadius: 8 }}
       onClick={handleClick}
       whileHover={{ scale: 1.05 }}
@@ -168,6 +169,8 @@ export function FloatingPanelContent({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [closeFloatingPanel]);
 
+  const isMobile = useIsMobile()
+
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") closeFloatingPanel();
@@ -195,12 +198,12 @@ export function FloatingPanelContent({
             ref={contentRef}
             layoutId={`floating-panel-${uniqueId}`}
             className={cn(
-              "fixed z-50 w-1/2 overflow-hidden border whitespace-pre-wrap border-zinc-950/10 bg-white shadow-lg outline-none dark:border-zinc-50/10 dark:bg-zinc-800 px-4 pb-4",
+              "fixed z-50 lg:w-1/2 w-3/4 overflow-hidden border whitespace-pre-wrap border-zinc-950/10 bg-white shadow-lg outline-none dark:border-zinc-50/10 dark:bg-zinc-800 px-4 pb-4",
               className
             )}
             style={{
               borderRadius: 12,
-              left: "25%",
+              left: isMobile ? "13%" : "25%",
               top: triggerRect ? triggerRect.bottom + 8 : "50%",
               transformOrigin: "top",
             }}

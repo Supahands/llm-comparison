@@ -17,6 +17,7 @@ import WinnerSelector from "./winner-selector";
 import { v4 as uuidv4 } from "uuid";
 import { supabaseClient } from "@/lib/supabase/supabaseClient";
 import DataConsentModal from "./data-consent-modal";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const prompts = [
   "What are the most popular car brands in Japan?",
@@ -149,6 +150,8 @@ export default function Comparison() {
     };
   }, [prompt, selectedModel2]);
 
+  const isMobile = useIsMobile();
+
   useEffect(() => {
     if (prompt) {
       reset();
@@ -199,7 +202,9 @@ export default function Comparison() {
               disabled={!(selectedModel1 && selectedModel2) || isComparingModel}
               placeholder={
                 userChoices.length === 0
-                  ? "Select a question to get started or ask your own here"
+                  ? !isMobile
+                    ? "Select a question to get started or ask your own here"
+                    : "Ask a question"
                   : "Ask another question"
               }
               onChange={(e) => setNewMessage(e.target.value)}
@@ -214,11 +219,7 @@ export default function Comparison() {
                   handleSendPrompt();
                 }
               }}
-              style={{
-                minHeight: "3rem",
-                maxHeight: "6rem",
-              }}
-              className="flex-grow resize-none rounded-md px-5 w-full py-3 pr-12 focus:ring-0 focus:ring-offset-0 border border-solid focus:border-llm-primary50 focus-visible:ring-0 focus-visible:ring-offset-0 "
+              className="flex-grow resize-none rounded-md px-5 lg:min-h-12 max-h-24 w-full py-3 pr-12 focus:ring-0 focus:ring-offset-0 border border-solid focus:border-llm-primary50 focus-visible:ring-0 focus-visible:ring-offset-0 "
             />
             <Button
               type="submit"
