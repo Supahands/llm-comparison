@@ -85,7 +85,7 @@ const OverallPage = ({
             </div>
           </div>
         ) : (
-          <div className="p-5">
+          <div className="pl-4 pr-4 pb-4">
             <div className="flex flex-col mb-3">
               <div className="flex justify-between justify-self-center mb-5 text-xl font-semibold">
                 <p>{modelA}</p>

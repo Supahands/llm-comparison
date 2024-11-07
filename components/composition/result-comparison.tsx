@@ -81,7 +81,7 @@ const ResultComparison = ({
                 <CarouselContent>
                   {allMessage.map((item, index) => (
                     <CarouselItem key={item.id}>
-                      <div className="flex flex-col w-full">
+                      <div className="flex flex-col w-full pl-5 pr-5 pb-5">
                         <div className="flex mb-2">
                           {item.prompt && (
                             <div className="bg-llm-grey4 p-1 mx-auto w-full text-center border border-solid border-llm-neutral90 rounded-xl text-llm-grey1 h-fit">
