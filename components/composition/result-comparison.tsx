@@ -78,7 +78,7 @@ const ResultComparison = ({
               <Carousel>
                 <CarouselContent>
                   {allMessage.map((item, index) => (
-                    <CarouselItem>
+                    <CarouselItem key={item.id}>
                       <div className="flex flex-col w-full">
                         <div className="flex mb-2">
                           {item.prompt && (
@@ -87,7 +87,7 @@ const ResultComparison = ({
                             </div>
                           )}
                         </div>
-                        <div className="flex gap-4 mb-4">
+                        <div className="flex lg:flex-row flex-col gap-4 mb-4">
                           <div className="w-full space-y-1">
                             <div className="model-b-response ">
                               <div className="flex justify-between items-center">
@@ -106,26 +106,19 @@ const ResultComparison = ({
                                       Model Output
                                     </Button>
                                   </DialogTrigger>
-                                  <DialogContent
-                                    className="min-w-fit h-5/6 overflow-y-auto"
-                                    style={{ width: "600px" }}
-                                  >
-                                    <DialogHeader>
-                                      <DialogTitle>Model Output</DialogTitle>
-                                      <DialogDescription>
-                                        {modelA}
-                                      </DialogDescription>
-                                    </DialogHeader>
+
+                                  <DialogContent className="lg:w-[600px] max-h-full lg:min-w-fit lg:max-w-full max-w-[90%] overflow-auto">
+                                    <DialogHeader>{modelA}</DialogHeader>
                                     <div
-                                      className={`p-5 rounded-lg bg-llm-grey4 text-llm-response border-2 border-solid 
-                      ${
-                        item.choice?.includes("A") &&
-                        !item.choice?.includes("!")
-                          ? "border-green-600"
-                          : "border-llm-btn_hover"
-                      }`}
+                                      className={`lg:p-5 rounded-lg bg-llm-grey4 text-llm-response border-2 border-solid w-fit
+                                        ${
+                                          item.choice?.includes("A") &&
+                                          !item.choice?.includes("!")
+                                            ? "border-green-600"
+                                            : "border-llm-btn_hover"
+                                        }`}
                                     >
-                                      <ReactMarkdown className="prose dark:prose-invert">
+                                      <ReactMarkdown className="prose dark:prose-invert text-wrap whitespace-pre max-w-[300px] lg:max-w-full">
                                         {item.response1}
                                       </ReactMarkdown>
                                     </div>
@@ -152,26 +145,19 @@ const ResultComparison = ({
                                       Model Output
                                     </Button>
                                   </DialogTrigger>
-                                  <DialogContent
-                                    className="min-w-fit h-5/6 overflow-y-auto"
-                                    style={{ width: "600px" }}
-                                  >
-                                    <DialogHeader>
-                                      <DialogTitle>Model Output</DialogTitle>
-                                      <DialogDescription>
-                                        {modelB}
-                                      </DialogDescription>
-                                    </DialogHeader>
+
+                                  <DialogContent className="lg:w-[600px] max-h-full lg:min-w-fit lg:max-w-full max-w-[90%] overflow-auto">
+                                    <DialogHeader>{modelA}</DialogHeader>
                                     <div
-                                      className={`p-5 rounded-lg bg-llm-grey4 text-llm-response border-2 border-solid 
-                      ${
-                        item.choice?.includes("B") &&
-                        !item.choice?.includes("!")
-                          ? "border-green-600"
-                          : "border-llm-btn_hover"
-                      }`}
+                                      className={`lg:p-5 rounded-lg bg-llm-grey4 text-llm-response border-2 border-solid w-fit
+                                        ${
+                                          item.choice?.includes("B") &&
+                                          !item.choice?.includes("!")
+                                            ? "border-green-600"
+                                            : "border-llm-btn_hover"
+                                        }`}
                                     >
-                                      <ReactMarkdown className="prose dark:prose-invert">
+                                      <ReactMarkdown className="prose dark:prose-invert text-wrap whitespace-pre max-w-[350px] lg:max-w-full">
                                         {item.response2}
                                       </ReactMarkdown>
                                     </div>

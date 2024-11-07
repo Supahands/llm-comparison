@@ -13,7 +13,7 @@ export default function PromptSelector({ prompts }: PromptSelectorProps) {
   return (
     <>
       {!isComparingModel && !(responseModel1 && responseModel2) && (
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid-cols-2 gap-2 hidden lg:grid">
           {prompts.map((prompt, index) => (
             <motion.div
               key={prompt}

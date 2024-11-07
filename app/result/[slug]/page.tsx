@@ -287,7 +287,7 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
   }, []);
 
   return (
-    <div className="bg-llm-background h-full space-y-5 pt-7 pb-7 pl-10 pr-10">
+    <div className="bg-llm-background h-full space-y-5 pt-7 pb-7 lg:px-10 px-2">
       <h1 className="font-bold text-2xl">LLM Comparison Result</h1>
       <div className="flex justify-between gap-4">
         <Button
@@ -307,7 +307,7 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
           Export the Metadata
         </Button>
       </div>
-      <div className="flex justify-stretch gap-4">
+      <div className="flex flex-col lg:flex-row justify-stretch gap-4">
         <ModelResponseTime
           allResponseTime={allResponseTime}
           modelA={modelA}

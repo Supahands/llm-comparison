@@ -88,10 +88,10 @@ export default function Home() {
         </div>
       </div>
       <Comparison />
-      <div className="flex flex-row w-full justify-between mt-4 mb-4">
+      <div className="flex flex-row w-full lg:justify-between justify-end mt-4 mb-4">
         <LinkPreview
           url="https://supa.so"
-          className="focus-visible:outline-llm-primary50"
+          className="focus-visible:outline-llm-primary50 hidden lg:flex"
         >
           <Image src={`svg/logo.svg`} alt="SUPA logo" width={93} height={26} />
         </LinkPreview>

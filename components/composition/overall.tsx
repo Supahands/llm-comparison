@@ -100,25 +100,25 @@ const OverallPage = ({
             </div>
             <div className="flex flex-col mb-3">
               <div className="flex justify-between mb-3">
-                <p>{avgTime1}</p>
+                <p>{avgTime1.toFixed(3)}</p>
                 <p>Avg. Response Time (s)</p>
-                <p>{avgTime2}</p>
+                <p>{avgTime2.toFixed(3)}</p>
               </div>
               <Progress value={avgTime1} max={avgTime1 + avgTime2} />
             </div>
             <div className="flex flex-col mb-3">
               <div className="flex justify-between mb-3">
-                <p>{avgTokenA}</p>
+                <p>{avgTokenA.toFixed(3)}</p>
                 <p>Avg. Token Generated</p>
-                <p>{avgTokenB}</p>
+                <p>{avgTokenB.toFixed(3)}</p>
               </div>
               <Progress value={avgTokenA} max={avgTokenA + avgTokenB} />
             </div>
             <div className="flex flex-col mb-3">
               <div className="flex justify-between mb-3">
-                <p>{avgTokenPerTimeA}</p>
+                <p>{avgTokenPerTimeA.toFixed(3)}</p>
                 <p>Avg. Token Generated per second</p>
-                <p>{avgTokenPerTimeB}</p>
+                <p>{avgTokenPerTimeB.toFixed(3)}</p>
               </div>
               <Progress
                 value={avgTokenPerTimeA}
