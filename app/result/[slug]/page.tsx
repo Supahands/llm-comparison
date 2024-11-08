@@ -173,12 +173,12 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
 
     setWinRateModelASession(modelA);
     setWinRateModelBSession(modelB);
-    setAverageResponseTimeASession(responseTime1);
-    setAverageResponseTimeBSession(responseTime2);
-    setAverageTokenASession(totalToken1);
-    setAverageTokenASession(totalToken1);
+    setAverageResponseTimeASession(data ? responseTime1 / data.length : 0);
+    setAverageResponseTimeBSession(data ? responseTime2 / data.length : 0);
+    setAverageTokenASession(data ? totalToken1 / data.length : 0);
+    setAverageTokenBSession(data ? totalToken2 / data.length : 0);
     setAvgTokenPerResponseTimeASession(tokenPerResponseTime1);
-    setAvgTokenPerResponseTimeBSession(tokenPerResponseTime1);
+    setAvgTokenPerResponseTimeBSession(tokenPerResponseTime2);
 
     setStatProportion([
       {
