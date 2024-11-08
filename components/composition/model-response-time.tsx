@@ -98,7 +98,7 @@ export function ModelResponseTime({
             </div>
           </div>
         ) : (
-          <ChartContainer config={chartConfig} className="min-h-[10px]">
+          <ChartContainer config={chartConfig} className="min-h-[220px] w-full">
             <BarChart accessibilityLayer data={allResponseTime}>
               <CartesianGrid vertical={false} />
               <XAxis
@@ -122,7 +122,7 @@ export function ModelResponseTime({
                   dataKey="timeModelA"
                   position="top"
                   offset={10}
-                  className="text-sm font-light"
+                  className="text-xs md:text-sm font-light"
                 />
               </Bar>
               <Bar
@@ -134,11 +134,11 @@ export function ModelResponseTime({
                   dataKey="timeModelB"
                   position="top"
                   offset={10}
-                  className="text-sm font-light"
+                  className="text-xs md:text-sm font-light"
                 />
               </Bar>
               <ChartLegend
-                className="text-base font-semibold"
+                className="text-sm font-semibold"
                 content={<ChartLegendContent />}
               />
             </BarChart>

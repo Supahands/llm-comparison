@@ -24,7 +24,7 @@ interface componentProps {
   isLoading: boolean;
 }
 
-const OverallPage = ({
+const OverallSessionPage = ({
   modelA,
   modelB,
   avgTime1,
@@ -41,10 +41,8 @@ const OverallPage = ({
   return (
     <Card className="w-full rounded-xl">
       <CardHeader>
-        <CardTitle>Head-to-Head Comparison</CardTitle>
-        <CardDescription>
-          Winning rate and other metrics of test globally.
-        </CardDescription>
+        <CardTitle>Head to Head Comparison</CardTitle>
+        <CardDescription>Based on this session</CardDescription>
       </CardHeader>
       <CardContent>
         {isLoading ? (
@@ -161,4 +159,4 @@ const OverallPage = ({
   );
 };
 
-export default OverallPage;
+export default OverallSessionPage;
