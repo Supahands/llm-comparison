@@ -89,7 +89,7 @@ const ResultComparison = ({
                             </div>
                           )}
                         </div>
-                        <div className="flex lg:flex-row flex-col gap-4 mb-4">
+                        <div className="flex lg:flex-row flex-col gap-4 ">
                           <div className="w-full space-y-1">
                             <div className="model-b-response ">
                               <div className="flex justify-between items-center">
