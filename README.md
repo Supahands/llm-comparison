@@ -2,6 +2,14 @@
 
 This is a [Next.js](https://nextjs.org) project for comparing different LLM model responses.
 
+## Project Structure
+
+This project consists of two main parts:
+- Frontend: Next.js application for the UI
+- `backend/`: Backend service for handling LLM API calls (linked as a submodule)
+
+[Rest of existing README content...]
+
 ## Database Structure
 
 The application uses Supabase with the following tables:
