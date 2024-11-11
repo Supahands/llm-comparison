@@ -101,8 +101,7 @@ const OverallPage = ({
               <Progress
                 value={totalWinA}
                 max={totalWinA + totalWinB}
-                indicatorColor="bg-[#6B66FA]"
-                className="bg-[#461353]"
+                className="[&>*]:bg-[#6B66FA] bg-[#461353]"
               />
             </div>
             <div className="flex flex-col mb-3">
@@ -116,8 +115,7 @@ const OverallPage = ({
               <Progress
                 value={avgTime1}
                 max={avgTime1 + avgTime2}
-                indicatorColor="bg-[#6B66FA]"
-                className="bg-[#461353]"
+                className="[&>*]:bg-[#6B66FA] bg-[#461353]"
               />
             </div>
             <div className="flex flex-col mb-3">
@@ -131,8 +129,7 @@ const OverallPage = ({
               <Progress
                 value={avgTokenA}
                 max={avgTokenA + avgTokenB}
-                indicatorColor="bg-[#6B66FA]"
-                className="bg-[#461353]"
+                className="[&>*]:bg-[#6B66FA] bg-[#461353]"
               />
             </div>
             <div className="flex flex-col mb-3 ">
@@ -149,8 +146,7 @@ const OverallPage = ({
               </div>
               <Progress
                 value={avgTokenPerTimeA}
-                indicatorColor="bg-[#6B66FA]"
-                className="bg-[#461353]"
+                className="[&>*]:bg-[#6B66FA] bg-[#461353]"
                 max={avgTokenPerTimeA + avgTokenPerTimeB}
               />
             </div>
