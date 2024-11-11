@@ -371,7 +371,7 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
       <div>
         <Title>Session</Title>
       </div>
-      <div className="flex flex-col lg:flex-row justify-stretch gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 justify-stretch gap-4">
         <ModelResponseTime
           allResponseTime={allResponseTime}
           modelA={modelA}
