@@ -96,14 +96,6 @@ export function MetricsComposed({
                 <Skeleton className="w-4 h-4  border border-gray-200 rounded-xl" />
                 <Skeleton className="w-20 h-4  border border-gray-200 rounded-xl" />
               </div>
-              <div className="flex gap-2">
-                <Skeleton className="w-4 h-4  border border-gray-200 rounded-xl" />
-                <Skeleton className="w-20 h-4  border border-gray-200 rounded-xl" />
-              </div>
-              <div className="flex gap-2">
-                <Skeleton className="w-4 h-4  border border-gray-200 rounded-xl" />
-                <Skeleton className="w-20 h-4  border border-gray-200 rounded-xl" />
-              </div>
             </div>
           </div>
         ) : (

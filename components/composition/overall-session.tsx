@@ -99,8 +99,7 @@ const OverallSessionPage = ({
               <Progress
                 value={totalWinA}
                 max={totalWinA + totalWinB}
-                indicatorColor="bg-[#6B66fa]"
-                className="bg-[#461353]"
+                className="[&>*]:bg-[#6B66FA] bg-[#461353]"
               />
             </div>
             <div className="flex flex-col mb-3">
@@ -114,8 +113,7 @@ const OverallSessionPage = ({
               <Progress
                 value={avgTime1}
                 max={avgTime1 + avgTime2}
-                indicatorColor="bg-[#6B66fa]"
-                className="bg-[#461353]"
+                className="[&>*]:bg-[#6B66FA] bg-[#461353]"
               />
             </div>
             <div className="flex flex-col mb-3">
@@ -129,8 +127,7 @@ const OverallSessionPage = ({
               <Progress
                 value={avgTokenA}
                 max={avgTokenA + avgTokenB}
-                indicatorColor="bg-[#6B66fa]"
-                className="bg-[#461353]"
+                className="[&>*]:bg-[#6B66FA] bg-[#461353]"
               />
             </div>
             <div className="flex flex-col mb-3 ">
@@ -147,8 +144,7 @@ const OverallSessionPage = ({
               </div>
               <Progress
                 value={avgTokenPerTimeA}
-                indicatorColor="bg-[#6B66fa]"
-                className="bg-[#461353]"
+                className="[&>*]:bg-[#6B66FA] bg-[#461353]"
                 max={avgTokenPerTimeA + avgTokenPerTimeB}
               />
             </div>
