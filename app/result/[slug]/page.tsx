@@ -349,7 +349,7 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
         <div className="bg-white border border-gray-200 p-5 rounded-xl">
           Review your blind test results and decide which Large Language Model
           is the best for your use case. Want to start over?
-          <a className="hover:underline" href="">
+          <a className="hover:underline" href="/">
             {" "}
             Click Here!
           </a>
