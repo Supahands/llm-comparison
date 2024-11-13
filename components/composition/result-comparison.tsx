@@ -1,27 +1,9 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { Message } from "@/lib/types/message";
-import { FaThumbsUp, FaThumbsDown } from "react-icons/fa6";
-
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 
 import {
   Card,
@@ -34,10 +16,17 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 
 import ReactMarkdown from "react-markdown";
-import AutoHeight from "embla-carousel-auto-height";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { ScrollArea } from "../ui/scroll-area";
+import remarkGfm from "remark-gfm";
+import {
+  FloatingPanelContent,
+  FloatingPanelRoot,
+  FloatingPanelTrigger,
+} from "../ui/floating-panel";
+import { CheckIcon, XIcon } from "lucide-react";
 
-interface dataProps {
+interface DataProps {
   allMessage: Message[];
   modelA: string;
   modelB: string;
@@ -49,8 +38,13 @@ const ResultComparison = ({
   modelA,
   modelB,
   isLoading,
-}: dataProps) => {
-  const isMobile = useIsMobile();
+}: DataProps) => {
+  const [currentMessage, setCurrentMessage] = useState<number>(0);
+
+  const calculateMaxHeight = () => {
+    return `calc(100vh - 460px)`;
+  };
+
   return (
     <div className="flex-row w-full border flex-grow bg-white rounded-xl">
       {isLoading ? (
@@ -77,111 +71,106 @@ const ResultComparison = ({
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Carousel>
-                <CarouselContent>
-                  {allMessage.map((item, index) => (
-                    <CarouselItem key={item.id}>
-                      <div className="flex flex-col w-full">
-                        <div className="flex mb-2">
-                          {item.prompt && (
-                            <div className="bg-llm-grey4 p-1 mx-auto w-full text-center border border-solid border-llm-neutral90 rounded-xl text-llm-grey1 h-fit">
-                              {item.prompt}
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex lg:flex-row flex-col gap-4 mb-4">
-                          <div className="w-full space-y-1">
-                            <div className="model-b-response ">
-                              <div className="flex justify-between items-center">
-                                <div className="w-fit flex flex-grow items-center gap-4 bg-llm-neutral95 text-black font-bold text-lg p-1 my-2 h-fit">
-                                  {modelA}
-                                  {item.choice?.includes("A") &&
-                                  !item.choice?.includes("!") ? (
-                                    <FaThumbsUp color="green" />
-                                  ) : (
-                                    <FaThumbsDown color="red" />
-                                  )}
-                                </div>
-                                <Dialog>
-                                  <DialogTrigger asChild>
-                                    <Button className="bg-llm-primary50 hover:bg-llm-primary50_hover text-base font-bold rounded-xl">
-                                      Model Output
-                                    </Button>
-                                  </DialogTrigger>
-
-                                  <DialogContent className="lg:w-[600px] max-h-full lg:min-w-fit lg:max-w-full max-w-[90%] overflow-auto">
-                                    <DialogHeader>{modelA}</DialogHeader>
-                                    <div
-                                      className={`lg:p-5 rounded-lg bg-llm-grey4 text-llm-response border-2 border-solid w-fit
-                                        ${
-                                          item.choice?.includes("A") &&
-                                          !item.choice?.includes("!")
-                                            ? "border-green-600"
-                                            : "border-llm-btn_hover"
-                                        }`}
-                                    >
-                                      <ReactMarkdown className="prose dark:prose-invert text-wrap whitespace-pre max-w-[300px] lg:max-w-full">
-                                        {item.response1}
-                                      </ReactMarkdown>
-                                    </div>
-                                  </DialogContent>
-                                </Dialog>
-                              </div>
-                            </div>
+              <div>
+                <FloatingPanelRoot className="w-full">
+                  <FloatingPanelTrigger
+                    title="Prompt"
+                    className="focus-visible:outline-llm-primary50"
+                  >
+                    <div className="bg-llm-grey4 p-1 mx-auto w-full text-center border border-solid border-llm-neutral90 rounded-xl text-llm-grey1 h-fit whitespace-pre-wrap line-clamp-1 focus-visible:outline-llm-primary50">
+                      {allMessage[currentMessage].prompt}
+                    </div>
+                  </FloatingPanelTrigger>
+                  <FloatingPanelContent>
+                    {allMessage[currentMessage].prompt}
+                  </FloatingPanelContent>
+                </FloatingPanelRoot>
+                <ScrollArea
+                  className={`flex-grow lg:p-4 p-1 overflow-y-auto`}
+                  style={{ maxHeight: calculateMaxHeight(), height: "500px" }}
+                >
+                  <div className="grid grid-cols-2 gap-4 mb-5">
+                    <div className="model-a-response">
+                      <div className="w-full bg-llm-neutral95 text-black p-1 my-2 text-center flex justify-center font-semibold">
+                        {modelA}
+                        {allMessage[currentMessage].choice === "AB" ||
+                        allMessage[currentMessage].choice === "A" ? (
+                          <div className="bg-green-500 rounded-full mx-2">
+                            <CheckIcon className="text-white p-1" />
                           </div>
-                          <div className="w-full space-y-1 ">
-                            <div className="model-b-response ">
-                              <div className="flex justify-between items-center">
-                                <div className="w-fit flex flex-grow items-center gap-4 bg-llm-neutral95 text-black font-bold text-lg p-1 my-2 h-fit">
-                                  {modelB}
-                                  {item.choice?.includes("B") &&
-                                  !item.choice?.includes("!") ? (
-                                    <FaThumbsUp color="green" />
-                                  ) : (
-                                    <FaThumbsDown color="red" />
-                                  )}
-                                </div>
-                                <Dialog>
-                                  <DialogTrigger asChild>
-                                    <Button className="bg-llm-primary50 hover:bg-llm-primary50_hover text-base font-bold rounded-xl">
-                                      Model Output
-                                    </Button>
-                                  </DialogTrigger>
-
-                                  <DialogContent className="lg:w-[600px] max-h-full lg:min-w-fit lg:max-w-full max-w-[90%] overflow-auto">
-                                    <DialogHeader>{modelA}</DialogHeader>
-                                    <div
-                                      className={`lg:p-5 rounded-lg bg-llm-grey4 text-llm-response border-2 border-solid w-fit
-                                        ${
-                                          item.choice?.includes("B") &&
-                                          !item.choice?.includes("!")
-                                            ? "border-green-600"
-                                            : "border-llm-btn_hover"
-                                        }`}
-                                    >
-                                      <ReactMarkdown className="prose dark:prose-invert text-wrap whitespace-pre max-w-[350px] lg:max-w-full">
-                                        {item.response2}
-                                      </ReactMarkdown>
-                                    </div>
-                                  </DialogContent>
-                                </Dialog>
-                              </div>
-                            </div>
+                        ) : (
+                          <div className="bg-red-500 rounded-full mx-2">
+                            <XIcon className="text-white p-1" />
                           </div>
-                        </div>
+                        )}
                       </div>
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-
-                {isMobile && (
-                  <div className="text-center text-sm">
-                    Swipe to view other responses
+                      <div className="p-2 rounded-lg bg-llm-grey4 border border-solid border-llm-neutral90 text-llm-response">
+                        <ReactMarkdown
+                          className="prose dark:prose-invert"
+                          remarkPlugins={[remarkGfm]}
+                        >
+                          {allMessage[currentMessage].response1}
+                        </ReactMarkdown>
+                      </div>
+                    </div>
+                    <div className="model-b-response">
+                      <div className="w-full bg-llm-neutral95 text-black p-1 my-2 text-center flex justify-center font-semibold">
+                        {modelB}
+                        {allMessage[currentMessage].choice === "AB" ||
+                        allMessage[currentMessage].choice === "B" ? (
+                          <div className="bg-green-500 rounded-full mx-2">
+                            <CheckIcon className="text-white p-1" />
+                          </div>
+                        ) : (
+                          <div className="bg-red-500 rounded-full mx-2">
+                            <XIcon className="text-white p-1" />
+                          </div>
+                        )}
+                      </div>
+                      <div className="p-2 rounded-lg bg-llm-grey4 border border-solid border-llm-neutral90 text-llm-response">
+                        <ReactMarkdown
+                          className="prose dark:prose-invert"
+                          remarkPlugins={[remarkGfm]}
+                        >
+                          {allMessage[currentMessage].response2}
+                        </ReactMarkdown>
+                      </div>
+                    </div>
                   </div>
-                )}
-                <CarouselPrevious className="hidden lg:inline-flex" />
-                <CarouselNext className="hidden lg:inline-flex" />
-              </Carousel>
+                </ScrollArea>
+                <div className="w-full lg:bg-llm-grey4 py-2 mt-2">
+                  <div className="flex justify-center w-full">
+                    <div className="grid grid-cols-3 gap-2">
+                      <Button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setCurrentMessage(currentMessage - 1);
+                        }}
+                        disabled={currentMessage === 0}
+                        className="w-full rounded-xl border border-solid border-llm-primary95 hover:bg-llm-primary50 hover:text-white text-llm-primary50 bg-llm-primary95 py-3 px-5 cursor-pointer "
+                      >
+                        Previous
+                      </Button>
+                      <div className="text-center flex justify-center items-center">
+                        {currentMessage + 1} of {allMessage.length}
+                      </div>
+                      <Button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setCurrentMessage(currentMessage + 1);
+                        }}
+                        disabled={
+                          allMessage.length === 1 ||
+                          currentMessage === allMessage.length - 1
+                        }
+                        className="w-full rounded-xl border border-solid border-llm-primary95 hover:bg-llm-primary50 hover:text-white text-llm-primary50 bg-llm-primary95 py-3 px-5 cursor-pointer "
+                      >
+                        Next
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>

@@ -53,7 +53,7 @@ export function ComboBox({
 
   React.useEffect(() => {
     if (defaultValue) {
-      setValue(defaultValue)
+      setValue(defaultValue);
     }
   }, [defaultValue]);
 
@@ -64,7 +64,7 @@ export function ComboBox({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="lg:w-[200px] w-[140px] lg:max-w-full overflow-hidden justify-between focus-visible:outline-llm-primary50"
+          className="w-full overflow-hidden justify-between focus-visible:outline-llm-primary50"
           disabled={disabled}
         >
           {value
@@ -73,7 +73,7 @@ export function ComboBox({
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="w-[250px] p-0">
         <Command>
           <CommandInput placeholder="Search item..." />
           <CommandList>

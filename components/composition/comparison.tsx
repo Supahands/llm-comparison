@@ -18,6 +18,7 @@ import { v4 as uuidv4 } from "uuid";
 import { supabaseClient } from "@/lib/supabase/supabaseClient";
 import DataConsentModal from "./data-consent-modal";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { DATABASE_TABLE } from "@/lib/constants/databaseTables";
 
 const prompts = [
   "What are the most popular car brands in Japan?",
@@ -52,6 +53,9 @@ export default function Comparison() {
     setPromptToken,
     setCompletionToken1,
     setCompletionToken2,
+    promptToken,
+    completionToken1,
+    completionToken2,
   } = useAppStore();
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -114,8 +118,8 @@ export default function Comparison() {
   }, [newMessage, selectedChoice]);
 
   const handleDataSaving = async (choice: string) => {
-    const { data, error } = await supabaseClient
-      .from(process.env.NEXT_PUBLIC_RESPONSE_TABLE ?? "")
+    const { error } = await supabaseClient
+      .from(DATABASE_TABLE.RESPONSE)
       .insert([
         {
           session_id: sessionId,
@@ -127,12 +131,14 @@ export default function Comparison() {
           prompt: prompt,
           response_time_1: responseTime1,
           response_time_2: responseTime2,
+          prompt_token: promptToken,
+          completion_token_1: completionToken1,
+          completion_token_2: completionToken2,
         },
       ]);
 
     if (error) {
       console.log("error fetching", error);
-      return;
     }
   };
 
@@ -178,7 +184,7 @@ export default function Comparison() {
   return (
     <div className="mx-auto mt-4 w-full flex-grow">
       <DataConsentModal />
-      <Card className=" w-full mx-auto border rounded-lg  bg-white flex-grow h-full flex flex-col">
+      <Card className=" w-full mx-auto border rounded-xl  bg-white flex-grow h-full flex flex-col">
         <CardContent className="flex flex-col flex-grow overflow-hidden p-1 h-full">
           <PromptDisplay />
 

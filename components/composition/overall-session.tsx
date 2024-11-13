@@ -3,13 +3,14 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 
 import { Skeleton } from "@/components/ui/skeleton";
-interface ComponentProps {
+interface componentProps {
   modelA: string;
   modelB: string;
   avgTime1: number;
@@ -23,7 +24,7 @@ interface ComponentProps {
   isLoading: boolean;
 }
 
-const OverallPage = ({
+const OverallSessionPage = ({
   modelA,
   modelB,
   avgTime1,
@@ -35,14 +36,13 @@ const OverallPage = ({
   avgTokenPerTimeA,
   avgTokenPerTimeB,
   isLoading,
-}: ComponentProps) => {
+}: componentProps) => {
+  console.log(modelA, modelB);
   return (
     <Card className="w-full rounded-xl">
       <CardHeader>
-        <CardTitle>Head-to-Head Comparison</CardTitle>
-        <CardDescription>
-          Winning rate and other metrics of test globally.
-        </CardDescription>
+        <CardTitle>Head to Head Comparison</CardTitle>
+        <CardDescription>Based on this session</CardDescription>
       </CardHeader>
       <CardContent>
         {isLoading ? (
@@ -155,4 +155,4 @@ const OverallPage = ({
   );
 };
 
-export default OverallPage;
+export default OverallSessionPage;

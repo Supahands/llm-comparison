@@ -9,7 +9,7 @@ export default function DescriptionCard() {
   return (
     <div className="flex flex-col">
       <Title>How it works</Title>
-      <Card className="w-full lg:min-h-[104px] h-fit">
+      <Card className="w-full lg:min-h-[104px] rounded-xl h-fit">
         <CardContent className="p-4 h-full">
           An open-source LLM comparison tool by{" "}
           <LinkPreview

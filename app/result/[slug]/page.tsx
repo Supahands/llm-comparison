@@ -13,13 +13,17 @@ import { ModelResponseTime } from "@/components/composition/model-response-time"
 import { supabaseClient } from "@/lib/supabase/supabaseClient";
 import { Message } from "@/lib/types/message";
 import { DATABASE_TABLE } from "@/lib/constants/databaseTables";
-import { dataProps } from "@/components/composition/model-response-time";
+import { DataProps } from "@/components/composition/model-response-time";
 import { MetricsComposed } from "@/components/composition/metrics-composed";
 import OverallPage from "@/components/composition/overall";
 import { useRouter } from "next/navigation";
+import { FaDownload } from "react-icons/fa6";
+import OverallSessionPage from "@/components/composition/overall-session";
 
+import { FaGithub } from "react-icons/fa";
+import { IoStarOutline } from "react-icons/io5";
 
-interface databaseProps {
+interface DatabaseProps {
   id: number;
   model_1: string;
   model_2: string;
@@ -34,7 +38,7 @@ interface databaseProps {
   completion_token_2: number;
 }
 
-export interface metricsProps {
+export interface MetricsProps {
   task: string;
   modelA: number;
   modelB: number;
@@ -44,14 +48,17 @@ export interface metricsProps {
 
 const ResultPage = ({ params }: { params: { slug: string } }) => {
   const router = useRouter();
+
+  const [stars, setStars] = React.useState<string>("");
   const [allMessage, setAllMessage] = React.useState<Message[]>([]);
-  const [allResponseTime, setAllResponseTime] = React.useState<dataProps[]>([]);
-  const [statProportion, setStatProportion] = React.useState<metricsProps[]>(
+  const [allResponseTime, setAllResponseTime] = React.useState<DataProps[]>([]);
+  const [statProportion, setStatProportion] = React.useState<MetricsProps[]>(
     []
   );
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
   const [modelA, setModelA] = React.useState<string>("");
   const [modelB, setModelB] = React.useState<string>("");
+
   const [winRateModelA, setWinRateModelA] = React.useState<number>(0);
   const [winRateModelB, setWinRateModelB] = React.useState<number>(0);
   const [averageTokenA, setAverageTokenA] = React.useState<number>(0);
@@ -63,6 +70,23 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
   const [avgTokenPerResponseTimeA, setAvgTokenPerResponseTimeA] =
     React.useState<number>(0);
   const [avgTokenPerResponseTimeB, setAvgTokenPerResponseTimeB] =
+    React.useState<number>(0);
+
+  const [winRateModelASession, setWinRateModelASession] =
+    React.useState<number>(0);
+  const [winRateModelBSession, setWinRateModelBSession] =
+    React.useState<number>(0);
+  const [averageTokenASession, setAverageTokenASession] =
+    React.useState<number>(0);
+  const [averageTokenBSession, setAverageTokenBSession] =
+    React.useState<number>(0);
+  const [averageResponseTimeASession, setAverageResponseTimeASession] =
+    React.useState<number>(0);
+  const [averageResponseTimeBSession, setAverageResponseTimeBSession] =
+    React.useState<number>(0);
+  const [avgTokenPerResponseTimeASession, setAvgTokenPerResponseTimeASession] =
+    React.useState<number>(0);
+  const [avgTokenPerResponseTimeBSession, setAvgTokenPerResponseTimeBSession] =
     React.useState<number>(0);
 
   const handleDownloadMetadata = () => {
@@ -98,7 +122,7 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
     URL.revokeObjectURL(link.href);
   };
 
-  const calculateProportion = (data: databaseProps[] | null) => {
+  const calculateProportion = (data: DatabaseProps[] | null) => {
     const modelA = data
       ? data.reduce((counter, x) => {
           if (x.selected_choice === "A") counter += 1;
@@ -124,6 +148,43 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
         }, 0)
       : 0;
 
+    const responseTime1 = data
+      ? data.reduce((total, x) => {
+          return (total += x.response_time_1);
+        }, 0) / 1000
+      : 0;
+
+    const responseTime2 = data
+      ? data.reduce((total, x) => {
+          return (total += x.response_time_2);
+        }, 0) / 1000
+      : 0;
+
+    const totalToken1 = data
+      ? data.reduce((total, x) => {
+          return (total += x.completion_token_1);
+        }, 0)
+      : 0;
+
+    const totalToken2 = data
+      ? data.reduce((total, x) => {
+          return (total += x.completion_token_2);
+        }, 0)
+      : 0;
+
+    const tokenPerResponseTime1 = totalToken1 / responseTime1;
+
+    const tokenPerResponseTime2 = totalToken2 / responseTime2;
+
+    setWinRateModelASession(modelA);
+    setWinRateModelBSession(modelB);
+    setAverageResponseTimeASession(data ? responseTime1 / data.length : 0);
+    setAverageResponseTimeBSession(data ? responseTime2 / data.length : 0);
+    setAverageTokenASession(data ? totalToken1 / data.length : 0);
+    setAverageTokenBSession(data ? totalToken2 / data.length : 0);
+    setAvgTokenPerResponseTimeASession(tokenPerResponseTime1);
+    setAvgTokenPerResponseTimeBSession(tokenPerResponseTime2);
+
     setStatProportion([
       {
         task: "summary",
@@ -137,11 +198,7 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
 
   async function fetchDataBySessionId(sessionId: string) {
     const { data, error } = await supabaseClient
-      .from(
-        process.env.NEXT_PUBLIC_RESPONSE_TABLE
-          ? process.env.NEXT_PUBLIC_RESPONSE_TABLE
-          : ""
-      )
+      .from(DATABASE_TABLE.RESPONSE)
       .select()
       .eq("session_id", sessionId);
 
@@ -150,11 +207,7 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
 
   async function fetchDataAllTime(modelA: string, modelB: string) {
     const { data, error } = await supabaseClient
-      .from(
-        process.env.NEXT_PUBLIC_RESPONSE_TABLE
-          ? process.env.NEXT_PUBLIC_RESPONSE_TABLE
-          : ""
-      )
+      .from(DATABASE_TABLE.RESPONSE)
       .select()
       .or(
         `and(model_1.eq.${modelA},model_2.eq.${modelB}),and(model_1.eq.${modelB},model_2.eq.${modelA})`
@@ -168,7 +221,7 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
   }
 
   function calculateDataAllTime(
-    data: databaseProps[],
+    data: DatabaseProps[],
     modelA: string,
     modelB: string
   ) {
@@ -208,10 +261,10 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
       Number((responseTimeB / data.length / 1000).toFixed(2))
     );
     setAvgTokenPerResponseTimeA(
-      Number((totalTokenA / responseTimeA / 1000).toFixed(2))
+      Number((totalTokenA / (responseTimeA / 1000)).toFixed(2))
     );
     setAvgTokenPerResponseTimeB(
-      Number((totalTokenB / responseTimeB / 1000).toFixed(2))
+      Number((totalTokenB / (responseTimeB / 1000)).toFixed(2))
     );
 
     return;
@@ -282,32 +335,67 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
     setIsLoading(false);
   };
 
+  function formatStarCount(count: number): string {
+    if (count >= 1000000) {
+      return (count / 1000000).toFixed(1) + "M";
+    } else if (count >= 1000) {
+      return (count / 1000).toFixed(1) + "K";
+    }
+    return count.toString();
+  }
+
+  const getStarsRepo = async (): Promise<void> => {
+    try {
+      const response = await fetch(
+        "https://api.github.com/repos/Supahands/llm-comparison-frontend"
+      );
+      if (!response.ok) {
+        throw new Error(`Failed to fetch: ${response.statusText}`);
+      }
+
+      const data = (await response.json()) as { stargazers_count: number };
+      setStars(formatStarCount(data.stargazers_count || 0));
+    } catch (error) {
+      console.error("Error fetching stars:", error);
+      setStars("0");
+    }
+  };
+
   useEffect(() => {
     getData();
+    getStarsRepo();
   }, []);
 
   return (
-    <div className="bg-llm-background h-full space-y-5 pt-7 pb-7 lg:px-10 px-2">
-      <h1 className="font-bold text-2xl">LLM Comparison Result</h1>
-      <div className="flex justify-between gap-4">
-        <Button
-          onClick={() => router.push(`/`)}
-          className="bg-llm-primary50 hover:bg-llm-primary50_hover text-white rounded-2xl"
-        >
-          Back To Home
-        </Button>
-        <Button
-          onClick={() => {
-            if (!isLoading) {
-              handleDownloadMetadata();
-            }
-          }}
-          className="bg-llm-btn hover:bg-llm-btn_hover text-white rounded-2xl"
-        >
-          Export the Metadata
-        </Button>
+    <div className="bg-llm-background h-full space-y-5 pt-7 pb-7 lg:px-10 px-3">
+      <Title>Evaluation Summary</Title>
+      <div className="grid grid-cols-1 md:grid-cols-2 justify-between gap-4 items-center">
+        <div className="bg-white border border-gray-200 p-5 rounded-xl">
+          Review your blind test results and decide which Large Language Model
+          is the best for your use case. Want to start over?
+          <a className="hover:underline" href="/">
+            {" "}
+            Click Here!
+          </a>
+        </div>
+        <div className="flex justify-end">
+          <Button
+            onClick={() => {
+              if (!isLoading) {
+                handleDownloadMetadata();
+              }
+            }}
+            className="bg-llm-btn hover:bg-llm-btn_hover text-white rounded-3xl"
+          >
+            Export Results
+            <FaDownload />
+          </Button>
+        </div>
       </div>
-      <div className="flex flex-col lg:flex-row justify-stretch gap-4">
+      <div>
+        <Title>Session</Title>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 justify-stretch gap-4">
         <ModelResponseTime
           allResponseTime={allResponseTime}
           modelA={modelA}
@@ -321,21 +409,20 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
           isLoading={isLoading}
         />
       </div>
-      <div className="flex justify-stretch gap-4">
-        <OverallPage
+      <div className="flex gap-4">
+        <OverallSessionPage
           modelA={modelA}
           modelB={modelB}
-          avgTime1={averageResponseTimeA}
-          avgTime2={averageResponseTimeB}
-          totalWinA={winRateModelA}
-          totalWinB={winRateModelB}
-          avgTokenA={averageTokenA}
-          avgTokenB={averageTokenB}
-          avgTokenPerTimeA={avgTokenPerResponseTimeA}
-          avgTokenPerTimeB={avgTokenPerResponseTimeB}
+          avgTime1={averageResponseTimeASession}
+          avgTime2={averageResponseTimeBSession}
+          totalWinA={winRateModelASession}
+          totalWinB={winRateModelBSession}
+          avgTokenA={averageTokenASession}
+          avgTokenB={averageTokenBSession}
+          avgTokenPerTimeA={avgTokenPerResponseTimeASession}
+          avgTokenPerTimeB={avgTokenPerResponseTimeBSession}
           isLoading={isLoading}
         />
-        {/* <OverallPage /> */}
       </div>
       <ResultComparison
         allMessage={allMessage}
@@ -343,10 +430,52 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
         modelB={modelB}
         isLoading={isLoading}
       />
-      <div className="flex flex-row w-full justify-between mt-4">
-        <LinkPreview url="https://supa.so">
-          <Image src={`/svg/logo.svg`} alt="SUPA logo" width={93} height={26} />
-        </LinkPreview>
+      <div>
+        <Title>Global</Title>
+      </div>
+      <OverallPage
+        modelA={modelA}
+        modelB={modelB}
+        avgTime1={averageResponseTimeA}
+        avgTime2={averageResponseTimeB}
+        totalWinA={winRateModelA}
+        totalWinB={winRateModelB}
+        avgTokenA={averageTokenA}
+        avgTokenB={averageTokenB}
+        avgTokenPerTimeA={avgTokenPerResponseTimeA}
+        avgTokenPerTimeB={avgTokenPerResponseTimeB}
+        isLoading={isLoading}
+      />
+      <div className="flex flex-row w-full justify-between">
+        <div className="flex gap-4 items-center w-full mb-6">
+          <LinkPreview
+            url="https://supa.so"
+            className="focus-visible:outline-llm-primary50 h-full flex"
+          >
+            <Image
+              src={`/svg/logo.svg`}
+              alt="SUPA logo"
+              className="mb-5 h-full"
+              width={93}
+              height={26}
+            />
+          </LinkPreview>
+          <div
+            className=" items-center flex font-extralight h-full group"
+            onClick={() => {
+              router.push(
+                "https://github.com/Supahands/llm-comparison-frontend"
+              );
+            }}
+          >
+            <div className="bg-white w-[40px] flex h-full group-hover:bg-gray-300 items-center justify-center rounded-l-lg border-t border-l border-b">
+              <FaGithub size={24} />
+            </div>
+            <div className="p-2 text-base font-semibold flex gap-[3px] justify-center items-center border-t border-r border-b bg-transparent group-hover:bg-gray-300 rounded-r-lg h-full">
+              <IoStarOutline /> {stars === "0" ? "Star" : stars}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

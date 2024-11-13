@@ -1,7 +1,5 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
-
 import { Skeleton } from "@/components/ui/skeleton";
 
 import {
@@ -17,7 +15,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -32,21 +29,14 @@ import {
 
 export const description = "A multiple bar chart";
 
-const chartData: dataProps[] = [
-  { task: "Q1", timeModelA: 3.3, timeModelB: 5.5 },
-  { task: "Q2", timeModelA: 3.2, timeModelB: 6.6 },
-  { task: "Q3", timeModelA: 4.1, timeModelB: 7.1 },
-  { task: "Q4", timeModelA: 2.8, timeModelB: 9.1 },
-];
-
-export interface dataProps {
+export interface DataProps {
   task: string;
   timeModelA: number;
   timeModelB: number;
 }
 
-interface timeProps {
-  allResponseTime: dataProps[];
+interface TimeProps {
+  allResponseTime: DataProps[];
   modelA: string;
   modelB: string;
   isLoading: boolean;
@@ -57,7 +47,7 @@ export function ModelResponseTime({
   modelA,
   modelB,
   isLoading,
-}: timeProps) {
+}: TimeProps) {
   const chartConfig = {
     timeModelA: {
       label: modelA,
@@ -98,7 +88,7 @@ export function ModelResponseTime({
             </div>
           </div>
         ) : (
-          <ChartContainer config={chartConfig} className="min-h-[10px]">
+          <ChartContainer config={chartConfig} className="min-h-[220px] w-full">
             <BarChart accessibilityLayer data={allResponseTime}>
               <CartesianGrid vertical={false} />
               <XAxis
@@ -122,7 +112,7 @@ export function ModelResponseTime({
                   dataKey="timeModelA"
                   position="top"
                   offset={10}
-                  className="text-sm font-light"
+                  className="text-xs md:text-sm font-light"
                 />
               </Bar>
               <Bar
@@ -134,11 +124,11 @@ export function ModelResponseTime({
                   dataKey="timeModelB"
                   position="top"
                   offset={10}
-                  className="text-sm font-light"
+                  className="text-xs md:text-sm font-light"
                 />
               </Bar>
               <ChartLegend
-                className="text-base font-semibold"
+                className="text-sm font-semibold"
                 content={<ChartLegendContent />}
               />
             </BarChart>
