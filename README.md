@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">About
-This is an opensource project allowing you to compare two LLM's head to head with a given prompt, it has a wide range of supported models, from opensource ollama ones to the likes of openai and claude
+An open-source LLM comparison tool that allows users to input prompts and compare the performance of language models in a blind test format.  It has a wide range of supported models, from opensource ollama ones to the likes of Openai. Simply select two models, then test them across various prompts and scenarios tailored to your domain. Each round provides anonymized responses for evaluation, helping you gain a deeper understanding of each model’s capabilities. All collected data will be published to contribute to open-source research. 
 </p>
 
 <p align="center">
@@ -163,6 +163,6 @@ Here you will explain how other developers can contribute to your project. For e
 
 <h3>Documentations that might help</h3>
 
-[📝 How to create a Pull Request](https://www.atlassian.com/br/git/tutorials/making-a-pull-request)
+[📝 How to create a Pull Request](https://www.atlassian.com/git/tutorials/making-a-pull-request)
 
 [💾 Commit pattern](https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716)
