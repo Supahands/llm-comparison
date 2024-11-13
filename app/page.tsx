@@ -94,12 +94,7 @@ export default function Home() {
   const getStarsRepo = async (): Promise<void> => {
     try {
       const response = await fetch(
-        "https://api.github.com/repos/Supahands/llm-comparison-frontend",
-        {
-          headers: {
-            Authorization: `token ${process.env.NEXT_PUBLIC_TOKEN}`,
-          },
-        }
+        "https://api.github.com/repos/Supahands/llm-comparison-frontend"
       );
       if (!response.ok) {
         throw new Error(`Failed to fetch: ${response.statusText}`);
