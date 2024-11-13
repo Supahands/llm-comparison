@@ -13,14 +13,14 @@ import { ModelResponseTime } from "@/components/composition/model-response-time"
 import { supabaseClient } from "@/lib/supabase/supabaseClient";
 import { Message } from "@/lib/types/message";
 import { DATABASE_TABLE } from "@/lib/constants/databaseTables";
-import { dataProps } from "@/components/composition/model-response-time";
+import { DataProps } from "@/components/composition/model-response-time";
 import { MetricsComposed } from "@/components/composition/metrics-composed";
 import OverallPage from "@/components/composition/overall";
 import { useRouter } from "next/navigation";
 import { FaDownload } from "react-icons/fa6";
 import OverallSessionPage from "@/components/composition/overall-session";
 
-interface databaseProps {
+interface DatabaseProps {
   id: number;
   model_1: string;
   model_2: string;
@@ -35,7 +35,7 @@ interface databaseProps {
   completion_token_2: number;
 }
 
-export interface metricsProps {
+export interface MetricsProps {
   task: string;
   modelA: number;
   modelB: number;
@@ -46,8 +46,8 @@ export interface metricsProps {
 const ResultPage = ({ params }: { params: { slug: string } }) => {
   const router = useRouter();
   const [allMessage, setAllMessage] = React.useState<Message[]>([]);
-  const [allResponseTime, setAllResponseTime] = React.useState<dataProps[]>([]);
-  const [statProportion, setStatProportion] = React.useState<metricsProps[]>(
+  const [allResponseTime, setAllResponseTime] = React.useState<DataProps[]>([]);
+  const [statProportion, setStatProportion] = React.useState<MetricsProps[]>(
     []
   );
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
@@ -117,7 +117,7 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
     URL.revokeObjectURL(link.href);
   };
 
-  const calculateProportion = (data: databaseProps[] | null) => {
+  const calculateProportion = (data: DatabaseProps[] | null) => {
     const modelA = data
       ? data.reduce((counter, x) => {
           if (x.selected_choice === "A") counter += 1;
@@ -193,11 +193,7 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
 
   async function fetchDataBySessionId(sessionId: string) {
     const { data, error } = await supabaseClient
-      .from(
-        process.env.NEXT_PUBLIC_RESPONSE_TABLE
-          ? process.env.NEXT_PUBLIC_RESPONSE_TABLE
-          : ""
-      )
+      .from(DATABASE_TABLE.RESPONSE)
       .select()
       .eq("session_id", sessionId);
 
@@ -206,11 +202,7 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
 
   async function fetchDataAllTime(modelA: string, modelB: string) {
     const { data, error } = await supabaseClient
-      .from(
-        process.env.NEXT_PUBLIC_RESPONSE_TABLE
-          ? process.env.NEXT_PUBLIC_RESPONSE_TABLE
-          : ""
-      )
+      .from(DATABASE_TABLE.RESPONSE)
       .select()
       .or(
         `and(model_1.eq.${modelA},model_2.eq.${modelB}),and(model_1.eq.${modelB},model_2.eq.${modelA})`
@@ -224,7 +216,7 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
   }
 
   function calculateDataAllTime(
-    data: databaseProps[],
+    data: DatabaseProps[],
     modelA: string,
     modelB: string
   ) {

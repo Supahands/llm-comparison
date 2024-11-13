@@ -1,6 +1,5 @@
 "use client";
 
-import { TrendingUp } from "lucide-react";
 import {
   Bar,
   BarChart,
@@ -14,7 +13,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -26,8 +24,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { metricsProps } from "@/app/result/[slug]/page";
-import { ViewBox } from "recharts/types/util/types";
+import { MetricsProps } from "@/app/result/[slug]/page";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const description = "A stacked bar chart with a legend";
@@ -37,10 +34,9 @@ const chartData = [{ month: "January", desktop: 186, mobile: 80 }];
 const maxDataValue = Math.max(
   ...chartData.map((data) => data.desktop + data.mobile)
 );
-const adaptiveMax = maxDataValue * 1.1;
 
-interface componentProps {
-  allMetricsComposed: metricsProps[] | undefined;
+interface ComponentProps {
+  allMetricsComposed: MetricsProps[] | undefined;
   modelA: string;
   modelB: string;
   isLoading: boolean;
@@ -51,7 +47,7 @@ export function MetricsComposed({
   modelA,
   modelB,
   isLoading,
-}: componentProps) {
+}: ComponentProps) {
   const chartConfig = {
     modelA: {
       label: `${modelA} won`,
