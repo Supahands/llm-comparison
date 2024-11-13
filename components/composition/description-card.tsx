@@ -11,16 +11,20 @@ export default function DescriptionCard() {
       <Title>How it works</Title>
       <Card className="w-full lg:min-h-[104px] h-fit">
         <CardContent className="p-4 h-full">
-          This is a simple LLM Comparison Tool built by{" "}
+          An open-source LLM comparison tool by{" "}
           <LinkPreview
             url="https://supa.so"
             className="focus-visible:outline-llm-primary50"
           >
             <span className="underline underline-offset-2">SUPA</span>
           </LinkPreview>{" "}
-          where users can input prompts and compare the outputs of two different
-          LLMs in a blind test format. This will allow users to objectively
-          assess the performance of two models without bias.
+          allows users to input prompts and compare the performance of language
+          models in a blind test format. Simply select two models, then test
+          them across various prompts and scenarios tailored to your domain.
+          Each round provides anonymized responses for evaluation, helping you
+          gain a deeper understanding of each model’s capabilities. All
+          collected data will be published to contribute to open-source
+          research.
           <Link
             href={"https://supa.so/llm-comparison-tool"}
             className="underline underline-offset-2 text-black focus-visible:outline-llm-primary50"
