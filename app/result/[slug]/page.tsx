@@ -202,7 +202,7 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
 
   async function fetchDataAllTime(modelA: string, modelB: string) {
     const { data, error } = await supabaseClient
-      .from("response")
+      .from(DATABASE_TABLE.RESPONSE)
       .select()
       .or(
         `and(model_1.eq.${modelA},model_2.eq.${modelB}),and(model_1.eq.${modelB},model_2.eq.${modelA})`
