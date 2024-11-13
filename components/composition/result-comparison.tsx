@@ -1,27 +1,9 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { Message } from "@/lib/types/message";
-import { FaThumbsUp, FaThumbsDown } from "react-icons/fa6";
-
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 
 import {
   Card,
@@ -42,6 +24,7 @@ import {
   FloatingPanelRoot,
   FloatingPanelTrigger,
 } from "../ui/floating-panel";
+import { CheckIcon, XIcon } from "lucide-react";
 
 interface DataProps {
   allMessage: Message[];
@@ -56,7 +39,6 @@ const ResultComparison = ({
   modelB,
   isLoading,
 }: DataProps) => {
-  const isMobile = useIsMobile();
   const [currentMessage, setCurrentMessage] = useState<number>(0);
 
   const calculateMaxHeight = () => {
@@ -105,12 +87,22 @@ const ResultComparison = ({
                 </FloatingPanelRoot>
                 <ScrollArea
                   className={`flex-grow lg:p-4 p-1 overflow-y-auto`}
-                  style={{ maxHeight: calculateMaxHeight(), height: '500px' }}
+                  style={{ maxHeight: calculateMaxHeight(), height: "500px" }}
                 >
                   <div className="grid grid-cols-2 gap-4 mb-5">
                     <div className="model-a-response">
-                      <div className="w-fit bg-llm-neutral95 text-black p-1 my-2">
+                      <div className="w-full bg-llm-neutral95 text-black p-1 my-2 text-center flex justify-center font-semibold">
                         {modelA}
+                        {allMessage[currentMessage].choice === "AB" ||
+                        allMessage[currentMessage].choice === "A" ? (
+                          <div className="bg-green-500 rounded-full mx-2">
+                            <CheckIcon className="text-white p-1" />
+                          </div>
+                        ) : (
+                          <div className="bg-red-500 rounded-full mx-2">
+                            <XIcon className="text-white p-1" />
+                          </div>
+                        )}
                       </div>
                       <div className="p-2 rounded-lg bg-llm-grey4 border border-solid border-llm-neutral90 text-llm-response">
                         <ReactMarkdown
@@ -122,8 +114,18 @@ const ResultComparison = ({
                       </div>
                     </div>
                     <div className="model-b-response">
-                      <div className="w-fit bg-llm-neutral95 text-black p-1 my-2">
+                      <div className="w-full bg-llm-neutral95 text-black p-1 my-2 text-center flex justify-center font-semibold">
                         {modelB}
+                        {allMessage[currentMessage].choice === "AB" ||
+                        allMessage[currentMessage].choice === "B" ? (
+                          <div className="bg-green-500 rounded-full mx-2">
+                            <CheckIcon className="text-white p-1" />
+                          </div>
+                        ) : (
+                          <div className="bg-red-500 rounded-full mx-2">
+                            <XIcon className="text-white p-1" />
+                          </div>
+                        )}
                       </div>
                       <div className="p-2 rounded-lg bg-llm-grey4 border border-solid border-llm-neutral90 text-llm-response">
                         <ReactMarkdown
@@ -149,7 +151,9 @@ const ResultComparison = ({
                       >
                         Previous
                       </Button>
-                        <div className="text-center flex justify-center items-center">{currentMessage + 1} of { allMessage.length }</div>
+                      <div className="text-center flex justify-center items-center">
+                        {currentMessage + 1} of {allMessage.length}
+                      </div>
                       <Button
                         onClick={(e) => {
                           e.preventDefault();
