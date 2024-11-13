@@ -115,7 +115,7 @@ Want to help? Here's what you can do:
 
 <td align="center">
 <a href="https://github.com/hank-supahands">
-<img src="https://avatars.githubusercontent.com/u/hank-supahands" width="100px;" alt="Hank Profile Picture"/><br>
+<img src="https://avatars.githubusercontent.com/hank-supahands" width="100px;" alt="Hank Profile Picture"/><br>
 <sub>
 <b>Hank</b>
 </sub>
