@@ -1,5 +1,5 @@
 import useAppStore from "@/hooks/store/useAppStore";
-import { ComboBox, ComboBoxItem } from "../ui/combo-box";
+import { ComboBox } from "../ui/combo-box";
 import { useEffect, useState } from "react";
 import AvailableModel, {
   createAvailableModel,
