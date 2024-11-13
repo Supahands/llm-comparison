@@ -20,6 +20,9 @@ import { useRouter } from "next/navigation";
 import { FaDownload } from "react-icons/fa6";
 import OverallSessionPage from "@/components/composition/overall-session";
 
+import { FaGithub } from "react-icons/fa";
+import { IoStarOutline } from "react-icons/io5";
+
 interface DatabaseProps {
   id: number;
   model_1: string;
@@ -45,6 +48,8 @@ export interface MetricsProps {
 
 const ResultPage = ({ params }: { params: { slug: string } }) => {
   const router = useRouter();
+
+  const [stars, setStars] = React.useState<string>("");
   const [allMessage, setAllMessage] = React.useState<Message[]>([]);
   const [allResponseTime, setAllResponseTime] = React.useState<DataProps[]>([]);
   const [statProportion, setStatProportion] = React.useState<MetricsProps[]>(
@@ -330,8 +335,35 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
     setIsLoading(false);
   };
 
+  function formatStarCount(count: number): string {
+    if (count >= 1000000) {
+      return (count / 1000000).toFixed(1) + "M";
+    } else if (count >= 1000) {
+      return (count / 1000).toFixed(1) + "K";
+    }
+    return count.toString();
+  }
+
+  const getStarsRepo = async (): Promise<void> => {
+    try {
+      const response = await fetch(
+        "https://api.github.com/repos/Supahands/llm-comparison-frontend"
+      );
+      if (!response.ok) {
+        throw new Error(`Failed to fetch: ${response.statusText}`);
+      }
+
+      const data = (await response.json()) as { stargazers_count: number };
+      setStars(formatStarCount(data.stargazers_count || 0));
+    } catch (error) {
+      console.error("Error fetching stars:", error);
+      setStars("0");
+    }
+  };
+
   useEffect(() => {
     getData();
+    getStarsRepo();
   }, []);
 
   return (
@@ -414,16 +446,36 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
         avgTokenPerTimeB={avgTokenPerResponseTimeB}
         isLoading={isLoading}
       />
-      <div className="flex flex-row w-full justify-between mt-4 ">
-        <LinkPreview url="https://supa.so">
-          <Image
-            src={`/svg/logo.svg`}
-            alt="SUPA logo"
-            className="mb-5"
-            width={93}
-            height={26}
-          />
-        </LinkPreview>
+      <div className="flex flex-row w-full justify-between">
+        <div className="flex gap-4 items-center w-full mb-6">
+          <LinkPreview
+            url="https://supa.so"
+            className="focus-visible:outline-llm-primary50 h-full flex"
+          >
+            <Image
+              src={`/svg/logo.svg`}
+              alt="SUPA logo"
+              className="mb-5 h-full"
+              width={93}
+              height={26}
+            />
+          </LinkPreview>
+          <div
+            className=" items-center flex font-extralight h-full group"
+            onClick={() => {
+              router.push(
+                "https://github.com/Supahands/llm-comparison-frontend"
+              );
+            }}
+          >
+            <div className="bg-white w-[40px] flex h-full group-hover:bg-gray-300 items-center justify-center rounded-l-lg border-t border-l border-b">
+              <FaGithub size={24} />
+            </div>
+            <div className="p-2 text-base font-semibold flex gap-[3px] justify-center items-center border-t border-r border-b bg-transparent group-hover:bg-gray-300 rounded-r-lg h-full">
+              <IoStarOutline /> {stars === "0" ? "Star" : stars}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

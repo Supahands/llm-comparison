@@ -184,7 +184,7 @@ export default function Comparison() {
   return (
     <div className="mx-auto mt-4 w-full flex-grow">
       <DataConsentModal />
-      <Card className=" w-full mx-auto border rounded-lg  bg-white flex-grow h-full flex flex-col">
+      <Card className=" w-full mx-auto border rounded-xl  bg-white flex-grow h-full flex flex-col">
         <CardContent className="flex flex-col flex-grow overflow-hidden p-1 h-full">
           <PromptDisplay />
 
