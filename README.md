@@ -98,7 +98,7 @@ Collects statistics and responses from model comparisons:
 
 <td align="center">
 <a href="https://github.com/hank-supahands">
-<img src="https://avatars.githubusercontent.com/u/hank-supahands" width="100px;" alt="Hank Profile Picture"/><br>
+<img src="https://avatars.githubusercontent.com/u/130949056" width="100px;" alt="Hank Profile Picture"/><br>
 <sub>
 <b>Hank</b>
 </sub>
