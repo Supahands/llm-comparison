@@ -68,42 +68,45 @@ export default function ModelSelector() {
   }, [isComparingModel]);
 
   return (
-    <div className="flex flex-row justify-between items-center">
-      <div className="flex flex-col lg:flex-row">
+    <div className="flex flex-row items-center w-full h-full">
+      <div className="flex flex-col lg:flex-row w-full">
         <div
-          className={`p-4 h-full ${
+          className={`p-4 h-full w-full  ${
             !showModelSelector ? "hidden" : "flex flex-row"
           } items-center gap-4`}
         >
-          <div className="flex flex-row gap-4">
-            <div>
+          <div className="flex flex-row gap-4 justify-center w-full">
+            <div className="flex flex-col w-1/2">
               <div>Model 1</div>
-              <ComboBox
-                items={availableModels}
-                onItemSelect={setSelectedModel1}
-                disabled={isComparingModel || userChoices.length > 0}
-                defaultValue={selectedModel1}
-              />
+              <div className="w-full">
+                <ComboBox
+                  items={availableModels}
+                  onItemSelect={setSelectedModel1}
+                  disabled={isComparingModel || userChoices.length > 0}
+                  defaultValue={selectedModel1}
+                />
+              </div>
             </div>
-            <div>
+            <div className="flex flex-col w-1/2">
               <div>Model 2</div>
-              <ComboBox
-                items={availableModels}
-                onItemSelect={setSelectedModel2}
-                disabled={isComparingModel || userChoices.length > 0}
-                defaultValue={selectedModel2}
-              />
+              <div className="w-full">
+                <ComboBox
+                  items={availableModels}
+                  onItemSelect={setSelectedModel2}
+                  disabled={isComparingModel || userChoices.length > 0}
+                  defaultValue={selectedModel2}
+                />
+              </div>
             </div>
+            <Button
+              size={"icon"}
+              disabled={isComparingModel || userChoices.length > 0}
+              className="rounded-lg w-8 h-8 p-1 bg-white hover:bg-llm-primary95 self-end mb-1 block focus-visible:outline-llm-primary50"
+              onClick={randomizeModel}
+            >
+              <Dices className=" text-llm-grey1 !w-full !h-6"></Dices>
+            </Button>
           </div>
-
-          <Button
-            size={"icon"}
-            disabled={isComparingModel || userChoices.length > 0}
-            className="rounded-lg w-8 h-8 p-1 bg-white hover:bg-llm-primary95 self-end mb-1 block focus-visible:outline-llm-primary50"
-            onClick={randomizeModel}
-          >
-            <Dices className=" text-llm-grey1 !w-full !h-6"></Dices>
-          </Button>
         </div>
         <div
           className={`p-4 h-full ${

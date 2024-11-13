@@ -92,18 +92,10 @@ export function MetricsComposed({
                 <Skeleton className="w-4 h-4  border border-gray-200 rounded-xl" />
                 <Skeleton className="w-20 h-4  border border-gray-200 rounded-xl" />
               </div>
-              <div className="flex gap-2">
-                <Skeleton className="w-4 h-4  border border-gray-200 rounded-xl" />
-                <Skeleton className="w-20 h-4  border border-gray-200 rounded-xl" />
-              </div>
-              <div className="flex gap-2">
-                <Skeleton className="w-4 h-4  border border-gray-200 rounded-xl" />
-                <Skeleton className="w-20 h-4  border border-gray-200 rounded-xl" />
-              </div>
             </div>
           </div>
         ) : (
-          <ChartContainer config={chartConfig} className="min-h-[10px]">
+          <ChartContainer config={chartConfig} className="min-h-[220px] w-full">
             <BarChart
               accessibilityLayer
               data={allMetricsComposed}
@@ -133,7 +125,7 @@ export function MetricsComposed({
                 stackId="a"
               >
                 <LabelList
-                  className="text-xl font-bold"
+                  className="text-base md:text-xl font-bold"
                   position="middle"
                   fill="#ffffff"
                   dataKey="modelA"
@@ -147,7 +139,7 @@ export function MetricsComposed({
                 stackId="a"
               >
                 <LabelList
-                  className="text-xl font-bold"
+                  className="text-base md:text-xl font-bold"
                   position="middle"
                   fill="#ffffff"
                   formatter={renderLabel}
@@ -161,7 +153,7 @@ export function MetricsComposed({
                 stackId="a"
               >
                 <LabelList
-                  className="text-xl font-bold"
+                  className="text-base md:text-xl font-bold"
                   position="middle"
                   fill="#ffffff"
                   dataKey="draw"
@@ -175,7 +167,7 @@ export function MetricsComposed({
                 stackId="a"
               >
                 <LabelList
-                  className="text-xl font-bold"
+                  className="text-base md:text-xl font-bold"
                   position="middle"
                   fill="#ffffff"
                   dataKey="reject"
@@ -183,8 +175,8 @@ export function MetricsComposed({
                 ></LabelList>
               </Bar>
               <ChartLegend
-                className="text-base font-semibold"
-                content={<ChartLegendContent />}
+                className="text-sm justify-between font-semibold grid grid-cols-2 md:grid-cols-4"
+                content={<ChartLegendContent className="" />}
               />
             </BarChart>
           </ChartContainer>

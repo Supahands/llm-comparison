@@ -1,4 +1,28 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LLM Model Comparison App
+
+This is a [Next.js](https://nextjs.org) project for comparing different LLM model responses.
+
+## Project Structure
+
+This project consists of two main parts:
+- Frontend: Next.js application for the UI
+- `backend/`: Backend service for handling LLM API calls (linked as a submodule)
+
+## Database Structure
+
+The application uses Supabase with the following tables:
+
+### available_models
+Stores the configuration for available LLM models:
+- `id`: Unique identifier
+- `provider`: The AI provider (e.g., OpenAI, Anthropic)
+- `model_name`: Name of the model (e.g., GPT-4, Claude)
+- `disabled`: Boolean flag to enable/disable models
+
+### responses
+Collects statistics and responses from model comparisons:
+- Stores user choices and model performance metrics
+- Used for analyzing model comparison results
 
 ## Getting Started
 

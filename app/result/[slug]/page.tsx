@@ -17,6 +17,8 @@ import { DataProps } from "@/components/composition/model-response-time";
 import { MetricsComposed } from "@/components/composition/metrics-composed";
 import OverallPage from "@/components/composition/overall";
 import { useRouter } from "next/navigation";
+import { FaDownload } from "react-icons/fa6";
+import OverallSessionPage from "@/components/composition/overall-session";
 
 interface DatabaseProps {
   id: number;
@@ -51,6 +53,7 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
   const [modelA, setModelA] = React.useState<string>("");
   const [modelB, setModelB] = React.useState<string>("");
+
   const [winRateModelA, setWinRateModelA] = React.useState<number>(0);
   const [winRateModelB, setWinRateModelB] = React.useState<number>(0);
   const [averageTokenA, setAverageTokenA] = React.useState<number>(0);
@@ -62,6 +65,23 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
   const [avgTokenPerResponseTimeA, setAvgTokenPerResponseTimeA] =
     React.useState<number>(0);
   const [avgTokenPerResponseTimeB, setAvgTokenPerResponseTimeB] =
+    React.useState<number>(0);
+
+  const [winRateModelASession, setWinRateModelASession] =
+    React.useState<number>(0);
+  const [winRateModelBSession, setWinRateModelBSession] =
+    React.useState<number>(0);
+  const [averageTokenASession, setAverageTokenASession] =
+    React.useState<number>(0);
+  const [averageTokenBSession, setAverageTokenBSession] =
+    React.useState<number>(0);
+  const [averageResponseTimeASession, setAverageResponseTimeASession] =
+    React.useState<number>(0);
+  const [averageResponseTimeBSession, setAverageResponseTimeBSession] =
+    React.useState<number>(0);
+  const [avgTokenPerResponseTimeASession, setAvgTokenPerResponseTimeASession] =
+    React.useState<number>(0);
+  const [avgTokenPerResponseTimeBSession, setAvgTokenPerResponseTimeBSession] =
     React.useState<number>(0);
 
   const handleDownloadMetadata = () => {
@@ -122,6 +142,43 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
           return counter;
         }, 0)
       : 0;
+
+    const responseTime1 = data
+      ? data.reduce((total, x) => {
+          return (total += x.response_time_1);
+        }, 0) / 1000
+      : 0;
+
+    const responseTime2 = data
+      ? data.reduce((total, x) => {
+          return (total += x.response_time_2);
+        }, 0) / 1000
+      : 0;
+
+    const totalToken1 = data
+      ? data.reduce((total, x) => {
+          return (total += x.completion_token_1);
+        }, 0)
+      : 0;
+
+    const totalToken2 = data
+      ? data.reduce((total, x) => {
+          return (total += x.completion_token_2);
+        }, 0)
+      : 0;
+
+    const tokenPerResponseTime1 = totalToken1 / responseTime1;
+
+    const tokenPerResponseTime2 = totalToken2 / responseTime2;
+
+    setWinRateModelASession(modelA);
+    setWinRateModelBSession(modelB);
+    setAverageResponseTimeASession(data ? responseTime1 / data.length : 0);
+    setAverageResponseTimeBSession(data ? responseTime2 / data.length : 0);
+    setAverageTokenASession(data ? totalToken1 / data.length : 0);
+    setAverageTokenBSession(data ? totalToken2 / data.length : 0);
+    setAvgTokenPerResponseTimeASession(tokenPerResponseTime1);
+    setAvgTokenPerResponseTimeBSession(tokenPerResponseTime2);
 
     setStatProportion([
       {
@@ -199,10 +256,10 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
       Number((responseTimeB / data.length / 1000).toFixed(2))
     );
     setAvgTokenPerResponseTimeA(
-      Number((totalTokenA / responseTimeA / 1000).toFixed(2))
+      Number((totalTokenA / (responseTimeA / 1000)).toFixed(2))
     );
     setAvgTokenPerResponseTimeB(
-      Number((totalTokenB / responseTimeB / 1000).toFixed(2))
+      Number((totalTokenB / (responseTimeB / 1000)).toFixed(2))
     );
 
     return;
@@ -278,27 +335,35 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
   }, []);
 
   return (
-    <div className="bg-llm-background h-full space-y-5 pt-7 pb-7 lg:px-10 px-2">
-      <h1 className="font-bold text-2xl">LLM Comparison Result</h1>
-      <div className="flex justify-between gap-4">
-        <Button
-          onClick={() => router.push(`/`)}
-          className="bg-llm-primary50 hover:bg-llm-primary50_hover text-white rounded-2xl"
-        >
-          Back To Home
-        </Button>
-        <Button
-          onClick={() => {
-            if (!isLoading) {
-              handleDownloadMetadata();
-            }
-          }}
-          className="bg-llm-btn hover:bg-llm-btn_hover text-white rounded-2xl"
-        >
-          Export the Metadata
-        </Button>
+    <div className="bg-llm-background h-full space-y-5 pt-7 pb-7 lg:px-10 px-3">
+      <Title>Evaluation Summary</Title>
+      <div className="grid grid-cols-1 md:grid-cols-2 justify-between gap-4 items-center">
+        <div className="bg-white border border-gray-200 p-5 rounded-xl">
+          Review your blind test results and decide which Large Language Model
+          is the best for your use case. Want to start over?
+          <a className="hover:underline" href="/">
+            {" "}
+            Click Here!
+          </a>
+        </div>
+        <div className="flex justify-end">
+          <Button
+            onClick={() => {
+              if (!isLoading) {
+                handleDownloadMetadata();
+              }
+            }}
+            className="bg-llm-btn hover:bg-llm-btn_hover text-white rounded-3xl"
+          >
+            Export Results
+            <FaDownload />
+          </Button>
+        </div>
       </div>
-      <div className="flex flex-col lg:flex-row justify-stretch gap-4">
+      <div>
+        <Title>Session</Title>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 justify-stretch gap-4">
         <ModelResponseTime
           allResponseTime={allResponseTime}
           modelA={modelA}
@@ -312,21 +377,20 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
           isLoading={isLoading}
         />
       </div>
-      <div className="flex justify-stretch gap-4">
-        <OverallPage
+      <div className="flex gap-4">
+        <OverallSessionPage
           modelA={modelA}
           modelB={modelB}
-          avgTime1={averageResponseTimeA}
-          avgTime2={averageResponseTimeB}
-          totalWinA={winRateModelA}
-          totalWinB={winRateModelB}
-          avgTokenA={averageTokenA}
-          avgTokenB={averageTokenB}
-          avgTokenPerTimeA={avgTokenPerResponseTimeA}
-          avgTokenPerTimeB={avgTokenPerResponseTimeB}
+          avgTime1={averageResponseTimeASession}
+          avgTime2={averageResponseTimeBSession}
+          totalWinA={winRateModelASession}
+          totalWinB={winRateModelBSession}
+          avgTokenA={averageTokenASession}
+          avgTokenB={averageTokenBSession}
+          avgTokenPerTimeA={avgTokenPerResponseTimeASession}
+          avgTokenPerTimeB={avgTokenPerResponseTimeBSession}
           isLoading={isLoading}
         />
-        {/* <OverallPage /> */}
       </div>
       <ResultComparison
         allMessage={allMessage}
@@ -334,9 +398,31 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
         modelB={modelB}
         isLoading={isLoading}
       />
-      <div className="flex flex-row w-full justify-between mt-4">
+      <div>
+        <Title>Global</Title>
+      </div>
+      <OverallPage
+        modelA={modelA}
+        modelB={modelB}
+        avgTime1={averageResponseTimeA}
+        avgTime2={averageResponseTimeB}
+        totalWinA={winRateModelA}
+        totalWinB={winRateModelB}
+        avgTokenA={averageTokenA}
+        avgTokenB={averageTokenB}
+        avgTokenPerTimeA={avgTokenPerResponseTimeA}
+        avgTokenPerTimeB={avgTokenPerResponseTimeB}
+        isLoading={isLoading}
+      />
+      <div className="flex flex-row w-full justify-between mt-4 ">
         <LinkPreview url="https://supa.so">
-          <Image src={`/svg/logo.svg`} alt="SUPA logo" width={93} height={26} />
+          <Image
+            src={`/svg/logo.svg`}
+            alt="SUPA logo"
+            className="mb-5"
+            width={93}
+            height={26}
+          />
         </LinkPreview>
       </div>
     </div>

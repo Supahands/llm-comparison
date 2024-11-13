@@ -29,6 +29,9 @@ export default function Home() {
     responseTime2,
     prompt,
     setIsStopped,
+    promptToken,
+    completionToken1,
+    completionToken2,
   } = useAppStore();
 
   const defaultOptions = {
@@ -54,6 +57,9 @@ export default function Home() {
           prompt: prompt,
           response_time_1: responseTime1,
           response_time_2: responseTime2,
+          prompt_token: promptToken,
+          completion_token_1: completionToken1,
+          completion_token_2: completionToken2,
         },
       ]);
 
@@ -72,18 +78,20 @@ export default function Home() {
   return (
     <div className="bg-llm-background h-full min-h-screen flex flex-col">
       <div className="flex flex-col mt-4">
-        <div className="flex lg:flex-row flex-col gap-4 w-full">
-          <section className="w-full z-40 hidden lg:flex">
+        <div className="flex lg:flex-row flex-col gap-4 w-full h-full">
+          <section className="w-1/2 z-40 hidden lg:flex">
             <DescriptionCard />
           </section>
 
-          <section className="w-full">
-            <Title>Select models to compare</Title>
-            <Card className="w-full lg:min-h-[104px] h-fit">
-              <CardContent className="">
-                <ModelSelector />
-              </CardContent>
-            </Card>
+          <section className="w-full lg:w-1/2 flex">
+            <div className="flex flex-col w-full ">
+              <Title>Select models to compare</Title>
+              <Card className="w-full h-full">
+                <CardContent className="w-full h-full p-2">
+                  <ModelSelector />
+                </CardContent>
+              </Card>
+            </div>
           </section>
         </div>
       </div>
