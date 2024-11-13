@@ -3,14 +3,13 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 
 import { Skeleton } from "@/components/ui/skeleton";
-interface componentProps {
+interface ComponentProps {
   modelA: string;
   modelB: string;
   avgTime1: number;
@@ -36,8 +35,7 @@ const OverallPage = ({
   avgTokenPerTimeA,
   avgTokenPerTimeB,
   isLoading,
-}: componentProps) => {
-  console.log(modelA, modelB);
+}: ComponentProps) => {
   return (
     <Card className="w-full rounded-xl">
       <CardHeader>

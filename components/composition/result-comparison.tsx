@@ -34,10 +34,9 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 
 import ReactMarkdown from "react-markdown";
-import AutoHeight from "embla-carousel-auto-height";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-interface dataProps {
+interface DataProps {
   allMessage: Message[];
   modelA: string;
   modelB: string;
@@ -49,7 +48,7 @@ const ResultComparison = ({
   modelA,
   modelB,
   isLoading,
-}: dataProps) => {
+}: DataProps) => {
   const isMobile = useIsMobile();
   return (
     <div className="flex-row w-full border flex-grow bg-white rounded-xl">

@@ -18,6 +18,7 @@ import { v4 as uuidv4 } from "uuid";
 import { supabaseClient } from "@/lib/supabase/supabaseClient";
 import DataConsentModal from "./data-consent-modal";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { DATABASE_TABLE } from "@/lib/constants/databaseTables";
 
 const prompts = [
   "What are the most popular car brands in Japan?",
@@ -114,8 +115,8 @@ export default function Comparison() {
   }, [newMessage, selectedChoice]);
 
   const handleDataSaving = async (choice: string) => {
-    const { data, error } = await supabaseClient
-      .from(process.env.NEXT_PUBLIC_RESPONSE_TABLE ?? "")
+    const { error } = await supabaseClient
+      .from(DATABASE_TABLE.RESPONSE)
       .insert([
         {
           session_id: sessionId,
@@ -132,7 +133,6 @@ export default function Comparison() {
 
     if (error) {
       console.log("error fetching", error);
-      return;
     }
   };
 
