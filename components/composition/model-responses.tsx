@@ -4,10 +4,11 @@ import { ScrollArea } from "../ui/scroll-area";
 import ReactMarkdown from "react-markdown";
 import useAppStore from "@/hooks/store/useAppStore";
 import { useIsMutating } from "@tanstack/react-query";
-import { useCallback, useMemo } from "react";
+import { ReactElement, ReactNode, useCallback, useMemo } from "react";
 import remarkGfm from "remark-gfm";
 import Lottie from "react-lottie";
 import * as animationData from "../../public/animation/loading";
+import React from "react";
 
 export default function ModelResponses() {
   const { responseModel1, responseModel2 } = useAppStore();
@@ -42,12 +43,14 @@ export default function ModelResponses() {
   };
 
   const randomizeResponses = useCallback(() => {
-    return Math.random() < 0.5 ? { model: responseModel1, otherModel: responseModel2 } : { model: responseModel2, otherModel: responseModel1 };
+    return Math.random() < 0.5
+      ? { model: responseModel1, otherModel: responseModel2 }
+      : { model: responseModel2, otherModel: responseModel1 };
   }, [responseModel1, responseModel2]);
 
   const responses = useMemo(() => {
-    return randomizeResponses()
-  }, [randomizeResponses])
+    return randomizeResponses();
+  }, [randomizeResponses]);
 
   return (
     <div>
@@ -77,7 +80,10 @@ export default function ModelResponses() {
                     className="prose dark:prose-invert"
                     remarkPlugins={[remarkGfm]}
                   >
-                    {responses.model}
+                    {responses.model.replace(
+                      /<redacted>(.+?)<\/redacted>/g,
+                      (match, content) => "█".repeat(content.length)
+                    )}
                   </ReactMarkdown>
                 </div>
               </>
@@ -94,7 +100,10 @@ export default function ModelResponses() {
                     className="prose dark:prose-invert"
                     remarkPlugins={[remarkGfm]}
                   >
-                    {responses.otherModel}
+                    {responses.otherModel.replace(
+                      /<redacted>(.+?)<\/redacted>/g,
+                      (match, content) => "█".repeat(content.length)
+                    )}
                   </ReactMarkdown>
                 </div>
               </>
