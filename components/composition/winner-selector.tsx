@@ -61,7 +61,7 @@ export default function WinnerSelector() {
       {responseModel1 && responseModel2 && (
         <div className="w-full lg:bg-llm-grey4 py-2">
           <div className="flex justify-center w-full">
-            <div className="grid grid-cols-4 gap-2 mb-2">
+            <div className="grid grid-cols-4 gap-2">
               {userInputs.map((input, index) => (
                 <Button
                   key={input.value}
@@ -85,7 +85,7 @@ export default function WinnerSelector() {
             </div>
           </div>
           {hasRoundEnded && (
-            <div className="w-full text-center">
+            <div className="w-full text-center mt-2">
               Round {roundCounter} complete. Ask another question! 👇
             </div>
           )}
