@@ -19,6 +19,7 @@ import { supabaseClient } from "@/lib/supabase/supabaseClient";
 import DataConsentModal from "./data-consent-modal";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { DATABASE_TABLE } from "@/lib/constants/databaseTables";
+import { usePostHog } from 'posthog-js/react'
 
 const prompts = [
   "What are the most popular car brands in Japan?",
@@ -59,6 +60,7 @@ export default function Comparison() {
   } = useAppStore();
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const posthog = usePostHog()
 
   const { mutate: mutateModel1 } = useMutation({
     mutationKey: ["model1"],
@@ -113,6 +115,9 @@ export default function Comparison() {
         incrementRoundCounter();
       }
     }
+    posthog?.capture('llm-compare.prompts.new', {
+      prompt: newMessage
+    })
     setPrompt(newMessage);
     setNewMessage("");
   }, [newMessage, selectedChoice]);
