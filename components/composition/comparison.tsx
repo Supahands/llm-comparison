@@ -19,6 +19,7 @@ import { supabaseClient } from "@/lib/supabase/supabaseClient";
 import DataConsentModal from "./data-consent-modal";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { DATABASE_TABLE } from "@/lib/constants/databaseTables";
+import { usePostHog } from 'posthog-js/react'
 import ReCAPTCHA from "react-google-recaptcha";
 
 const prompts = [
@@ -61,6 +62,7 @@ export default function Comparison() {
 
   const recaptchaRef = useRef<ReCAPTCHA>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const posthog = usePostHog()
 
   const { mutate: mutateModel1 } = useMutation({
     mutationKey: ["model1"],
@@ -117,6 +119,9 @@ export default function Comparison() {
         incrementRoundCounter();
       }
     }
+    posthog?.capture('llm-compare.prompts.new', {
+      prompt: newMessage
+    })
     setPrompt(newMessage);
     setNewMessage("");
   }, [newMessage, selectedChoice]);

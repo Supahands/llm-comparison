@@ -3,6 +3,7 @@
 import useAppStore from "@/hooks/store/useAppStore";
 import { Button } from "../ui/button";
 import { ComboBoxItem } from "../ui/combo-box";
+import { usePostHog } from 'posthog-js/react'
 
 const userInputs: ComboBoxItem[] = [
   {
@@ -38,6 +39,8 @@ export default function WinnerSelector() {
     setRoundEnd,
   } = useAppStore();
 
+  const posthog = usePostHog()
+
   const handleUserChoice = (choice: ComboBoxItem) => {
     addUserChoices({
       prompt: prompt,
@@ -47,6 +50,9 @@ export default function WinnerSelector() {
   };
 
   const handleRoundEnd = (input: ComboBoxItem) => {
+    posthog?.capture('llm-compare.models.winner', {
+      choice: input.value
+    })
     handleUserChoice(input);
     setSelectedChoice(input);
     setIsStopped(false);
