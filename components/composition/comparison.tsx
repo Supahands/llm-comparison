@@ -20,6 +20,7 @@ import DataConsentModal from "./data-consent-modal";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { DATABASE_TABLE } from "@/lib/constants/databaseTables";
 import { usePostHog } from 'posthog-js/react'
+import ReCAPTCHA from "react-google-recaptcha";
 
 const prompts = [
   "What are the most popular car brands in Japan?",
@@ -59,6 +60,7 @@ export default function Comparison() {
     completionToken2,
   } = useAppStore();
 
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const posthog = usePostHog()
 
@@ -109,6 +111,8 @@ export default function Comparison() {
     if (!newMessage.trim()) {
       return;
     }
+    recaptchaRef.current?.execute();
+
     if (selectedChoice) {
       handleDataSaving(selectedChoice.value);
       if (hasRoundEnded) {
@@ -131,8 +135,14 @@ export default function Comparison() {
           selected_choice: choice,
           model_1: selectedModel1,
           model_2: selectedModel2,
-          response_model_1: responseModel1,
-          response_model_2: responseModel2,
+          response_model_1: responseModel1.replace(
+            /<redacted>.*?<\/redacted>/g,
+            ""
+          ),
+          response_model_2: responseModel2.replace(
+            /<redacted>.*?<\/redacted>/g,
+            ""
+          ),
           prompt: prompt,
           response_time_1: responseTime1,
           response_time_2: responseTime2,
@@ -207,6 +217,11 @@ export default function Comparison() {
             }}
             className="relative w-full "
           >
+            <ReCAPTCHA
+              ref={recaptchaRef}
+              size="invisible"
+              sitekey={process.env.NEXT_PUBLIC_CAPTCHA_SITE_KEY || ''}
+            />
             <Textarea
               ref={textareaRef}
               value={newMessage}

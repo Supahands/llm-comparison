@@ -62,8 +62,14 @@ export default function Home() {
           selected_choice: choice,
           model_1: selectedModel1,
           model_2: selectedModel2,
-          response_model_1: responseModel1,
-          response_model_2: responseModel2,
+          response_model_1: responseModel1.replace(
+            /<redacted>.*?<\/redacted>/g,
+            ""
+          ),
+          response_model_2: responseModel2.replace(
+            /<redacted>.*?<\/redacted>/g,
+            ""
+          ),
           prompt: prompt,
           response_time_1: responseTime1,
           response_time_2: responseTime2,
