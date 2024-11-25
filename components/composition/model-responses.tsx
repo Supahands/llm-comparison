@@ -9,18 +9,13 @@ import remarkGfm from "remark-gfm";
 import Lottie from "react-lottie";
 import * as animationData from "../../public/animation/loading";
 import React from "react";
-
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
-import { CalendarDays } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { IoInformationOutline } from "react-icons/io5";
+import { useToast } from "../../hooks/use-toast";
 
 export default function ModelResponses() {
+  const { toast } = useToast();
+
   const { responseModel1, responseModel2 } = useAppStore();
 
   const mutationModel1 = useIsMutating({
@@ -43,8 +38,13 @@ export default function ModelResponses() {
     return `calc(100vh - 460px)`;
   };
 
-  const [open, setOpen] = React.useState(false);
-  const [open2, setOpen2] = React.useState(false);
+  const triggerToast = () => {
+    toast({
+      title: "Notification",
+      description:
+        "We have redacted some words for further improvements on blind test bias. You can view them after the test ends!",
+    });
+  };
 
   const defaultOptions = {
     loop: true,
@@ -85,75 +85,61 @@ export default function ModelResponses() {
           <div className="model-a-response">
             {!isPendingModel1 && !isPendingModel2 && responseModel1 && (
               <>
-                <HoverCard open={open2} onOpenChange={setOpen2}>
-                  <HoverCardTrigger asChild>
-                    <div>
-                      <div
-                        className="w-fit bg-llm-neutral95 text-black p-1 my-2 hover:underline"
-                        onClick={() => {
-                          setOpen2(!open2);
-                        }}
-                      >
-                        Model A
-                      </div>
-                      <div className="p-2 rounded-lg bg-llm-grey4 border border-solid border-llm-neutral90 text-llm-response">
-                        <ReactMarkdown
-                          className="prose dark:prose-invert"
-                          remarkPlugins={[remarkGfm]}
-                        >
-                          {responses.model.replace(
-                            /<redacted>(.+?)<\/redacted>/g,
-                            (match, content) => "█".repeat(content.length)
-                          )}
-                        </ReactMarkdown>
-                      </div>
+                <div>
+                  <div className="flex w-full justify-between items-center">
+                    <div className="w-fit bg-llm-neutral95 text-black p-1 my-2">
+                      Model A
                     </div>
-                  </HoverCardTrigger>
-                  <HoverCardContent className="w-80">
-                    <div className="flex justify-between space-x-4">
-                      We have redacted some words for further improvements on
-                      blind test bias. You can view them after the test ends!
-                    </div>
-                  </HoverCardContent>
-                </HoverCard>
+                    <Button
+                      onClick={triggerToast}
+                      className="w-5 h-5 rounded-md bg-transparent border border-llm-primary50 text-llm-primary50 hover:bg-llm-primary50 hover:text-white "
+                    >
+                      <IoInformationOutline />
+                    </Button>
+                  </div>
+                  <div className="p-2 rounded-lg bg-llm-grey4 border border-solid border-llm-neutral90 text-llm-response">
+                    <ReactMarkdown
+                      className="prose dark:prose-invert"
+                      remarkPlugins={[remarkGfm]}
+                    >
+                      {responses.model.replace(
+                        /<redacted>(.+?)<\/redacted>/g,
+                        (match, content) => "█".repeat(content.length)
+                      )}
+                    </ReactMarkdown>
+                  </div>
+                </div>
               </>
             )}
           </div>
           <div className="model-b-response">
             {!isPendingModel1 && !isPendingModel2 && responseModel2 && (
               <>
-                <HoverCard open={open} onOpenChange={setOpen}>
-                  <HoverCardTrigger asChild>
-                    <div>
-                      <div
-                        className="w-fit bg-llm-neutral95 text-black p-1 my-2 hover:underline"
-                        onClick={() => {
-                          setOpen(!open);
-                        }}
-                      >
-                        Model B
-                      </div>
-                      {/* <Button variant="link">@nextjs</Button> */}
-                      <div className="p-2 rounded-lg bg-llm-grey4 text-llm-response border border-solid border-llm-neutral90">
-                        <ReactMarkdown
-                          className="prose dark:prose-invert"
-                          remarkPlugins={[remarkGfm]}
-                        >
-                          {responses.otherModel.replace(
-                            /<redacted>(.+?)<\/redacted>/g,
-                            (match, content) => "█".repeat(content.length)
-                          )}
-                        </ReactMarkdown>
-                      </div>
+                <div>
+                  <div className="flex w-full justify-between items-center">
+                    <div className="w-fit bg-llm-neutral95 text-black p-1 my-2">
+                      Model B
                     </div>
-                  </HoverCardTrigger>
-                  <HoverCardContent className="w-80">
-                    <div className="flex justify-between space-x-4">
-                      We have redacted some words for further improvements on
-                      blind test bias. You can view them after the test ends!
-                    </div>
-                  </HoverCardContent>
-                </HoverCard>
+                    <Button
+                      onClick={triggerToast}
+                      className="w-5 h-5 rounded-md bg-transparent border border-llm-primary50 text-llm-primary50 hover:bg-llm-primary50 hover:text-white"
+                    >
+                      <IoInformationOutline />
+                    </Button>
+                  </div>
+                  {/* <Button variant="link">@nextjs</Button> */}
+                  <div className="p-2 rounded-lg bg-llm-grey4 text-llm-response border border-solid border-llm-neutral90">
+                    <ReactMarkdown
+                      className="prose dark:prose-invert"
+                      remarkPlugins={[remarkGfm]}
+                    >
+                      {responses.otherModel.replace(
+                        /<redacted>(.+?)<\/redacted>/g,
+                        (match, content) => "█".repeat(content.length)
+                      )}
+                    </ReactMarkdown>
+                  </div>
+                </div>
               </>
             )}
           </div>
