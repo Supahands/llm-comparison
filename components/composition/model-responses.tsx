@@ -11,10 +11,17 @@ import * as animationData from "../../public/animation/loading";
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { IoInformationOutline } from "react-icons/io5";
-import { useToast } from "../../hooks/use-toast";
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export default function ModelResponses() {
-  const { toast } = useToast();
+  const [open, setOpen] = React.useState<boolean>(false);
+  const [open2, setOpen2] = React.useState<boolean>(false);
 
   const { responseModel1, responseModel2 } = useAppStore();
 
@@ -36,14 +43,6 @@ export default function ModelResponses() {
 
   const calculateMaxHeight = () => {
     return `calc(100vh - 460px)`;
-  };
-
-  const triggerToast = () => {
-    toast({
-      title: "Notification",
-      description:
-        "We have redacted some words for further improvements on blind test bias. You can view them after the test ends!",
-    });
   };
 
   const defaultOptions = {
@@ -90,12 +89,28 @@ export default function ModelResponses() {
                     <div className="w-fit bg-llm-neutral95 text-black p-1 my-2">
                       Model A
                     </div>
-                    <Button
-                      onClick={triggerToast}
-                      className="w-5 h-5 rounded-md bg-transparent border border-llm-primary50 text-llm-primary50 hover:bg-llm-primary50 hover:text-white "
-                    >
-                      <IoInformationOutline />
-                    </Button>
+                    <TooltipProvider>
+                      <Tooltip open={open}>
+                        <TooltipTrigger asChild>
+                          <Button
+                            onClick={() => {
+                              setOpen(!open);
+                              setOpen2(false);
+                            }}
+                            className="w-5 h-5 p-2 rounded-full bg-transparent border border-llm-primary50 text-llm-primary50 hover:bg-llm-primary50 hover:text-white "
+                          >
+                            <IoInformationOutline />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="left">
+                          <div className="w-72 text-justify">
+                            We have redacted some words for further improvements
+                            on blind test bias. You can view them after the test
+                            ends!
+                          </div>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
                   <div className="p-2 rounded-lg bg-llm-grey4 border border-solid border-llm-neutral90 text-llm-response">
                     <ReactMarkdown
@@ -120,12 +135,28 @@ export default function ModelResponses() {
                     <div className="w-fit bg-llm-neutral95 text-black p-1 my-2">
                       Model B
                     </div>
-                    <Button
-                      onClick={triggerToast}
-                      className="w-5 h-5 rounded-md bg-transparent border border-llm-primary50 text-llm-primary50 hover:bg-llm-primary50 hover:text-white"
-                    >
-                      <IoInformationOutline />
-                    </Button>
+                    <TooltipProvider>
+                      <Tooltip open={open2}>
+                        <TooltipTrigger asChild>
+                          <Button
+                            onClick={() => {
+                              setOpen2(!open2);
+                              setOpen(false);
+                            }}
+                            className="w-5 h-5 p-2 rounded-full bg-transparent border border-llm-primary50 text-llm-primary50 hover:bg-llm-primary50 hover:text-white "
+                          >
+                            <IoInformationOutline />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="left">
+                          <div className="w-72 text-justify">
+                            We have redacted some words for further improvements
+                            on blind test bias. You can view them after the test
+                            ends!
+                          </div>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
                   {/* <Button variant="link">@nextjs</Button> */}
                   <div className="p-2 rounded-lg bg-llm-grey4 text-llm-response border border-solid border-llm-neutral90">
