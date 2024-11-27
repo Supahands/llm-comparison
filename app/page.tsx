@@ -17,9 +17,10 @@ import { DATABASE_TABLE } from "@/lib/constants/databaseTables";
 
 import { FaGithub } from "react-icons/fa";
 import { IoStarOutline } from "react-icons/io5";
+import { usePostHog } from 'posthog-js/react'
+
 
 import { useEffect, useState } from "react";
-import { set } from "date-fns";
 
 export default function Home() {
   const [stars, setStars] = useState<string>("");
@@ -40,6 +41,8 @@ export default function Home() {
     completionToken1,
     completionToken2,
   } = useAppStore();
+
+  const posthog = usePostHog()
 
   const defaultOptions = {
     loop: 3,
@@ -83,6 +86,7 @@ export default function Home() {
 
   const handleEvaluation = async () => {
     if (selectedChoice) {
+      posthog?.capture('llm-compare.app.end-evaluation')
       await handleDataSaving(selectedChoice.value);
       router.push(`/result/${sessionId}`);
     }
