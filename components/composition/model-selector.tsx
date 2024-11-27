@@ -8,6 +8,7 @@ import { supabaseClient } from "@/lib/supabase/supabaseClient";
 import { DATABASE_TABLE } from "@/lib/constants/databaseTables";
 import { Dices, EyeClosed, EyeOff } from "lucide-react";
 import { Button } from "../ui/button";
+import { usePostHog } from 'posthog-js/react'
 
 export default function ModelSelector() {
   const {
@@ -21,6 +22,7 @@ export default function ModelSelector() {
     setAvailableModels,
   } = useAppStore();
   const [showModelSelector, setShowModelSelector] = useState<boolean>(true);
+  const posthog = usePostHog()
 
   const getAvailableModels = async () => {
     const { data, error } = await supabaseClient
@@ -55,6 +57,7 @@ export default function ModelSelector() {
       availableModels[Math.floor(Math.random() * availableModels.length)];
     setSelectedModel1(model1.label);
     setSelectedModel2(model2.label);
+    posthog?.capture('llm-compare.models.randomize')
   };
 
   useEffect(() => {
@@ -66,6 +69,20 @@ export default function ModelSelector() {
       setShowModelSelector(false);
     }
   }, [isComparingModel]);
+
+  const handleModel1Select = (model: string) => {
+    posthog?.capture('llm-compare.models.select', {
+      model
+    })
+    setSelectedModel1(model);
+  }
+
+  const handleModel2Select = (model: string) => {
+    posthog?.capture('llm-compare.models.select', {
+      model
+    })
+    setSelectedModel2(model);
+  }
 
   return (
     <div className="flex flex-row items-center w-full h-full">
@@ -81,7 +98,7 @@ export default function ModelSelector() {
               <div className="w-full">
                 <ComboBox
                   items={availableModels}
-                  onItemSelect={setSelectedModel1}
+                  onItemSelect={handleModel1Select}
                   disabled={isComparingModel || userChoices.length > 0}
                   defaultValue={selectedModel1}
                 />
@@ -92,7 +109,7 @@ export default function ModelSelector() {
               <div className="w-full">
                 <ComboBox
                   items={availableModels}
-                  onItemSelect={setSelectedModel2}
+                  onItemSelect={handleModel2Select}
                   disabled={isComparingModel || userChoices.length > 0}
                   defaultValue={selectedModel2}
                 />
