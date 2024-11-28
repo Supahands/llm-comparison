@@ -33,6 +33,7 @@ const config = {
           btn_hover: "#C93939",
           primary95: "#EBE8F5",
           peach50: "#FDF3F3",
+          hover_primary50: "#0B06B2",
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
