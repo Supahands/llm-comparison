@@ -19,6 +19,8 @@ import OverallPage from "@/components/composition/overall";
 import { useRouter } from "next/navigation";
 import { FaDownload } from "react-icons/fa6";
 import OverallSessionPage from "@/components/composition/overall-session";
+import { IoMdShare } from "react-icons/io";
+import { useToast } from "@/hooks/use-toast";
 
 import { FaGithub } from "react-icons/fa";
 import { IoStarOutline } from "react-icons/io5";
@@ -48,6 +50,7 @@ export interface MetricsProps {
 
 const ResultPage = ({ params }: { params: { slug: string } }) => {
   const router = useRouter();
+  const { toast } = useToast();
 
   const [stars, setStars] = React.useState<string>("");
   const [allMessage, setAllMessage] = React.useState<Message[]>([]);
@@ -378,7 +381,26 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
             Click Here!
           </a>
         </div>
-        <div className="flex justify-end">
+        <div className="flex justify-end gap-2">
+          <Button
+            onClick={() => {
+              const textToCopy = `https://eval.supa.so/result/${params.slug}`;
+              navigator.clipboard
+                .writeText(textToCopy)
+                .then(() => {
+                  toast({
+                    description: "Copied to Clipboard!",
+                  });
+                })
+                .catch((err) => {
+                  console.error("Failed to copy text: ", err);
+                });
+            }}
+            className="bg-llm-primary50 hover:bg-llm-hover_primary50 text-white rounded-3xl"
+          >
+            Share URL
+            <IoMdShare />
+          </Button>
           <Button
             onClick={() => {
               if (!isLoading) {

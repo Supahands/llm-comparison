@@ -140,8 +140,8 @@ export default function ModelResponses() {
                         <TooltipTrigger asChild>
                           <Button
                             onClick={() => {
-                              setOpen2(!open2);
-                              setOpen(false);
+                              setOpen(!open);
+                              setOpen2(false);
                             }}
                             className="w-5 h-5 p-2 rounded-full bg-transparent border border-llm-primary50 text-llm-primary50 hover:bg-llm-primary50 hover:text-white "
                           >
