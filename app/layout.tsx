@@ -8,6 +8,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { PostHogProvider } from "posthog-js/react";
 import { useEffect } from "react";
 import posthog from "posthog-js";
+import { metadata } from "./metadata";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,34 @@ export default function RootLayout({
       <PostHogProvider client={posthog}>
         <QueryClientProvider client={queryClient}>
           <ConfirmDialogProvider>
+            <head>
+              <title>Compare LLM Models</title>
+
+              {/* OpenGraph */}
+              <meta property="og:title" content="Compare LLM Models" />
+              <meta
+                property="og:image"
+                content="https://cdn.prod.website-files.com/63024b20439fa61d4aee344c/6729815170f000c58463873c_select%20models-p-800.jpg"
+              />
+              <meta
+                property="og:description"
+                content="Compare LLMs to find out which one fits your needs best!"
+              />
+              <meta property="og:url" content="https://eval.supa.so" />
+
+              {/* Twitter */}
+              <meta name="twitter:card" content="summary_large_image" />
+              <meta name="twitter:title" content="Compare LLM Models" />
+              <meta
+                name="twitter:description"
+                content="Compare LLMs to find out which one fits your needs best!"
+              />
+              <meta
+                name="twitter:image"
+                content="https://cdn.prod.website-files.com/63024b20439fa61d4aee344c/6729815170f000c58463873c_select%20models-p-800.jpg"
+              />
+              <meta name="twitter:url" content="https://eval.supa.so" />
+            </head>
             <body
               className={`${lato.className} antialiased h-full lg:!px-10 px-2 bg-llm-background`}
             >
