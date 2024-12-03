@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Send } from "lucide-react";
+import { Send, RotateCcw } from "lucide-react";
 import PromptSelector from "./promp-selector";
 import { MessageRequest } from "@/lib/types/message";
 import ModelResponses from "./model-responses";
@@ -19,8 +19,9 @@ import { supabaseClient } from "@/lib/supabase/supabaseClient";
 import DataConsentModal from "./data-consent-modal";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { DATABASE_TABLE } from "@/lib/constants/databaseTables";
-import { usePostHog } from 'posthog-js/react'
+import { usePostHog } from "posthog-js/react";
 import ReCAPTCHA from "react-google-recaptcha";
+import { IoMdShare } from "react-icons/io";
 
 const prompts = [
   "What are the most popular car brands in Japan?",
@@ -58,11 +59,13 @@ export default function Comparison() {
     promptToken,
     completionToken1,
     completionToken2,
+    isRetryOverlay,
+    setIsRetryOverlay,
   } = useAppStore();
 
   const recaptchaRef = useRef<ReCAPTCHA>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const posthog = usePostHog()
+  const posthog = usePostHog();
 
   const { mutate: mutateModel1 } = useMutation({
     mutationKey: ["model1"],
@@ -80,6 +83,7 @@ export default function Comparison() {
       setCompletionToken1(data.usage.completion_tokens);
     },
     onError: (error) => {
+      setIsRetryOverlay(true);
       console.log("error1", error);
     },
   });
@@ -101,6 +105,7 @@ export default function Comparison() {
     },
     onError: (error) => {
       console.log("error2", error);
+      setIsRetryOverlay(true);
     },
     onSettled: () => {},
   });
@@ -119,9 +124,9 @@ export default function Comparison() {
         incrementRoundCounter();
       }
     }
-    posthog?.capture('llm-compare.prompts.new', {
-      prompt: newMessage
-    })
+    posthog?.capture("llm-compare.prompts.new", {
+      prompt: newMessage,
+    });
     setPrompt(newMessage);
     setNewMessage("");
   }, [newMessage, selectedChoice]);
@@ -200,8 +205,25 @@ export default function Comparison() {
     <div className="mx-auto mt-4 w-full flex-grow">
       <DataConsentModal />
       <Card className=" w-full mx-auto border rounded-xl  bg-white flex-grow h-full flex flex-col">
-        <CardContent className="flex flex-col flex-grow overflow-hidden p-1 h-full">
+        <CardContent className="flex flex-col flex-grow overflow-hidden p-1 h-full relative">
           <PromptDisplay />
+          {isRetryOverlay && (
+            <div className="w-full absolute bottom-0 flex flex-col justify-center items-center z-50 bg-white/80 backdrop-blur-sm py-4">
+              <div className="text-sm">An error has occurred</div>
+              <Button
+                className="bg-llm-primary50 hover:bg-llm-hover_primary50 text-white rounded-3xl"
+                onClick={() => {
+                  reset();
+                  mutateModel1(payloadModel1);
+                  mutateModel2(payloadModel2);
+                  setIsComparingModel(true);
+                }}
+              >
+                Retry
+                <RotateCcw></RotateCcw>
+              </Button>
+            </div>
+          )}
 
           <ModelResponses />
         </CardContent>
@@ -220,7 +242,7 @@ export default function Comparison() {
             <ReCAPTCHA
               ref={recaptchaRef}
               size="invisible"
-              sitekey={process.env.NEXT_PUBLIC_CAPTCHA_SITE_KEY || ''}
+              sitekey={process.env.NEXT_PUBLIC_CAPTCHA_SITE_KEY || ""}
             />
             <Textarea
               ref={textareaRef}

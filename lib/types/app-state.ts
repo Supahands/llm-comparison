@@ -18,6 +18,7 @@ export interface AppState {
   completionToken2: number;
   roundCounter: number;
   hasRoundEnded: boolean;
+  isRetryOverlay: boolean;
 
   userChoices: UserChoice[];
   selectedChoice: ComboBoxItem | undefined;
@@ -43,6 +44,7 @@ export interface AppState {
   setIsStopped: (isStopped: boolean) => void;
   setRoundEnd: (end: boolean) => void;
   incrementRoundCounter: () => void;
+  setIsRetryOverlay: (isOverlay: boolean) => void;
   reset: () => void;
 }
 

@@ -23,6 +23,7 @@ const useAppStore = create<AppState>((set) => ({
   isStopped: true,
   roundCounter: 1,
   hasRoundEnded: false,
+  isRetryOverlay: false,
 
   setSessionId: (sessionId: string) =>
     set((_state: AppState) => ({ sessionId: sessionId })),
@@ -57,7 +58,8 @@ const useAppStore = create<AppState>((set) => ({
     set((_state: AppState) => ({ isStopped })),
   incrementRoundCounter: () =>
     set((state: AppState) => ({ roundCounter: state.roundCounter + 1 })),
-  setRoundEnd:  (end) => set((_state: AppState) => ({ hasRoundEnded: end})),
+  setRoundEnd: (end) => set((_state: AppState) => ({ hasRoundEnded: end })),
+  setIsRetryOverlay: (isOverlay) => set((_state: AppState) => ({ isRetryOverlay: isOverlay })),
   reset: () =>
     set((state: AppState) => ({
       responseModel1: "",
@@ -67,6 +69,7 @@ const useAppStore = create<AppState>((set) => ({
       selectedChoice: undefined,
       isComparingModel: false,
       hasRoundEnded: false,
+      isRetryOverlay: false
     })),
   addUserChoices: (choice) =>
     set((state: AppState) => ({

@@ -83,95 +83,99 @@ export default function ModelResponses() {
         <div className="grid grid-cols-2 gap-4 mb-5">
           <div className="model-a-response">
             {!isPendingModel1 && !isPendingModel2 && responseModel1 && (
-              <>
-                <div>
-                  <div className="flex w-full justify-between items-center">
-                    <div className="w-fit bg-llm-neutral95 text-black p-1 my-2">
-                      Model A
-                    </div>
-                    <TooltipProvider>
-                      <Tooltip open={open}>
-                        <TooltipTrigger asChild>
-                          <Button
-                            onClick={() => {
-                              setOpen(!open);
-                              setOpen2(false);
-                            }}
-                            className="w-5 h-5 p-2 rounded-full bg-transparent border border-llm-primary50 text-llm-primary50 hover:bg-llm-primary50 hover:text-white "
-                          >
-                            <IoInformationOutline />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent side="left">
-                          <div className="w-72 text-justify">
-                            We have redacted some words for further improvements
-                            on blind test bias. You can view them after the test
-                            ends!
-                          </div>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+              <div>
+                <div className="flex w-full justify-between items-center">
+                  <div className="w-fit bg-llm-neutral95 text-black p-1 my-2">
+                    Model A
                   </div>
-                  <div className="p-2 rounded-lg bg-llm-grey4 border border-solid border-llm-neutral90 text-llm-response">
-                    <ReactMarkdown
-                      className="prose dark:prose-invert"
-                      remarkPlugins={[remarkGfm]}
-                    >
-                      {responses.model.replace(
-                        /<redacted>(.+?)<\/redacted>/g,
-                        (match, content) => "█".repeat(content.length)
-                      )}
-                    </ReactMarkdown>
-                  </div>
+                  <TooltipProvider>
+                    <Tooltip open={open}>
+                      <TooltipTrigger asChild>
+                        <Button
+                          onMouseEnter={() => {
+                            setOpen(!open);
+                            setOpen2(false);
+                          }}
+                          onMouseLeave={() => {
+                            setOpen(false);
+                            setOpen2(false);
+                          }}
+                          className="w-5 h-5 p-2 rounded-full bg-transparent border border-llm-primary50 text-llm-primary50 hover:bg-llm-primary50 hover:text-white "
+                        >
+                          <IoInformationOutline />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="left">
+                        <div className="w-72 text-justify">
+                          We have redacted some words for further improvements
+                          on blind test bias. You can view them after the test
+                          ends!
+                        </div>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
-              </>
+                <div className="p-2 rounded-lg bg-llm-grey4 border border-solid border-llm-neutral90 text-llm-response">
+                  <ReactMarkdown
+                    className="prose dark:prose-invert"
+                    remarkPlugins={[remarkGfm]}
+                  >
+                    {responses.model.replace(
+                      /<redacted>(.+?)<\/redacted>/g,
+                      (match, content) => "█".repeat(content.length)
+                    )}
+                  </ReactMarkdown>
+                </div>
+              </div>
             )}
           </div>
           <div className="model-b-response">
             {!isPendingModel1 && !isPendingModel2 && responseModel2 && (
-              <>
-                <div>
-                  <div className="flex w-full justify-between items-center">
-                    <div className="w-fit bg-llm-neutral95 text-black p-1 my-2">
-                      Model B
-                    </div>
-                    <TooltipProvider>
-                      <Tooltip open={open2}>
-                        <TooltipTrigger asChild>
-                          <Button
-                            onClick={() => {
-                              setOpen(!open);
-                              setOpen2(false);
-                            }}
-                            className="w-5 h-5 p-2 rounded-full bg-transparent border border-llm-primary50 text-llm-primary50 hover:bg-llm-primary50 hover:text-white "
-                          >
-                            <IoInformationOutline />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent side="left">
-                          <div className="w-72 text-justify">
-                            We have redacted some words for further improvements
-                            on blind test bias. You can view them after the test
-                            ends!
-                          </div>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+              <div>
+                <div className="flex w-full justify-between items-center">
+                  <div className="w-fit bg-llm-neutral95 text-black p-1 my-2">
+                    Model B
                   </div>
-                  {/* <Button variant="link">@nextjs</Button> */}
-                  <div className="p-2 rounded-lg bg-llm-grey4 text-llm-response border border-solid border-llm-neutral90">
-                    <ReactMarkdown
-                      className="prose dark:prose-invert"
-                      remarkPlugins={[remarkGfm]}
-                    >
-                      {responses.otherModel.replace(
-                        /<redacted>(.+?)<\/redacted>/g,
-                        (match, content) => "█".repeat(content.length)
-                      )}
-                    </ReactMarkdown>
-                  </div>
+                  <TooltipProvider>
+                    <Tooltip open={open2}>
+                      <TooltipTrigger asChild>
+                        <Button
+                          onMouseEnter={() => {
+                            setOpen2(!open);
+                            setOpen(false);
+                          }}
+                          onMouseLeave={() => {
+                            setOpen2(false);
+                            setOpen(false);
+                          }}
+                          className="w-5 h-5 p-2 rounded-full bg-transparent border border-llm-primary50 text-llm-primary50 hover:bg-llm-primary50 hover:text-white "
+                        >
+                          <IoInformationOutline />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent side="left">
+                        <div className="w-72 text-justify">
+                          We have redacted some words for further improvements
+                          on blind test bias. You can view them after the test
+                          ends!
+                        </div>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
-              </>
+                {/* <Button variant="link">@nextjs</Button> */}
+                <div className="p-2 rounded-lg bg-llm-grey4 text-llm-response border border-solid border-llm-neutral90">
+                  <ReactMarkdown
+                    className="prose dark:prose-invert"
+                    remarkPlugins={[remarkGfm]}
+                  >
+                    {responses.otherModel.replace(
+                      /<redacted>(.+?)<\/redacted>/g,
+                      (match, content) => "█".repeat(content.length)
+                    )}
+                  </ReactMarkdown>
+                </div>
+              </div>
             )}
           </div>
         </div>
