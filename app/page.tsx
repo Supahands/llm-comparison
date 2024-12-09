@@ -1,13 +1,13 @@
 "use client";
 
-import Comparison from "@/components/composition/comparison";
-import { Card, CardContent } from "@/components/ui/card";
-import ModelSelector from "@/components/composition/model-selector";
-import { LinkPreview } from "@/components/ui/link-preview";
-import Title from "@/components/ui/title";
+import Comparison from "../components/composition/comparison";
+import { Card, CardContent } from "../components/ui/card";
+import ModelSelector from "../components/composition/model-selector";
+import { LinkPreview } from "../components/ui/link-preview";
+import Title from "../components/ui/title";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import DescriptionCard from "@/components/composition/description-card";
+import { Button } from "../components/ui/button";
+import DescriptionCard from "../components/composition/description-card";
 import { useRouter } from "next/navigation";
 import useAppStore from "@/hooks/store/useAppStore";
 import Lottie from "react-lottie";
@@ -17,8 +17,7 @@ import { DATABASE_TABLE } from "@/lib/constants/databaseTables";
 
 import { FaGithub } from "react-icons/fa";
 import { IoStarOutline } from "react-icons/io5";
-import { usePostHog } from 'posthog-js/react'
-
+import { usePostHog } from "posthog-js/react";
 
 import { useEffect, useState } from "react";
 
@@ -42,7 +41,7 @@ export default function Home() {
     completionToken2,
   } = useAppStore();
 
-  const posthog = usePostHog()
+  const posthog = usePostHog();
 
   const defaultOptions = {
     loop: 3,
@@ -86,7 +85,7 @@ export default function Home() {
 
   const handleEvaluation = async () => {
     if (selectedChoice) {
-      posthog?.capture('llm-compare.app.end-evaluation')
+      posthog?.capture("llm-compare.app.end-evaluation");
       await handleDataSaving(selectedChoice.value);
       router.push(`/result/${sessionId}`);
     }
