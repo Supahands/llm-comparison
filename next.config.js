@@ -1,4 +1,4 @@
-import path from "path";
+const path = require("path"); // Using CommonJS syntax
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -15,4 +15,4 @@ const nextConfig = {
   }
 };
 
-export default nextConfig;
+module.exports = nextConfig;
