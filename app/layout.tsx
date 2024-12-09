@@ -4,7 +4,7 @@ import { ConfirmDialogProvider } from "@omit/react-confirm-dialog";
 import "./globals.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { lato } from "./font-import";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "../components/ui/toaster";
 import { PostHogProvider } from "posthog-js/react";
 import { useEffect } from "react";
 import posthog from "posthog-js";
