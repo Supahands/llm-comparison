@@ -1,13 +1,13 @@
 "use client";
 
-import Comparison from "@/components/composition/comparison";
-import { Card, CardContent } from "@/components/ui/card";
-import ModelSelector from "@/components/composition/model-selector";
-import { LinkPreview } from "@/components/ui/link-preview";
-import Title from "@/components/ui/title";
+import Comparison from "../components/composition/comparison";
+import { Card, CardContent } from "../components/ui/card";
+import ModelSelector from "../components/composition/model-selector";
+import { LinkPreview } from "../components/ui/link-preview";
+import Title from "../components/ui/title";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import DescriptionCard from "@/components/composition/description-card";
+import { Button } from "../components/ui/button";
+import DescriptionCard from "../components/composition/description-card";
 import { useRouter } from "next/navigation";
 import useAppStore from "@/hooks/store/useAppStore";
 import Lottie from "react-lottie";
