@@ -110,11 +110,7 @@ const config = {
       },
     },
   },
-  plugins: [
-    require("tailwindcss-animate"),
-    require("@tailwindcss/typography"),
-    require("@tailwindcss/line-clamp"),
-  ],
+  plugins: [animate, typography, lineClamp],
 } satisfies Config;
 
 export default config;
