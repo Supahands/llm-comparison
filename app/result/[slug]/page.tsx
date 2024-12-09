@@ -2,25 +2,25 @@
 
 import React, { useEffect } from "react";
 
-import ResultComparison from "@/components/composition/result-comparison";
-import { Card, CardContent } from "@/components/ui/card";
-import ModelSelector from "@/components/composition/model-selector";
-import { LinkPreview } from "@/components/ui/link-preview";
-import Title from "@/components/ui/title";
+import ResultComparison from "../../../components/composition/result-comparison";
+import { Card, CardContent } from "../../../components/ui/card";
+import ModelSelector from "../../../components/composition/model-selector";
+import { LinkPreview } from "../../../components/ui/link-preview";
+import Title from "../../../components/ui/title";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { ModelResponseTime } from "@/components/composition/model-response-time";
-import { supabaseClient } from "@/lib/supabase/supabaseClient";
-import { Message } from "@/lib/types/message";
-import { DATABASE_TABLE } from "@/lib/constants/databaseTables";
-import { DataProps } from "@/components/composition/model-response-time";
-import { MetricsComposed } from "@/components/composition/metrics-composed";
-import OverallPage from "@/components/composition/overall";
+import { Button } from "../../../components/ui/button";
+import { ModelResponseTime } from "../../../components/composition/model-response-time";
+import { supabaseClient } from "../../../lib/supabase/supabaseClient";
+import { Message } from "../../../lib/types/message";
+import { DATABASE_TABLE } from "../../../lib/constants/databaseTables";
+import { DataProps } from "../../../components/composition/model-response-time";
+import { MetricsComposed } from "../../../components/composition/metrics-composed";
+import OverallPage from "../../../components/composition/overall";
 import { useRouter } from "next/navigation";
 import { FaDownload } from "react-icons/fa6";
-import OverallSessionPage from "@/components/composition/overall-session";
+import OverallSessionPage from "../../../components/composition/overall-session";
 import { IoMdShare } from "react-icons/io";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "../../../hooks/use-toast";
 
 import { FaGithub } from "react-icons/fa";
 import { IoStarOutline } from "react-icons/io5";
