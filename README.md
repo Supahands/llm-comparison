@@ -1,8 +1,8 @@
 ---
 title: LLM Comparison 
 emoji: 💻
-colorFrom: deep-purple
-colorTo: light-blue
+colorFrom: purple
+colorTo: indigo
 sdk: docker
 pinned: false
 ---
