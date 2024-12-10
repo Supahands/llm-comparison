@@ -58,6 +58,25 @@ export default function RootLayout({
                 content="https://cdn.prod.website-files.com/63024b20439fa61d4aee344c/6729815170f000c58463873c_select%20models-p-800.jpg"
               />
               <meta name="twitter:url" content="https://eval.supa.so" />
+
+              {process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_GA_TRACKING_ID && (
+                <>
+                  <script
+                    async
+                    src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_TRACKING_ID}`}
+                  ></script>
+                  <script
+                    dangerouslySetInnerHTML={{
+                      __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', '${process.env.NEXT_PUBLIC_GA_TRACKING_ID}', { page_path: window.location.pathname });
+                `,
+                    }}
+                  />
+                </>
+              )}
             </head>
             <body
               className={`${lato.className} antialiased h-full lg:!px-10 px-2 bg-llm-background`}
