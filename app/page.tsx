@@ -141,7 +141,9 @@ export default function Home() {
           </section>
         </div>
       </div>
-      <Comparison />
+      <div>
+        <Comparison />
+      </div>
       <div className="flex flex-row w-full lg:justify-between justify-end mt-4 mb-4">
         <div className="flex gap-4">
           <LinkPreview

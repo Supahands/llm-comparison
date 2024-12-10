@@ -202,9 +202,9 @@ export default function Comparison() {
   }, [newMessage]);
 
   return (
-    <div className="mx-auto mt-4 w-full flex-grow">
+    <div className="mx-auto mt-4 w-full flex-grow h-[69.5vh]">
       <DataConsentModal />
-      <Card className=" w-full mx-auto border rounded-xl  bg-white flex-grow h-full flex flex-col">
+      <Card className=" w-full mx-auto rounded-xl bg-white flex-grow h-full flex flex-col">
         <CardContent className="flex flex-col flex-grow overflow-hidden p-1 h-full relative">
           <PromptDisplay />
           {isRetryOverlay && (
