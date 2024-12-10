@@ -1,6 +1,5 @@
-const path = require("path"); // Using CommonJS syntax
-
 /** @type {import('next').NextConfig} */
+
 const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
@@ -11,8 +10,8 @@ const nextConfig = {
     ],
   },
   typescript: {
-    ignoreBuildErrors: true
-  }
+    ignoreBuildErrors: true,
+  },
 };
 
-module.exports = nextConfig;
+export default nextConfig;
