@@ -11,14 +11,13 @@ import DescriptionCard from "@/components/composition/description-card";
 import { useRouter } from "next/navigation";
 import useAppStore from "@/hooks/store/useAppStore";
 import Lottie from "react-lottie";
-import * as animationData from "../public/animation/finish";
+import * as animationData from "@/public/animation/finish";
 import { supabaseClient } from "@/lib/supabase/supabaseClient";
 import { DATABASE_TABLE } from "@/lib/constants/databaseTables";
 
 import { FaGithub } from "react-icons/fa";
 import { IoStarOutline } from "react-icons/io5";
-import { usePostHog } from 'posthog-js/react'
-
+import { usePostHog } from "posthog-js/react";
 
 import { useEffect, useState } from "react";
 
@@ -42,7 +41,7 @@ export default function Home() {
     completionToken2,
   } = useAppStore();
 
-  const posthog = usePostHog()
+  const posthog = usePostHog();
 
   const defaultOptions = {
     loop: 3,
@@ -86,7 +85,7 @@ export default function Home() {
 
   const handleEvaluation = async () => {
     if (selectedChoice) {
-      posthog?.capture('llm-compare.app.end-evaluation')
+      posthog?.capture("llm-compare.app.end-evaluation");
       await handleDataSaving(selectedChoice.value);
       router.push(`/result/${sessionId}`);
     }
@@ -142,7 +141,9 @@ export default function Home() {
           </section>
         </div>
       </div>
-      <Comparison />
+      <div>
+        <Comparison />
+      </div>
       <div className="flex flex-row w-full lg:justify-between justify-end mt-4 mb-4">
         <div className="flex gap-4">
           <LinkPreview
