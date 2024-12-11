@@ -31,6 +31,7 @@ export default function WinnerSelector() {
     responseModel2,
     prompt,
     roundCounter,
+    responseOrder,
     hasRoundEnded,
     setIsStopped,
     addUserChoices,

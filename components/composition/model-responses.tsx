@@ -23,7 +23,7 @@ export default function ModelResponses() {
   const [open, setOpen] = React.useState<boolean>(false);
   const [open2, setOpen2] = React.useState<boolean>(false);
 
-  const { responseModel1, responseModel2 } = useAppStore();
+  const { responseModel1, responseModel2, setModelOrder} = useAppStore();
 
   const mutationModel1 = useIsMutating({
     mutationKey: ["model1"],
@@ -56,12 +56,14 @@ export default function ModelResponses() {
 
   const randomizeResponses = useCallback(() => {
     return Math.random() < 0.5
-      ? { model: responseModel1, otherModel: responseModel2 }
-      : { model: responseModel2, otherModel: responseModel1 };
+      ? { model: responseModel1, otherModel: responseModel2, order: '1' }
+      : { model: responseModel2, otherModel: responseModel1, order: '2' };
   }, [responseModel1, responseModel2]);
 
   const responses = useMemo(() => {
-    return randomizeResponses();
+    const random = randomizeResponses();
+    setModelOrder(random)
+    return random;
   }, [randomizeResponses]);
 
   return (
