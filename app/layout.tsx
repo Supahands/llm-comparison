@@ -4,7 +4,7 @@ import { ConfirmDialogProvider } from "@omit/react-confirm-dialog";
 import "./globals.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { lato } from "./font-import";
-import { Toaster } from "../components/ui/toaster";
+import { Toaster } from "@/components/ui/toaster";
 import { PostHogProvider } from "posthog-js/react";
 import { useEffect } from "react";
 import posthog from "posthog-js";
@@ -59,24 +59,25 @@ export default function RootLayout({
               />
               <meta name="twitter:url" content="https://eval.supa.so" />
 
-              {process.env.NODE_ENV === 'production' && process.env.NEXT_PUBLIC_GA_TRACKING_ID && (
-                <>
-                  <script
-                    async
-                    src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_TRACKING_ID}`}
-                  ></script>
-                  <script
-                    dangerouslySetInnerHTML={{
-                      __html: `
+              {process.env.NODE_ENV === "production" &&
+                process.env.NEXT_PUBLIC_GA_TRACKING_ID && (
+                  <>
+                    <script
+                      async
+                      src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_TRACKING_ID}`}
+                    ></script>
+                    <script
+                      dangerouslySetInnerHTML={{
+                        __html: `
                   window.dataLayer = window.dataLayer || [];
                   function gtag(){dataLayer.push(arguments);}
                   gtag('js', new Date());
                   gtag('config', '${process.env.NEXT_PUBLIC_GA_TRACKING_ID}', { page_path: window.location.pathname });
                 `,
-                    }}
-                  />
-                </>
-              )}
+                      }}
+                    />
+                  </>
+                )}
             </head>
             <body
               className={`${lato.className} antialiased h-full lg:!px-10 px-2 bg-llm-background`}
