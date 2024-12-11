@@ -1,12 +1,3 @@
----
-title: LLM Comparison 
-emoji: 💻
-colorFrom: purple
-colorTo: blue
-sdk: docker
-pinned: false
----
-
 <h1 align="center" style="font-weight: bold;">LLM Comparison Frontend    💻</h1>
 
 <p align="center">
