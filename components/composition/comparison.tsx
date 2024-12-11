@@ -5,17 +5,17 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Send, RotateCcw } from "lucide-react";
 import PromptSelector from "./promp-selector";
-import { MessageRequest } from "@/lib/types/message";
+import { MessageRequest } from "../../lib/types/message";
 import ModelResponses from "./model-responses";
 import PromptDisplay from "./prompt-display";
-import useAppStore from "@/hooks/store/useAppStore";
+import useAppStore from "../../hooks/store/useAppStore";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { API_URL } from "@/lib/constants/urls";
+import { API_URL } from "../../lib/constants/urls";
 import { Textarea } from "../ui/textarea";
 import WinnerSelector from "./winner-selector";
 import { v4 as uuidv4 } from "uuid";
-import { supabaseClient } from "@/lib/supabase/supabaseClient";
+import { supabaseClient } from "../../lib/supabase/supabaseClient";
 import DataConsentModal from "./data-consent-modal";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { DATABASE_TABLE } from "@/lib/constants/databaseTables";
@@ -202,9 +202,9 @@ export default function Comparison() {
   }, [newMessage]);
 
   return (
-    <div className="mx-auto mt-4 w-full flex-grow">
+    <div className="mx-auto mt-4 w-full flex-grow h-[69vh]">
       <DataConsentModal />
-      <Card className=" w-full mx-auto border rounded-xl  bg-white flex-grow h-full flex flex-col">
+      <Card className=" w-full mx-auto rounded-xl  bg-white flex-grow h-full flex flex-col">
         <CardContent className="flex flex-col flex-grow overflow-hidden p-1 h-full relative">
           <PromptDisplay />
           {isRetryOverlay && (
