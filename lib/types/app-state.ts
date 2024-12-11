@@ -1,5 +1,11 @@
 import { ComboBoxItem } from "@/components/ui/combo-box";
 
+type ModelOrder = {
+  model: any
+  otherModel: any,
+  order: string
+}
+
 export interface AppState {
   sessionId: string;
   selectedModel1: string;
@@ -23,6 +29,7 @@ export interface AppState {
   userChoices: UserChoice[];
   selectedChoice: ComboBoxItem | undefined;
   isStopped: boolean;
+  responseOrder: ModelOrder | undefined;
 
   setSessionId: (model: string) => void;
   setSelectedModel1: (model: string) => void;
@@ -45,6 +52,7 @@ export interface AppState {
   setRoundEnd: (end: boolean) => void;
   incrementRoundCounter: () => void;
   setIsRetryOverlay: (isOverlay: boolean) => void;
+  setModelOrder: (order: ModelOrder) => void;
   reset: () => void;
 }
 

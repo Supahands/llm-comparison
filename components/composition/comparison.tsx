@@ -44,6 +44,7 @@ export default function Comparison() {
     selectedChoice,
     hasRoundEnded,
     incrementRoundCounter,
+    responseOrder,
     reset,
     setPrompt,
     setResponseModel1,
@@ -78,6 +79,9 @@ export default function Comparison() {
       const responseModel1Content =
         (choices[0]?.message?.content as string) || "";
       setResponseModel1(responseModel1Content);
+      if (responseModel1Content === "") {
+        setIsRetryOverlay(true);
+      }
       setResponseTime1(data.usage.response_time);
       setPromptToken(data.usage.prompt_tokens);
       setCompletionToken1(data.usage.completion_tokens);
@@ -99,6 +103,9 @@ export default function Comparison() {
       const responseModel2Content =
         (choices[0]?.message?.content as string) || "";
       setResponseModel2(responseModel2Content);
+      if (responseModel2Content === "") {
+        setIsRetryOverlay(true)
+      }
       setResponseTime2(data.usage.response_time);
       setPromptToken(data.usage.prompt_tokens);
       setCompletionToken2(data.usage.completion_tokens);
@@ -132,6 +139,13 @@ export default function Comparison() {
   }, [newMessage, selectedChoice]);
 
   const handleDataSaving = async (choice: string) => {
+    let correctChoice = choice;
+
+    if (choice === 'A') {
+      correctChoice = responseOrder?.order === '1' ? 'A' : 'B'
+    } else if (choice === 'B') {
+      correctChoice = responseOrder?.order === '2' ? 'B' : 'A'
+    }
     const { error } = await supabaseClient
       .from(DATABASE_TABLE.RESPONSE)
       .insert([
