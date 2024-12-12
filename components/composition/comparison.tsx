@@ -104,7 +104,7 @@ export default function Comparison() {
         (choices[0]?.message?.content as string) || "";
       setResponseModel2(responseModel2Content);
       if (responseModel2Content === "") {
-        setIsRetryOverlay(true)
+        setIsRetryOverlay(true);
       }
       setResponseTime2(data.usage.response_time);
       setPromptToken(data.usage.prompt_tokens);
@@ -141,10 +141,10 @@ export default function Comparison() {
   const handleDataSaving = async (choice: string) => {
     let correctChoice = choice;
 
-    if (choice === 'A') {
-      correctChoice = responseOrder?.order === '1' ? 'A' : 'B'
-    } else if (choice === 'B') {
-      correctChoice = responseOrder?.order === '2' ? 'B' : 'A'
+    if (choice === "A") {
+      correctChoice = responseOrder?.order === "1" ? "A" : "B";
+    } else if (choice === "B") {
+      correctChoice = responseOrder?.order === "2" ? "B" : "A";
     }
     const { error } = await supabaseClient
       .from(DATABASE_TABLE.RESPONSE)
@@ -216,10 +216,10 @@ export default function Comparison() {
   }, [newMessage]);
 
   return (
-    <div className="mx-auto mt-4 w-full flex-grow h-[69vh]">
+    <div className="mx-auto mt-4 w-full flex-grow">
       <DataConsentModal />
-      <Card className=" w-full mx-auto rounded-xl  bg-white flex-grow h-full flex flex-col">
-        <CardContent className="flex flex-col flex-grow overflow-hidden p-1 h-full relative">
+      <Card className=" w-full mx-auto rounded-xl h-[69vh] bg-white flex-grow flex flex-col">
+        <CardContent className="flex flex-col overflow-hidden flex-grow h-full p-1 relative">
           <PromptDisplay />
           {isRetryOverlay && (
             <div className="w-full absolute bottom-0 flex flex-col justify-center items-center z-50 bg-white/80 backdrop-blur-sm py-4">
@@ -241,7 +241,7 @@ export default function Comparison() {
 
           <ModelResponses />
         </CardContent>
-        <CardFooter className="flex flex-col gap-2 pb-4">
+        <CardFooter className="flex flex-col gap-2 border pb-4">
           {selectedModel1 && selectedModel2 && (
             <PromptSelector prompts={prompts} />
           )}
