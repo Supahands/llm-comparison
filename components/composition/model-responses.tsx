@@ -67,9 +67,9 @@ export default function ModelResponses() {
   }, [randomizeResponses]);
 
   return (
-    <div>
+    <div className="flex-grow min-h-[10vh]">
       <ScrollArea
-        className={`flex-grow lg:p-4 p-1 h-[46.5vh] border overflow-y-auto`}
+        className={`absolute p-1 lg:px-4 h-full overflow-y-auto`}
         style={{ maxHeight: calculateMaxHeight() }}
       >
         {(isPendingModel1 || isPendingModel2) && (
@@ -82,7 +82,7 @@ export default function ModelResponses() {
             ></Lottie>
           </div>
         )}
-        <div className="grid grid-cols-2 gap-4 h-fit">
+        <div className="grid grid-cols-2 gap-4 h-full">
           <div className="model-a-response">
             {!isPendingModel1 && !isPendingModel2 && responseModel1 && (
               <div>

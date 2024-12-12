@@ -241,7 +241,7 @@ export default function Comparison() {
 
           <ModelResponses />
         </CardContent>
-        <CardFooter className="flex flex-col gap-2 border pb-4">
+        <CardFooter className="flex flex-col gap-2 pb-4">
           {selectedModel1 && selectedModel2 && (
             <PromptSelector prompts={prompts} />
           )}
