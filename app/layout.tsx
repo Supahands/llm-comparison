@@ -24,6 +24,8 @@ export default function RootLayout({
       capture_pageview: false,
       autocapture: false,
     });
+
+    posthog.identify();
   }, []);
 
   return (
