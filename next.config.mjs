@@ -9,8 +9,16 @@ const nextConfig = {
     ],
   },
   typescript: {
-    ignoreBuildErrors: true
-  }
+    ignoreBuildErrors: true,
+  },
+  webpack(config) {
+    config.resolve.alias["@"] = path.join(__dirname, "app");
+    config.resolve.alias["@/components"] = path.join(
+      __dirname,
+      "app/components"
+    );
+    return config;
+  },
 };
 
 export default nextConfig;
