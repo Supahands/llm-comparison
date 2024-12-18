@@ -9,11 +9,17 @@ import Image from "next/image";
 import { Button } from "../components/ui/button";
 import DescriptionCard from "../components/composition/description-card";
 import { useRouter } from "next/navigation";
-import useAppStore from "@/hooks/store/useAppStore";
+import useAppStore from "../hooks/store/useAppStore";
 import Lottie from "react-lottie";
+<<<<<<< HEAD
 import * as animationData from "@/public/animation/finish";
 import { supabaseClient } from "@/lib/supabase/supabaseClient";
 import { DATABASE_TABLE } from "@/lib/constants/databaseTables";
+=======
+import * as animationData from "../public/animation/finish";
+import { supabaseClient } from "../lib/supabase/supabaseClient";
+import { DATABASE_TABLE } from "../lib/constants/databaseTables";
+>>>>>>> ff29582 (fix everythign)
 
 import { FaGithub } from "react-icons/fa";
 import { IoStarOutline } from "react-icons/io5";
