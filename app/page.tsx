@@ -11,20 +11,9 @@ import DescriptionCard from "@/components/composition/description-card";
 import { useRouter } from "next/navigation";
 import useAppStore from "@/hooks/store/useAppStore";
 import Lottie from "react-lottie";
-<<<<<<< HEAD
 import * as animationData from "@/public/animation/finish";
 import { supabaseClient } from "@/lib/supabase/supabaseClient";
 import { DATABASE_TABLE } from "@/lib/constants/databaseTables";
-=======
-import * as animationData from "../public/animation/finish";
-<<<<<<< HEAD
-import { supabaseClient } from "../lib/supabase/supabaseClient";
-import { DATABASE_TABLE } from "../lib/constants/databaseTables";
->>>>>>> ff29582 (fix everythign)
-=======
-import { supabaseClient } from "@/lib/supabase/supabaseClient";
-import { DATABASE_TABLE } from "@/lib/constants/databaseTables";
->>>>>>> 7e73347 (config tsconfig)
 
 import { FaGithub } from "react-icons/fa";
 import { IoStarOutline } from "react-icons/io5";
