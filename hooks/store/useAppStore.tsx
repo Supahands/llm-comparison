@@ -25,15 +25,29 @@ const useAppStore = create<AppState>((set) => ({
   hasRoundEnded: false,
   isRetryOverlay: false,
   responseOrder: undefined,
+  temperature: 0.7,
+  topP: 1.0,
+  maxTokens: 1000,
+  systemPrompt: "",
+  jsonFormat: false,
 
   setSessionId: (sessionId: string) =>
     set((_state: AppState) => ({ sessionId: sessionId })),
   setPromptToken: (promptToken: number) =>
     set((_state: AppState) => ({ promptToken: promptToken })),
+  setJSONFormat: (jsonFormat: boolean) =>
+    set((_state: AppState) => ({ jsonFormat: jsonFormat })),
+  setSystemPrompt: (systemPrompt: string) =>
+    set((_state: AppState) => ({ systemPrompt: systemPrompt })),
   setCompletionToken1: (completionToken1: number) =>
     set((_state: AppState) => ({ completionToken1: completionToken1 })),
   setCompletionToken2: (completionToken2: number) =>
     set((_state: AppState) => ({ completionToken2: completionToken2 })),
+  setTemperature: (temperature: number) =>
+    set((_state: AppState) => ({ temperature: temperature })),
+  setTopP: (topP: number) => set((_state: AppState) => ({ topP: topP })),
+  setMaxTokens: (maxTokens: number) =>
+    set((_state: AppState) => ({ maxTokens: maxTokens })),
   setResponseTime1: (response_time: number) =>
     set((_state: AppState) => ({ responseTime1: response_time })),
   setResponseTime2: (response_time: number) =>
@@ -60,8 +74,10 @@ const useAppStore = create<AppState>((set) => ({
   incrementRoundCounter: () =>
     set((state: AppState) => ({ roundCounter: state.roundCounter + 1 })),
   setRoundEnd: (end) => set((_state: AppState) => ({ hasRoundEnded: end })),
-  setIsRetryOverlay: (isOverlay) => set((_state: AppState) => ({ isRetryOverlay: isOverlay })),
-  setModelOrder: (order) => set((_state: AppState) => ({responseOrder: order})),
+  setIsRetryOverlay: (isOverlay) =>
+    set((_state: AppState) => ({ isRetryOverlay: isOverlay })),
+  setModelOrder: (order) =>
+    set((_state: AppState) => ({ responseOrder: order })),
   reset: () =>
     set((state: AppState) => ({
       responseModel1: "",
@@ -72,7 +88,7 @@ const useAppStore = create<AppState>((set) => ({
       selectedChoice: undefined,
       isComparingModel: false,
       hasRoundEnded: false,
-      isRetryOverlay: false
+      isRetryOverlay: false,
     })),
   addUserChoices: (choice) =>
     set((state: AppState) => ({
