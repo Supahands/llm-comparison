@@ -39,6 +39,11 @@ export default function Home() {
     promptToken,
     completionToken1,
     completionToken2,
+    temperature,
+    systemPrompt,
+    topP,
+    maxTokens,
+    jsonFormat,
   } = useAppStore();
 
   const posthog = usePostHog();
@@ -75,6 +80,7 @@ export default function Home() {
           prompt_token: promptToken,
           completion_token_1: completionToken1,
           completion_token_2: completionToken2,
+          model_config: `{"system_prompt":"${systemPrompt}","temperature":${temperature},"top_p":${topP},"max_tokens":${maxTokens},"json_format":${jsonFormat}}`,
         },
       ]);
 
