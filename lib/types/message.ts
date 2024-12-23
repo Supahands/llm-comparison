@@ -8,7 +8,16 @@ export type Message = {
   responseTime2?: string;
 };
 
+type ConfigProps = {
+  system_prompt: string;
+  temperature: number;
+  top_p: number;
+  max_tokens: number;
+  json_format: boolean;
+};
+
 export type MessageRequest = {
   message: string;
   model: string;
+  config: ConfigProps;
 };

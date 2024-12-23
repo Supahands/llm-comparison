@@ -127,7 +127,9 @@ export default function ModelSelector() {
               </Button>
             </div>
             <div>
-              <AdvancedOptions />
+              <AdvancedOptions
+                isDisabled={isComparingModel || userChoices.length > 0}
+              />
             </div>
           </div>
         </div>
