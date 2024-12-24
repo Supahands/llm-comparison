@@ -82,11 +82,11 @@ export function AdvancedOptions({ isDisabled }: AdvancedProps) {
   };
 
   const setDefaultValue = () => {
-    setTemperature(0.7);
-    setSystemPrompt("");
-    setTopP(1);
-    setMaxTokens(1000);
-    setJSONFormat(false);
+    setCurrTemp(0.7);
+    setCurrSystemPrompt("");
+    setCurrTopP(1);
+    setCurrMaxTokens(1000);
+    setCurrJSONFormat(false);
   };
 
   const setCurrentValue = () => {
