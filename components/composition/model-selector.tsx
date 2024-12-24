@@ -7,8 +7,9 @@ import AvailableModel, {
 import { supabaseClient } from "@/lib/supabase/supabaseClient";
 import { DATABASE_TABLE } from "@/lib/constants/databaseTables";
 import { Dices, EyeClosed, EyeOff } from "lucide-react";
-import { Button } from "../ui/button";
-import { usePostHog } from 'posthog-js/react'
+import { Button } from "@/components/ui/button";
+import { usePostHog } from "posthog-js/react";
+import { AdvancedOptions } from "@/components/composition/advanced-options";
 
 export default function ModelSelector() {
   const {
@@ -22,7 +23,7 @@ export default function ModelSelector() {
     setAvailableModels,
   } = useAppStore();
   const [showModelSelector, setShowModelSelector] = useState<boolean>(true);
-  const posthog = usePostHog()
+  const posthog = usePostHog();
 
   const getAvailableModels = async () => {
     const { data, error } = await supabaseClient
@@ -57,7 +58,7 @@ export default function ModelSelector() {
       availableModels[Math.floor(Math.random() * availableModels.length)];
     setSelectedModel1(model1.label);
     setSelectedModel2(model2.label);
-    posthog?.capture('llm-compare.models.randomize')
+    posthog?.capture("llm-compare.models.randomize");
   };
 
   useEffect(() => {
@@ -71,18 +72,18 @@ export default function ModelSelector() {
   }, [isComparingModel]);
 
   const handleModel1Select = (model: string) => {
-    posthog?.capture('llm-compare.models.select', {
-      model
-    })
+    posthog?.capture("llm-compare.models.select", {
+      model,
+    });
     setSelectedModel1(model);
-  }
+  };
 
   const handleModel2Select = (model: string) => {
-    posthog?.capture('llm-compare.models.select', {
-      model
-    })
+    posthog?.capture("llm-compare.models.select", {
+      model,
+    });
     setSelectedModel2(model);
-  }
+  };
 
   return (
     <div className="flex flex-row items-center w-full h-full">
@@ -90,39 +91,46 @@ export default function ModelSelector() {
         <div
           className={`p-4 h-full w-full  ${
             !showModelSelector ? "hidden" : "flex flex-row"
-          } items-center gap-4`}
+          } items-center gap-4 `}
         >
-          <div className="flex flex-row gap-4 justify-center w-full">
-            <div className="flex flex-col w-1/2">
-              <div>Model 1</div>
-              <div className="w-full">
-                <ComboBox
-                  items={availableModels}
-                  onItemSelect={handleModel1Select}
-                  disabled={isComparingModel || userChoices.length > 0}
-                  defaultValue={selectedModel1}
-                />
+          <div className=" w-full space-y-2">
+            <div className="flex flex-row gap-4 justify-center  w-full">
+              <div className="flex flex-col w-1/2">
+                <div>Model 1</div>
+                <div className="w-full">
+                  <ComboBox
+                    items={availableModels}
+                    onItemSelect={handleModel1Select}
+                    disabled={isComparingModel || userChoices.length > 0}
+                    defaultValue={selectedModel1}
+                  />
+                </div>
               </div>
-            </div>
-            <div className="flex flex-col w-1/2">
-              <div>Model 2</div>
-              <div className="w-full">
-                <ComboBox
-                  items={availableModels}
-                  onItemSelect={handleModel2Select}
-                  disabled={isComparingModel || userChoices.length > 0}
-                  defaultValue={selectedModel2}
-                />
+              <div className="flex flex-col w-1/2">
+                <div>Model 2</div>
+                <div className="w-full">
+                  <ComboBox
+                    items={availableModels}
+                    onItemSelect={handleModel2Select}
+                    disabled={isComparingModel || userChoices.length > 0}
+                    defaultValue={selectedModel2}
+                  />
+                </div>
               </div>
+              <Button
+                size={"icon"}
+                disabled={isComparingModel || userChoices.length > 0}
+                className="rounded-lg w-8 h-8 p-1 bg-white hover:bg-llm-primary95 self-end mb-1 block focus-visible:outline-llm-primary50"
+                onClick={randomizeModel}
+              >
+                <Dices className=" text-llm-grey1 !w-full !h-6"></Dices>
+              </Button>
             </div>
-            <Button
-              size={"icon"}
-              disabled={isComparingModel || userChoices.length > 0}
-              className="rounded-lg w-8 h-8 p-1 bg-white hover:bg-llm-primary95 self-end mb-1 block focus-visible:outline-llm-primary50"
-              onClick={randomizeModel}
-            >
-              <Dices className=" text-llm-grey1 !w-full !h-6"></Dices>
-            </Button>
+            <div>
+              <AdvancedOptions
+                isDisabled={isComparingModel || userChoices.length > 0}
+              />
+            </div>
           </div>
         </div>
         <div

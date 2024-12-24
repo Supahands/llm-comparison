@@ -22,6 +22,7 @@ import { DATABASE_TABLE } from "@/lib/constants/databaseTables";
 import { usePostHog } from "posthog-js/react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { IoMdShare } from "react-icons/io";
+import { max } from "date-fns";
 
 const prompts = [
   "What are the most popular car brands in Japan?",
@@ -62,6 +63,11 @@ export default function Comparison() {
     completionToken2,
     isRetryOverlay,
     setIsRetryOverlay,
+    systemPrompt,
+    temperature,
+    topP,
+    maxTokens,
+    jsonFormat,
   } = useAppStore();
 
   const recaptchaRef = useRef<ReCAPTCHA>(null);
@@ -168,6 +174,7 @@ export default function Comparison() {
           prompt_token: promptToken,
           completion_token_1: completionToken1,
           completion_token_2: completionToken2,
+          model_config: `{"system_prompt":"${systemPrompt}","temperature":${temperature},"top_p":${topP},"max_tokens":${maxTokens},"json_format":${jsonFormat}}`,
         },
       ]);
 
@@ -180,6 +187,13 @@ export default function Comparison() {
     return {
       model: selectedModel1,
       message: prompt,
+      config: {
+        system_prompt: systemPrompt,
+        temperature: temperature,
+        top_p: topP,
+        max_tokens: maxTokens,
+        json_format: jsonFormat,
+      },
     };
   }, [prompt, selectedModel1]);
 
@@ -187,6 +201,13 @@ export default function Comparison() {
     return {
       model: selectedModel2,
       message: prompt,
+      config: {
+        system_prompt: systemPrompt,
+        temperature: temperature,
+        top_p: topP,
+        max_tokens: maxTokens,
+        json_format: jsonFormat,
+      },
     };
   }, [prompt, selectedModel2]);
 
