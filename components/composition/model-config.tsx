@@ -38,8 +38,8 @@ export default function ModelConfig({
         </CardDescription>
       </CardHeader>
       <CardContent className="px-6 pb-6 h-full">
-        <div className="flex items-center w-full justify-center gap-4 pb-6 mb-6">
-          <div className="text-center w-full border">
+        <div className="flex items-center w-full justify-center gap-4">
+          <div className="text-center w-full">
             <Badge
               variant="secondary"
               className="text-xs md:text-lg px-4 py-2 md:px-6 md:py-3"
@@ -48,10 +48,10 @@ export default function ModelConfig({
             </Badge>
             <p className="text-xs md:text-base text-gray-500 mt-1">Model A</p>
           </div>
-          <span className="text-xl text-center w-[5vw] border font-medium text-gray-400">
+          <span className="text-xl text-center w-[5vw] font-medium text-gray-400">
             vs
           </span>
-          <div className="text-center w-full border">
+          <div className="text-center w-full">
             <Badge
               variant="secondary"
               className="text-xs md:text-lg px-4 py-2 md:px-6 md:py-3"
