@@ -23,7 +23,7 @@ const Slider = React.forwardRef<
     {...props}
   >
     <SliderPrimitive.Track
-      className={`relative h-2 w-full grow overflow-hidden rounded-full`}
+      className={`relative h-2 w-full grow bg-secondary overflow-hidden rounded-full`}
     >
       <SliderPrimitive.Range
         className={`absolute h-full ${

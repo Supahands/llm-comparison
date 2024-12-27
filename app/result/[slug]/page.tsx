@@ -11,7 +11,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ModelResponseTime } from "@/components/composition/model-response-time";
 import { supabaseClient } from "@/lib/supabase/supabaseClient";
-import { Message } from "@/lib/types/message";
+import { ConfigRequest, Message } from "@/lib/types/message";
 import { DATABASE_TABLE } from "@/lib/constants/databaseTables";
 import { DataProps } from "@/components/composition/model-response-time";
 import { MetricsComposed } from "@/components/composition/metrics-composed";
@@ -21,6 +21,7 @@ import { FaDownload } from "react-icons/fa6";
 import OverallSessionPage from "@/components/composition/overall-session";
 import { IoMdShare } from "react-icons/io";
 import { useToast } from "@/hooks/use-toast";
+import ModelConfig from "@/components/composition/model-config";
 
 import { FaGithub } from "react-icons/fa";
 import { IoStarOutline } from "react-icons/io5";
@@ -38,6 +39,7 @@ interface DatabaseProps {
   response_time_2: number;
   completion_token_1: number;
   completion_token_2: number;
+  config: ConfigRequest;
 }
 
 export interface MetricsProps {
@@ -61,6 +63,7 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
   const [modelA, setModelA] = React.useState<string>("");
   const [modelB, setModelB] = React.useState<string>("");
+  const [configModel, setConfigModel] = React.useState<ConfigRequest | null>();
 
   const [winRateModelA, setWinRateModelA] = React.useState<number>(0);
   const [winRateModelB, setWinRateModelB] = React.useState<number>(0);
@@ -298,6 +301,7 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
               response_model_1: any;
               response_model_2: any;
               selected_choice: any;
+              model_config: any;
             }) => {
               return {
                 id: x.id,
@@ -305,6 +309,7 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
                 response1: x.response_model_1,
                 response2: x.response_model_2,
                 choice: x.selected_choice,
+                config: JSON.parse(x.model_config),
               };
             }
           )
@@ -313,6 +318,7 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
 
     setModelA(data ? data[0].model_1 : "");
     setModelB(data ? data[0].model_2 : "");
+    setConfigModel(data ? JSON.parse(data[0].model_config) : {});
 
     let i = 1;
     setAllResponseTime(
@@ -333,9 +339,14 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
           )
         : []
     );
+    console.log("model config", configModel);
 
     calculateProportion(data);
     setIsLoading(false);
+  };
+
+  const handleConfig = () => {
+    console.log("model config", configModel);
   };
 
   function formatStarCount(count: number): string {
@@ -417,6 +428,12 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
       <div>
         <Title>Session</Title>
       </div>
+      <ModelConfig
+        config={configModel}
+        modelA={modelA}
+        modelB={modelB}
+        isLoading={isLoading}
+      />
       <div className="grid grid-cols-1 md:grid-cols-2 justify-stretch gap-4">
         <ModelResponseTime
           allResponseTime={allResponseTime}
