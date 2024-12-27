@@ -99,7 +99,7 @@ export default function ModelConfig({
               <div className="flex w-full flex-col  h-full flex-grow">
                 <div className="flex flex-col h-full flex-grow gap-2">
                   <p className="font-bold text-sm md:text-base">
-                    System Prompt
+                    System Instruction
                   </p>
                   <Skeleton className="w-full h-36 rounded-xl" />
                   {/* <ScrollArea className="flex-grow w-full border text-sm lg:text-base h-36 border-gray-300 p-2 md:p-3 rounded-xl ">

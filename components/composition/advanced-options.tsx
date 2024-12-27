@@ -191,7 +191,7 @@ export function AdvancedOptions({ isDisabled }: AdvancedProps) {
           <div className="flex flex-col w-full space-y-1">
             <p
               className={`font-bold ${
-                0 > currTemp || currTemp > 1 ? "text-red-600" : ""
+                0 > currTemp || currTemp > 1 ? "text-red-600" : "llm-primary50"
               }`}
             >
               Temperature : {currTemp}
@@ -205,7 +205,7 @@ export function AdvancedOptions({ isDisabled }: AdvancedProps) {
                   setCurrTemp(newValue[0]);
                 }}
                 indicatorColor={`${
-                  0 > currTemp || currTemp > 1 ? "red-600" : ""
+                  0 > currTemp || currTemp > 1 ? "red-600" : "llm-primary50"
                 }`}
                 value={[currTemp]}
                 disabled={isDisabled}
@@ -226,7 +226,7 @@ export function AdvancedOptions({ isDisabled }: AdvancedProps) {
           <div className="flex flex-col w-full space-y-1">
             <p
               className={`font-bold ${
-                0 > currTopP || currTopP > 1 ? "text-red-600" : ""
+                0 > currTopP || currTopP > 1 ? "text-red-600" : "llm-primary50"
               }`}
             >
               Top P : {currTopP}
@@ -240,7 +240,7 @@ export function AdvancedOptions({ isDisabled }: AdvancedProps) {
                   setCurrTopP(newValue[0]);
                 }}
                 indicatorColor={`${
-                  0 > currTopP || currTopP > 1 ? "red-600" : ""
+                  0 > currTopP || currTopP > 1 ? "red-600" : "llm-primary50"
                 }`}
                 value={[currTopP]}
                 disabled={isDisabled}
@@ -262,14 +262,14 @@ export function AdvancedOptions({ isDisabled }: AdvancedProps) {
             className={`flex flex-col w-full space-y-1 ${
               100 >= currMaxTokens && currMaxTokens >= 4000
                 ? "border-2 border-red-600"
-                : ""
+                : "llm-primary50"
             }`}
           >
             <p
               className={`font-bold ${
                 100 > currMaxTokens || currMaxTokens > 4000
                   ? "text-red-600"
-                  : ""
+                  : "llm-primary50"
               }`}
             >
               Max Tokens : {currMaxTokens}
@@ -284,7 +284,9 @@ export function AdvancedOptions({ isDisabled }: AdvancedProps) {
                   setCurrMaxTokens(newValue[0]);
                 }}
                 indicatorColor={`${
-                  100 > currMaxTokens || currMaxTokens > 4000 ? "red-600" : ""
+                  100 > currMaxTokens || currMaxTokens > 4000
+                    ? "red-600"
+                    : "llm-primary50"
                 }`}
                 value={[currMaxTokens]}
               />
@@ -306,6 +308,7 @@ export function AdvancedOptions({ isDisabled }: AdvancedProps) {
             <Switch
               checked={currJSONFormat}
               disabled={isDisabled}
+              className="data-[state=checked]:bg-llm-primary50"
               onCheckedChange={(value: boolean) => setCurrJSONFormat(value)}
             />
           </div>
