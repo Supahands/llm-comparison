@@ -428,7 +428,12 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
       <div>
         <Title>Session</Title>
       </div>
-      <ModelConfig config={configModel} modelA={modelA} modelB={modelB} />
+      <ModelConfig
+        config={configModel}
+        modelA={modelA}
+        modelB={modelB}
+        isLoading={isLoading}
+      />
       <div className="grid grid-cols-1 md:grid-cols-2 justify-stretch gap-4">
         <ModelResponseTime
           allResponseTime={allResponseTime}
