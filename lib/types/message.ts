@@ -8,7 +8,7 @@ export type Message = {
   responseTime2?: string;
 };
 
-type ConfigRequest = {
+export type ConfigRequest = {
   system_prompt: string;
   temperature: number;
   top_p: number;
