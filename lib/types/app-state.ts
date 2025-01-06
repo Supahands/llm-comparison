@@ -30,6 +30,7 @@ export interface AppState {
   hasRoundEnded: boolean;
   isRetryOverlay: boolean;
   jsonFormat: boolean;
+  images?: File[];
 
   userChoices: UserChoice[];
   selectedChoice: ComboBoxItem | undefined;
