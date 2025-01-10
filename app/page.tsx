@@ -35,6 +35,7 @@ export default function Home() {
     responseTime1,
     responseTime2,
     prompt,
+    responseOrder,
     setIsStopped,
     promptToken,
     completionToken1,
@@ -44,6 +45,7 @@ export default function Home() {
     topP,
     maxTokens,
     jsonFormat,
+    images,
   } = useAppStore();
 
   const posthog = usePostHog();
@@ -57,22 +59,55 @@ export default function Home() {
     },
   };
 
+  async function handleUpload() {
+    const formData = new FormData();
+
+    images.forEach((file) => {
+      formData.append("files", file);
+    });
+    try {
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log(data);
+      } else {
+        console.error("error on uploading images", data);
+      }
+    } catch (err) {
+      console.error("error on uploading images", err);
+    }
+  }
+
   const handleDataSaving = async (choice: string) => {
+    handleUpload();
+
+    let correctChoice = choice;
+    if (choice === "A") {
+      correctChoice = responseOrder?.choice1 === selectedModel1 ? "A" : "B";
+    } else if (choice === "B") {
+      correctChoice = responseOrder?.choice2 === selectedModel2 ? "B" : "A";
+    }
+
     const { error } = await supabaseClient
       .from(DATABASE_TABLE.RESPONSE)
       .insert([
         {
           session_id: sessionId,
-          selected_choice: choice,
+          selected_choice: correctChoice,
           model_1: selectedModel1,
           model_2: selectedModel2,
           response_model_1: responseModel1.replace(
-            /<redacted>.*?<\/redacted>/g,
-            ""
+            /<redacted>(.*?)<\/redacted>/g,
+            "$1"
           ),
           response_model_2: responseModel2.replace(
-            /<redacted>.*?<\/redacted>/g,
-            ""
+            /<redacted>(.*?)<\/redacted>/g,
+            "$1"
           ),
           prompt: prompt,
           response_time_1: responseTime1,
@@ -81,6 +116,7 @@ export default function Home() {
           completion_token_1: completionToken1,
           completion_token_2: completionToken2,
           model_config: `{"system_prompt":"${systemPrompt}","temperature":${temperature},"top_p":${topP},"max_tokens":${maxTokens},"json_format":${jsonFormat}}`,
+          image_namefile: images.map((file) => file.name),
         },
       ]);
 
@@ -147,11 +183,11 @@ export default function Home() {
           </section>
         </div>
       </div>
-      <div>
+      <div className="relative z-10">
         <Comparison />
       </div>
       <div className="flex flex-row w-full lg:justify-between justify-end mt-4 mb-4">
-        <div className="flex gap-4">
+        <div className="flex gap-4 relative z-20">
           <LinkPreview
             url="https://supa.so"
             className="focus-visible:outline-llm-primary50 hidden lg:flex"

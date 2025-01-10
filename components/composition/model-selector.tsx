@@ -21,6 +21,11 @@ export default function ModelSelector() {
     setSelectedModel1,
     setSelectedModel2,
     setAvailableModels,
+    isModel1Multimodal,
+    isModel2Multimodal,
+    setIsModel1Multimodal,
+    setIsModel2Multimodal,
+    responseOrder,
   } = useAppStore();
   const [showModelSelector, setShowModelSelector] = useState<boolean>(true);
   const posthog = usePostHog();
@@ -40,14 +45,19 @@ export default function ModelSelector() {
           provider: x.provider,
           model_name: x.model_name,
           disabled: x.disabled,
+          multimodal: x.multimodal,
         })
       ) || [];
     const items = models
       .filter((x) => !x.disabled)
       .map((x) => x.toComboBoxItem());
     setAvailableModels(items);
-    setSelectedModel1("qwen2.5");
-    setSelectedModel2("llama3.2");
+    // setSelectedModel1("qwen2.5");
+    // setSelectedModel2("llama3.2");
+    setSelectedModel1("gpt-4o");
+    setSelectedModel2("llama3.2-vision:11b");
+    setIsModel1Multimodal(true);
+    setIsModel2Multimodal(true);
   };
 
   const randomizeModel = () => {
@@ -103,6 +113,7 @@ export default function ModelSelector() {
                     onItemSelect={handleModel1Select}
                     disabled={isComparingModel || userChoices.length > 0}
                     defaultValue={selectedModel1}
+                    setMultimodal={setIsModel1Multimodal}
                   />
                 </div>
               </div>
@@ -114,6 +125,7 @@ export default function ModelSelector() {
                     onItemSelect={handleModel2Select}
                     disabled={isComparingModel || userChoices.length > 0}
                     defaultValue={selectedModel2}
+                    setMultimodal={setIsModel2Multimodal}
                   />
                 </div>
               </div>
@@ -151,7 +163,9 @@ export default function ModelSelector() {
       >
         <button
           className={`p-2`}
-          onClick={() => setShowModelSelector(!showModelSelector)}
+          onClick={() => {
+            setShowModelSelector(!showModelSelector);
+          }}
         >
           {showModelSelector ? <EyeClosed /> : <EyeOff />}
         </button>

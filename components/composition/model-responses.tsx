@@ -23,7 +23,14 @@ export default function ModelResponses() {
   const [open, setOpen] = React.useState<boolean>(false);
   const [open2, setOpen2] = React.useState<boolean>(false);
 
-  const { responseModel1, responseModel2, setModelOrder } = useAppStore();
+  const {
+    responseModel1,
+    responseModel2,
+    setModelOrder,
+    selectedModel1,
+    selectedModel2,
+    responseOrder,
+  } = useAppStore();
 
   const mutationModel1 = useIsMutating({
     mutationKey: ["model1"],
@@ -56,8 +63,20 @@ export default function ModelResponses() {
 
   const randomizeResponses = useCallback(() => {
     return Math.random() < 0.5
-      ? { model: responseModel1, otherModel: responseModel2, order: "1" }
-      : { model: responseModel2, otherModel: responseModel1, order: "2" };
+      ? {
+          model: responseModel1,
+          otherModel: responseModel2,
+          order: "1",
+          choice1: selectedModel1,
+          choice2: selectedModel2,
+        }
+      : {
+          model: responseModel2,
+          otherModel: responseModel1,
+          order: "2",
+          choice1: selectedModel2,
+          choice2: selectedModel1,
+        };
   }, [responseModel1, responseModel2]);
 
   const responses = useMemo(() => {
@@ -67,9 +86,9 @@ export default function ModelResponses() {
   }, [randomizeResponses]);
 
   return (
-    <div className="flex-grow min-h-[10vh]">
+    <div className="flex-grow min-h-[10vh] ">
       <ScrollArea
-        className={`absolute p-1 lg:px-4 h-full overflow-y-auto`}
+        className={`absolute p-1 lg:px-6 h-full overflow-y-auto`}
         style={{ maxHeight: calculateMaxHeight() }}
       >
         {(isPendingModel1 || isPendingModel2) && (
@@ -82,7 +101,7 @@ export default function ModelResponses() {
             ></Lottie>
           </div>
         )}
-        <div className="grid grid-cols-2 gap-4 h-full">
+        <div className="grid grid-cols-2 gap-4 h-full mb-2">
           <div className="model-a-response">
             {!isPendingModel1 && !isPendingModel2 && responseModel1 && (
               <div>
@@ -122,9 +141,9 @@ export default function ModelResponses() {
                     className="prose dark:prose-invert"
                     remarkPlugins={[remarkGfm]}
                   >
-                    {responses.model.replace(
+                    {responseOrder?.model.replace(
                       /<redacted>(.+?)<\/redacted>/g,
-                      (match, content) => "█".repeat(content.length)
+                      (match: any, content: any) => "█".repeat(content.length)
                     )}
                   </ReactMarkdown>
                 </div>
@@ -171,9 +190,9 @@ export default function ModelResponses() {
                     className="prose dark:prose-invert"
                     remarkPlugins={[remarkGfm]}
                   >
-                    {responses.otherModel.replace(
+                    {responseOrder?.otherModel.replace(
                       /<redacted>(.+?)<\/redacted>/g,
-                      (match, content) => "█".repeat(content.length)
+                      (match: any, content: any) => "█".repeat(content.length)
                     )}
                   </ReactMarkdown>
                 </div>

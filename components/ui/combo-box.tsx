@@ -18,11 +18,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Override } from "@tanstack/react-query";
 
 // Define the type for an item
 export interface ComboBoxItem {
   value: string;
   label: string;
+  multimodal: boolean;
 }
 
 // Define the props interface
@@ -31,6 +33,7 @@ interface ComboBoxProps {
   onItemSelect?: (selectedValue: string) => void;
   disabled?: boolean;
   defaultValue?: string;
+  setMultimodal?: (multimodal: boolean) => void;
 }
 
 export function ComboBox({
@@ -38,6 +41,7 @@ export function ComboBox({
   onItemSelect,
   disabled,
   defaultValue,
+  setMultimodal,
 }: ComboBoxProps) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
@@ -83,7 +87,12 @@ export function ComboBox({
                 <CommandItem
                   key={item.value}
                   value={item.label}
-                  onSelect={handleSelect}
+                  onSelect={(value) => {
+                    handleSelect(value);
+                    if (setMultimodal) {
+                      setMultimodal(item.multimodal);
+                    }
+                  }}
                 >
                   <Check
                     className={cn(

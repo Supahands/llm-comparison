@@ -30,9 +30,16 @@ const useAppStore = create<AppState>((set) => ({
   maxTokens: 1000,
   systemPrompt: "",
   jsonFormat: false,
+  images: [],
+  isModel1Multimodal: false,
+  isModel2Multimodal: false,
 
   setSessionId: (sessionId: string) =>
     set((_state: AppState) => ({ sessionId: sessionId })),
+  setIsModel1Multimodal: (multimodal: boolean) =>
+    set((_state: AppState) => ({ isModel1Multimodal: multimodal })),
+  setIsModel2Multimodal: (multimodal: boolean) =>
+    set((_state: AppState) => ({ isModel2Multimodal: multimodal })),
   setPromptToken: (promptToken: number) =>
     set((_state: AppState) => ({ promptToken: promptToken })),
   setJSONFormat: (jsonFormat: boolean) =>
@@ -93,6 +100,10 @@ const useAppStore = create<AppState>((set) => ({
   addUserChoices: (choice) =>
     set((state: AppState) => ({
       userChoices: [...state.userChoices, choice],
+    })),
+  setImages: (updater) =>
+    set((state) => ({
+      images: updater(state.images), // Apply the updater function to modify the images array
     })),
   setSelectedChoice: (choice) =>
     set((_state: AppState) => ({

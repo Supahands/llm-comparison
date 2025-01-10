@@ -3,24 +3,28 @@
 import useAppStore from "@/hooks/store/useAppStore";
 import { Button } from "../ui/button";
 import { ComboBoxItem } from "../ui/combo-box";
-import { usePostHog } from 'posthog-js/react'
+import { usePostHog } from "posthog-js/react";
 
 const userInputs: ComboBoxItem[] = [
   {
     label: "A wins",
     value: "A",
+    multimodal: false,
   },
   {
     label: "B wins",
     value: "B",
+    multimodal: false,
   },
   {
     label: "Both are good",
     value: "AB",
+    multimodal: false,
   },
   {
     label: "Both are bad",
     value: "!AB",
+    multimodal: false,
   },
 ];
 
@@ -31,7 +35,6 @@ export default function WinnerSelector() {
     responseModel2,
     prompt,
     roundCounter,
-    responseOrder,
     hasRoundEnded,
     setIsStopped,
     addUserChoices,
@@ -40,7 +43,7 @@ export default function WinnerSelector() {
     setRoundEnd,
   } = useAppStore();
 
-  const posthog = usePostHog()
+  const posthog = usePostHog();
 
   const handleUserChoice = (choice: ComboBoxItem) => {
     addUserChoices({
@@ -51,9 +54,9 @@ export default function WinnerSelector() {
   };
 
   const handleRoundEnd = (input: ComboBoxItem) => {
-    posthog?.capture('llm-compare.models.winner', {
-      choice: input.value
-    })
+    posthog?.capture("llm-compare.models.winner", {
+      choice: input.value,
+    });
     handleUserChoice(input);
     setSelectedChoice(input);
     setIsStopped(false);
@@ -66,7 +69,7 @@ export default function WinnerSelector() {
   return (
     <>
       {responseModel1 && responseModel2 && (
-        <div className="w-full lg:bg-llm-grey4 py-2">
+        <div className="w-full lg:bg-llm-grey4 -mt-2 py-2">
           <div className="flex justify-center w-full">
             <div className="grid grid-cols-4 gap-2">
               {userInputs.map((input, index) => (

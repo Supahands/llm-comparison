@@ -18,6 +18,7 @@ export type ConfigRequest = {
 
 export type MessageRequest = {
   message: string;
+  images?: string[];
   model: string;
   config: ConfigRequest;
 };

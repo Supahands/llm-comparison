@@ -4,7 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Send, RotateCcw } from "lucide-react";
-import PromptSelector from "./promp-selector";
+import PromptSelector from "./prompt-selector";
 import { MessageRequest } from "@/lib/types/message";
 import ModelResponses from "./model-responses";
 import PromptDisplay from "./prompt-display";
@@ -24,6 +24,12 @@ import ReCAPTCHA from "react-google-recaptcha";
 import { Paperclip } from "lucide-react";
 import { X } from "lucide-react";
 import { motion } from "framer-motion";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const prompts = [
   "What are the most popular car brands in Japan?",
@@ -69,70 +75,107 @@ export default function Comparison() {
     topP,
     maxTokens,
     jsonFormat,
+    images,
+    setImages,
+    isModel1Multimodal,
+    isModel2Multimodal,
   } = useAppStore();
 
   const recaptchaRef = useRef<ReCAPTCHA>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const posthog = usePostHog();
 
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [message, setMessage] = useState<string | null>(null);
+  const [newMessage, setNewMessage] = useState<string>("");
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [newImages, setNewImages] = useState<File[]>([]);
+  const [convertedImages, setConvertedImages] = useState<string[]>([]);
 
-  async function uploadFiles(formData: FormData) {
-    const files = formData.getAll("files") as File[];
-    if (files.length === 0) {
-      return { success: false, message: "No files uploaded" };
+  async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const files = event.target.files ? Array.from(event.target.files) : [];
+    const maxFiles = 3;
+    const maxSize = 10 * 1024 * 1024;
+
+    if (files.length + newImages.length > maxFiles) {
+      alert(`You can upload up to ${maxFiles} files only.`);
+      return;
     }
 
-    const uploadedFiles = files.map((file) => {
-      console.log("File uploaded:", file.name, "Size:", file.size, "bytes");
-      return file.name;
+    const oversizedFiles = files.filter((file) => file.size > maxSize);
+    if (oversizedFiles.length > 0) {
+      alert(`Each file must be smaller than 10MB.`);
+      return;
+    }
+
+    const renamedFiles = files.map((file) => {
+      const newFileName = `${uuidv4()}${file.name.substring(
+        file.name.lastIndexOf(".")
+      )}`;
+      return new File([file], newFileName, { type: file.type });
     });
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const converted = await Promise.all(
+      renamedFiles.map((file) => convertToBase64(file))
+    );
 
-    return {
-      success: true,
-      message: `${files.length} file(s) uploaded successfully!`,
-      files: uploadedFiles,
-    };
-  }
-
-  function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
-    const files = Array.from(event.target.files || []);
-    setSelectedFiles((prevFiles) => [...prevFiles, ...files]);
+    setNewImages((prevFiles) => [...prevFiles, ...renamedFiles]);
+    setConvertedImages(converted);
   }
 
   function handleRemoveFile(index: number) {
-    setSelectedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+    setNewImages((prevFiles) => prevFiles.filter((_, i) => i !== index));
   }
 
   async function handleUpload() {
-    if (selectedFiles.length === 0) return;
-
-    setIsUploading(true);
-    setMessage(null);
-
     const formData = new FormData();
-    selectedFiles.forEach((file) => formData.append("files", file));
 
-    const result = await uploadFiles(formData);
-    setMessage(result.message);
-    setIsUploading(false);
+    images.forEach((file) => {
+      formData.append("files", file);
+    });
+    try {
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
 
-    if (result.success) {
-      setSelectedFiles([]);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log(data);
+      } else {
+        console.error("error on uploading images", data);
       }
+    } catch (err) {
+      console.error("error on uploading images", err);
     }
   }
 
   function handleButtonClick() {
     fileInputRef.current?.click();
   }
+
+  const convertToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve) => {
+      if (!file) {
+        resolve("");
+        return;
+      }
+
+      const reader = new FileReader();
+
+      reader.readAsDataURL(file);
+
+      reader.onload = () => {
+        resolve(reader.result as string);
+      };
+
+      reader.onerror = (error) => {
+        resolve("");
+        return;
+      };
+    });
+  };
 
   const { mutate: mutateModel1 } = useMutation({
     mutationKey: ["model1"],
@@ -183,9 +226,8 @@ export default function Comparison() {
     onSettled: () => {},
   });
 
-  const [newMessage, setNewMessage] = useState<string>("");
-
   const handleSendPrompt = useCallback(() => {
+    setImages(() => newImages);
     if (!newMessage.trim()) {
       return;
     }
@@ -202,31 +244,34 @@ export default function Comparison() {
     });
     setPrompt(newMessage);
     setNewMessage("");
+    setNewImages([]);
   }, [newMessage, selectedChoice]);
 
   const handleDataSaving = async (choice: string) => {
-    let correctChoice = choice;
+    handleUpload();
 
+    let correctChoice = choice;
     if (choice === "A") {
-      correctChoice = responseOrder?.order === "1" ? "A" : "B";
+      correctChoice = responseOrder?.choice1 === selectedModel1 ? "A" : "B";
     } else if (choice === "B") {
-      correctChoice = responseOrder?.order === "2" ? "B" : "A";
+      correctChoice = responseOrder?.choice2 === selectedModel2 ? "B" : "A";
     }
+
     const { error } = await supabaseClient
       .from(DATABASE_TABLE.RESPONSE)
       .insert([
         {
           session_id: sessionId,
-          selected_choice: choice,
+          selected_choice: correctChoice,
           model_1: selectedModel1,
           model_2: selectedModel2,
           response_model_1: responseModel1.replace(
-            /<redacted>.*?<\/redacted>/g,
-            ""
+            /<redacted>(.*?)<\/redacted>/g,
+            "$1"
           ),
           response_model_2: responseModel2.replace(
-            /<redacted>.*?<\/redacted>/g,
-            ""
+            /<redacted>(.*?)<\/redacted>/g,
+            "$1"
           ),
           prompt: prompt,
           response_time_1: responseTime1,
@@ -235,6 +280,7 @@ export default function Comparison() {
           completion_token_1: completionToken1,
           completion_token_2: completionToken2,
           model_config: `{"system_prompt":"${systemPrompt}","temperature":${temperature},"top_p":${topP},"max_tokens":${maxTokens},"json_format":${jsonFormat}}`,
+          image_namefile: images.map((file) => file.name),
         },
       ]);
 
@@ -247,6 +293,7 @@ export default function Comparison() {
     return {
       model: selectedModel1,
       message: prompt,
+      images: convertedImages,
       config: {
         system_prompt: systemPrompt,
         temperature: temperature,
@@ -255,12 +302,13 @@ export default function Comparison() {
         json_format: jsonFormat,
       },
     };
-  }, [prompt, selectedModel1]);
+  }, [prompt, selectedModel1, convertedImages]);
 
   const payloadModel2 = useMemo<MessageRequest>(() => {
     return {
       model: selectedModel2,
       message: prompt,
+      images: convertedImages,
       config: {
         system_prompt: systemPrompt,
         temperature: temperature,
@@ -269,7 +317,7 @@ export default function Comparison() {
         json_format: jsonFormat,
       },
     };
-  }, [prompt, selectedModel2]);
+  }, [prompt, selectedModel2, convertedImages]);
 
   const isMobile = useIsMobile();
 
@@ -319,155 +367,184 @@ export default function Comparison() {
               </Button>
             </div>
           )}
-
           <ModelResponses />
         </CardContent>
-        <CardFooter className="flex flex-col gap-3 pb-4">
-          {selectedModel1 && selectedModel2 && (
-            <PromptSelector prompts={prompts} />
-          )}
-          <WinnerSelector />
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleSendPrompt();
-            }}
-            className="relative w-full flex flex-col"
-          >
-            <ReCAPTCHA
-              ref={recaptchaRef}
-              size="invisible"
-              sitekey={process.env.NEXT_PUBLIC_CAPTCHA_SITE_KEY || ""}
-            />
-            <div className="flex flex-col w-full bg-white justify-center">
-              <div className="flex justify-center z-0">
-                <motion.div
-                  layout
-                  initial={{ opacity: 0, y: -50 }} // Animation when it enters
-                  animate={{ opacity: 1, y: 0 }} // Animation while it's visible
-                  exit={{ opacity: 0, y: 50 }} // Animation when it exits
-                  transition={{
-                    type: "spring",
-                    stiffness: 1923,
-                    damping: 188,
-                    mass: 5,
-                  }}
-                  className={`flex border w-full -mb-5 border-b-0 bg-gray-100 rounded-t-lg
-                     ${
-                       selectedFiles.length > 0 ? "px-3 pt-3 pb-8" : "mt-5"
-                     } h-fit`}
-                >
-                  {selectedFiles.length > 0 && (
-                    <motion.div
-                      layout
-                      initial={{ opacity: 0, y: 50 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -50 }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 300,
-                        damping: 25,
-                        mass: 1,
-                      }}
-                      className="flex flex-row gap-4"
-                    >
-                      {selectedFiles.map((file, index) => (
-                        <motion.div
-                          layout
-                          initial={{ opacity: 0, y: 50 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -50 }}
-                          transition={{
-                            type: "spring",
-                            stiffness: 300,
-                            damping: 25,
-                            mass: 1,
-                          }}
-                          key={index}
-                          className="relative group"
-                        >
-                          <img
-                            src={URL.createObjectURL(file)}
-                            alt={`Selected ${index + 1}`}
-                            className="w-full h-20 object-cover rounded-xl"
-                          />
-                          <button
-                            onClick={() => handleRemoveFile(index)}
-                            className="absolute -top-1 -right-1 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                            aria-label={`Remove ${file.name}`}
-                          >
-                            <X className="w-4 h-4" />
-                          </button>
-                        </motion.div>
-                      ))}
-                    </motion.div>
-                  )}
-                </motion.div>
-              </div>
-              <div className="border z-10 bg-white p-1 flex flex-col rounded-xl">
-                <div>
-                  <Textarea
-                    ref={textareaRef}
-                    value={newMessage}
-                    disabled={
-                      !(selectedModel1 && selectedModel2) || isComparingModel
-                    }
-                    placeholder={
-                      userChoices.length === 0
-                        ? !isMobile
-                          ? "Select a question to get started or ask your own here"
-                          : "Ask a question"
-                        : "Ask another question"
-                    }
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    rows={1}
-                    onKeyDown={(e) => {
-                      if (
-                        e.key === "Enter" &&
-                        !e.shiftKey &&
-                        newMessage.trim().length !== 0
-                      ) {
-                        e.preventDefault();
-                        handleSendPrompt();
-                      }
+        <CardFooter className="flex flex-col">
+          <div className="w-full space-y-3">
+            {selectedModel1 && selectedModel2 && (
+              <PromptSelector prompts={prompts} />
+            )}
+            <WinnerSelector />
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleSendPrompt();
+              }}
+              className="relative w-full flex flex-col"
+            >
+              <ReCAPTCHA
+                ref={recaptchaRef}
+                size="invisible"
+                sitekey={process.env.NEXT_PUBLIC_CAPTCHA_SITE_KEY || ""}
+              />
+              <div className="flex flex-col w-full bg-white justify-center">
+                <div className="flex justify-center z-0">
+                  <motion.div
+                    layout
+                    initial={{ opacity: 0, y: -50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 50 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 1923,
+                      damping: 188,
+                      mass: 5,
+                      duration: 1,
                     }}
-                    className="flex-grow resize-none bg-transparent px-5 lg:min-h-12 max-h-24 w-full py-3 pr-12 focus:ring-0 focus:ring-offset-0 border-none focus:border-llm-primary50 focus-visible:ring-0 focus-visible:ring-offset-0 "
-                  />
+                    className={`flex w-full -mb-5 border border-b-0 bg-gray-100 rounded-t-lg
+          ${newImages.length > 0 ? "px-2 pt-1 pb-2 md:pb-6" : "mt-5"} h-fit`}
+                  >
+                    {newImages.length > 0 && (
+                      <motion.div
+                        layout
+                        initial={{ opacity: 0, x: 0 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, x: -50 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 300,
+                          damping: 25,
+                          mass: 1,
+                        }}
+                        className="w-full flex flex-nowrap gap-4 py-2 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent"
+                        style={{
+                          minHeight: "96px",
+                          scrollbarWidth: "thin",
+                        }}
+                      >
+                        {newImages.map((file, index) => (
+                          <motion.div
+                            layout
+                            initial={{ opacity: 0, y: 50 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{
+                              opacity: 0,
+                              x: -50,
+                              transition: {
+                                type: "spring",
+                                stiffness: 300,
+                                damping: 25,
+                                mass: 1,
+                              },
+                            }}
+                            key={index}
+                            className="relative flex-shrink-0"
+                          >
+                            <div className="w-14 h-14 md:w-20 md:h-20 relative">
+                              <img
+                                src={URL.createObjectURL(file)}
+                                alt={`Selected ${index + 1}`}
+                                className="w-14 h-14 md:w-20 md:h-20 object-cover rounded-xl"
+                              />
+                              <button
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  handleRemoveFile(index);
+                                }}
+                                className="absolute -top-1 -right-1 bg-red-500 text-white p-1 rounded-full transition-opacity hover:bg-red-600"
+                                aria-label={`Remove ${file.name}`}
+                              >
+                                <X className="w-3 h-3" />
+                              </button>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </motion.div>
+                    )}
+                  </motion.div>
                 </div>
-                <div className="flex-row flex justify-between w-full mt-1">
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    onChange={handleFileChange}
-                    className="hidden"
-                    multiple
-                    accept="image/*"
-                    aria-label="Select images to upload"
-                  />
-                  <Button
-                    onClick={handleButtonClick}
-                    size="icon"
-                    className="rounded-lg justify-center w-8 h-8 p-0 text-llm-primary50 border border-llm-primary50 bg-white focus-visible:outline-llm-primary50"
-                  >
-                    <Paperclip className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    type="submit"
-                    size="icon"
-                    disabled={
-                      !(selectedModel1 && selectedModel2) ||
-                      isComparingModel ||
-                      newMessage.trim().length === 0
-                    }
-                    className="rounded-lg justify-center w-8 h-8 p-0 bg-llm-primary50 focus-visible:outline-llm-primary50"
-                    onClick={handleSendPrompt}
-                  >
-                    <Send className="h-4 w-4" />
-                  </Button>
+                <div className="border z-10 bg-white p-1 flex flex-col rounded-xl">
+                  <div>
+                    <Textarea
+                      ref={textareaRef}
+                      value={newMessage}
+                      disabled={
+                        !(selectedModel1 && selectedModel2) || isComparingModel
+                      }
+                      placeholder={
+                        userChoices.length === 0
+                          ? !isMobile
+                            ? "Select a question to get started or ask your own here"
+                            : "Ask a question"
+                          : "Ask another question"
+                      }
+                      onChange={(e) => setNewMessage(e.target.value)}
+                      rows={1}
+                      onKeyDown={(e) => {
+                        if (
+                          e.key === "Enter" &&
+                          !e.shiftKey &&
+                          newMessage.trim().length !== 0
+                        ) {
+                          e.preventDefault();
+                          handleSendPrompt();
+                        }
+                      }}
+                      className="flex-grow resize-none bg-transparent px-5 lg:min-h-12 max-h-24 w-full py-3 pr-12 focus:ring-0 focus:ring-offset-0 border-none focus:border-llm-primary50 focus-visible:ring-0 focus-visible:ring-offset-0 "
+                    />
+                  </div>
+                  <div className="flex-row flex justify-between w-full mt-1">
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      onChange={handleFileChange}
+                      className="hidden"
+                      multiple
+                      accept="image/*"
+                      aria-label="Select images to upload"
+                    />
+                    <TooltipProvider delayDuration={150}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Button
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleButtonClick();
+                            }}
+                            disabled={
+                              !isModel1Multimodal ||
+                              !isModel2Multimodal ||
+                              isComparingModel
+                            }
+                            size="icon"
+                            className="rounded-lg justify-center w-8 h-8 p-0 text-llm-primary50 border border-llm-primary50 hover:bg-gray-100 bg-white focus-visible:outline-llm-primary50"
+                          >
+                            <Paperclip className="h-4 w-4" />
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent side="right">
+                          <p>Add images to prompt (max 3 images, 10MB each)</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    <Button
+                      type="submit"
+                      size="icon"
+                      disabled={
+                        !(selectedModel1 && selectedModel2) ||
+                        isComparingModel ||
+                        newMessage.trim().length === 0
+                      }
+                      className="rounded-lg justify-center w-8 h-8 p-0 bg-llm-primary50 focus-visible:outline-llm-primary50"
+                      onClick={handleSendPrompt}
+                    >
+                      <Send className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </form>
+            </form>
+          </div>
         </CardFooter>
       </Card>
     </div>

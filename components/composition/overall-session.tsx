@@ -37,7 +37,6 @@ const OverallSessionPage = ({
   avgTokenPerTimeB,
   isLoading,
 }: componentProps) => {
-  console.log(modelA, modelB);
   return (
     <Card className="w-full rounded-xl">
       <CardHeader>
