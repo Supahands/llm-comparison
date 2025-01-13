@@ -4,6 +4,8 @@ type ModelOrder = {
   model: any;
   otherModel: any;
   order: string;
+  choice1: string;
+  choice2: string;
 };
 
 export interface AppState {
@@ -30,12 +32,18 @@ export interface AppState {
   hasRoundEnded: boolean;
   isRetryOverlay: boolean;
   jsonFormat: boolean;
+  images: File[];
+  isModel1Multimodal?: boolean;
+  isModel2Multimodal?: boolean;
 
   userChoices: UserChoice[];
   selectedChoice: ComboBoxItem | undefined;
   isStopped: boolean;
   responseOrder: ModelOrder | undefined;
 
+  setImages: (updater: (prevFiles: File[]) => File[]) => void;
+  setIsModel1Multimodal: (multimodal: boolean) => void;
+  setIsModel2Multimodal: (multimodal: boolean) => void;
   setSessionId: (model: string) => void;
   setSelectedModel1: (model: string) => void;
   setSelectedModel2: (model: string) => void;

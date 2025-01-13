@@ -324,7 +324,12 @@ export function AdvancedOptions({ isDisabled }: AdvancedProps) {
               Reset to Default
             </Button>
             <DialogClose>
-              <Button type="submit" onClick={setValue} disabled={isDisabled}>
+              <Button
+                type="submit"
+                onClick={setValue}
+                disabled={isDisabled}
+                className="bg-llm-primary50"
+              >
                 Save changes
               </Button>
             </DialogClose>
