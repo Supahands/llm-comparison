@@ -141,9 +141,7 @@ export default function Comparison() {
 
       const data = await response.json();
 
-      if (response.ok) {
-        console.log(data);
-      } else {
+      if (!response.ok) {
         console.error("error on uploading images", data);
       }
     } catch (err) {

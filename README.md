@@ -45,6 +45,8 @@ Here you list all prerequisites necessary for running your project. For example:
 - [NodeJS](https://github.com/)
 - [Git](https://github.com)
 - [NPM]
+- [AWS S3 Buckets](https://aws.amazon.com/s3/)
+- [Supabase](https://supabase.com/)
 
 <h3>Cloning</h3>
 
@@ -56,7 +58,9 @@ git clone https://github.com/Supahands/llm-comparison-frontend
 
 <h3>Starting</h3>
 
-First, run the development server:
+Before running the server, you should duplicate `.env.template` and fill in your own environment variables such as AWS S3 and Supabase. 
+
+Then, run the development server:
 
 ```bash
 npm run dev

@@ -5,12 +5,9 @@ import {
   S3ServiceException,
 } from "@aws-sdk/client-s3";
 
-const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
-const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
-
 export async function POST(request: NextRequest) {
   try {
-    const client = new S3Client({ region: "us-west-2" });
+    const client = new S3Client({ region: process.env.AWS_REGION });
     const formData = await request.formData();
     const files = formData.getAll("files") as File[];
 
@@ -19,7 +16,7 @@ export async function POST(request: NextRequest) {
       const buffer = await file.arrayBuffer();
 
       const command = new PutObjectCommand({
-        Bucket: "llm-evaluator-buckets",
+        Bucket: process.env.AWS_BUCKET_NAME,
         Key: file.name,
         Body: Buffer.from(buffer),
         ContentType: file.type,
