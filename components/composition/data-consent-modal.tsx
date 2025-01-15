@@ -68,6 +68,7 @@ export default function DataConsentModal() {
                 background: "linear-gradient(180deg, #F0A0A0 0%, #E76C6C 60%)",
               }}
               onClick={handleDataConsentAccept}
+              data-testid="data-collection-accept-button"
             >
               Accept and Continue
               <ArrowRight></ArrowRight>
