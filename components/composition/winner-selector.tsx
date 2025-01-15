@@ -88,6 +88,7 @@ export default function WinnerSelector() {
                             : "bg-llm-neutral90 text-white border-llm-neutral90 hover:bg-llm-grey2"
                         } border border-solid w-full rounded-xl py-3 px-5 cursor-pointer !focus-visible:ring-llm-primary50 `
                   }
+                  id={`winner-${input.value}`}
                 >
                   {input.label}
                 </Button>

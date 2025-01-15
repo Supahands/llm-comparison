@@ -488,6 +488,7 @@ export default function Comparison() {
                           handleSendPrompt();
                         }
                       }}
+                      id="question-input"
                       className="flex-grow resize-none bg-transparent px-5 lg:min-h-12 max-h-24 w-full py-3 pr-12 focus:ring-0 focus:ring-offset-0 border-none focus:border-llm-primary50 focus-visible:ring-0 focus-visible:ring-offset-0 "
                     />
                   </div>
