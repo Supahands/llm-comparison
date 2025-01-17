@@ -24,8 +24,8 @@ export default function PromptDisplay() {
           </FloatingPanelTrigger>
           <FloatingPanelContent>
             <div>
-              <div>
-                {images.length > 0 && (
+              {images.length > 0 && (
+                <div>
                   <motion.div
                     layout
                     initial={{ opacity: 0, x: 0 }}
@@ -71,8 +71,8 @@ export default function PromptDisplay() {
                       </motion.div>
                     ))}
                   </motion.div>
-                )}
-              </div>
+                </div>
+              )}
               <div>{prompt}</div>
             </div>
           </FloatingPanelContent>

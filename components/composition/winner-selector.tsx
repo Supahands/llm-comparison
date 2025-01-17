@@ -4,6 +4,8 @@ import useAppStore from "@/hooks/store/useAppStore";
 import { Button } from "../ui/button";
 import { ComboBoxItem } from "../ui/combo-box";
 import { usePostHog } from "posthog-js/react";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 const userInputs: ComboBoxItem[] = [
   {
@@ -41,6 +43,10 @@ export default function WinnerSelector() {
     setIsComparingModel,
     setSelectedChoice,
     setRoundEnd,
+    explainChoice,
+    idealResponse,
+    setExplainChoice,
+    setIdealResponse,
   } = useAppStore();
 
   const posthog = usePostHog();
@@ -69,7 +75,7 @@ export default function WinnerSelector() {
   return (
     <>
       {responseModel1 && responseModel2 && (
-        <div className="w-full lg:bg-llm-grey4 -mt-2 py-2">
+        <div className="w-full space-y-2 -mt-5 py-2">
           <div className="flex justify-center w-full">
             <div className="grid grid-cols-4 gap-2">
               {userInputs.map((input, index) => (
@@ -81,12 +87,12 @@ export default function WinnerSelector() {
                   }}
                   className={
                     !selectedChoice
-                      ? "w-full rounded-xl border border-solid border-llm-primary95 hover:bg-llm-primary50 hover:text-white text-llm-primary50 bg-llm-primary95 py-3 px-5 cursor-pointer "
+                      ? "w-full rounded-lg border border-solid border-llm-primary95 hover:bg-llm-primary50 hover:text-white text-llm-primary50 bg-llm-primary95 py-3 px-5 cursor-pointer "
                       : `${
                           selectedChoice?.value === input.value
                             ? "bg-llm-primary95 text-llm-primary50 border-llm-primary50 hover:bg-llm-primary95"
                             : "bg-llm-neutral90 text-white border-llm-neutral90 hover:bg-llm-grey2"
-                        } border border-solid w-full rounded-xl py-3 px-5 cursor-pointer !focus-visible:ring-llm-primary50 `
+                        } border border-solid w-full rounded-lg py-3 px-5 cursor-pointer !focus-visible:ring-llm-primary50 `
                   }
                 >
                   {input.label}
@@ -94,8 +100,32 @@ export default function WinnerSelector() {
               ))}
             </div>
           </div>
+          <div className="text-sm space-y-1">
+            <p>Explain your choice:</p>
+            <Textarea
+              placeholder="Type your message here."
+              value={explainChoice}
+              onChange={(e) => {
+                setExplainChoice(e.target.value);
+              }}
+              className="rounded-xl bg-transparent resize-none focus-visible:ring-llm-primary50"
+              id="message-2"
+            />
+          </div>
+          <div className="text-sm space-y-1">
+            <p>Ideal response (optional):</p>
+            <Textarea
+              placeholder="Type your message here."
+              className="rounded-xl bg-transparent resize-none focus-visible:ring-llm-primary50"
+              id="message-2"
+              value={idealResponse}
+              onChange={(e) => {
+                setIdealResponse(e.target.value);
+              }}
+            />
+          </div>
           {hasRoundEnded && (
-            <div className="w-full text-center mt-2">
+            <div className="w-full text-center ">
               Round {roundCounter} complete. Ask another question! 👇
             </div>
           )}
