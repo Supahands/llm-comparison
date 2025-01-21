@@ -240,6 +240,8 @@ export default function Home() {
             className="bg-llm-btn hover:bg-llm-btn_hover text-white rounded-xl relative"
             onClick={handleEvaluation}
             disabled={!selectedChoice}
+            id="end-eval-button"
+            data-testid="end-eval-button"
           >
             <div className="fixed pointer-events-none">
               <Lottie
