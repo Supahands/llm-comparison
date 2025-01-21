@@ -19,7 +19,7 @@ import { FaGithub } from "react-icons/fa";
 import { IoStarOutline } from "react-icons/io5";
 import { usePostHog } from "posthog-js/react";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Home() {
   const [stars, setStars] = useState<string>("");
@@ -46,9 +46,17 @@ export default function Home() {
     maxTokens,
     jsonFormat,
     images,
+    idealResponse,
+    explainChoice,
   } = useAppStore();
 
   const posthog = usePostHog();
+
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  const scrollToSection = () => {
+    sectionRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   const defaultOptions = {
     loop: 3,
@@ -117,6 +125,8 @@ export default function Home() {
           completion_token_2: completionToken2,
           model_config: `{"system_prompt":"${systemPrompt}","temperature":${temperature},"top_p":${topP},"max_tokens":${maxTokens},"json_format":${jsonFormat}}`,
           image_namefile: images.map((file) => file.name),
+          ideal_response: idealResponse,
+          explain_choice: explainChoice,
         },
       ]);
 
@@ -162,6 +172,14 @@ export default function Home() {
   useEffect(() => {
     getStarsRepo();
   }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      scrollToSection();
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [responseModel1]);
 
   return (
     <div className="bg-llm-background h-full min-h-screen flex flex-col">
@@ -217,31 +235,33 @@ export default function Home() {
           </div>
         </div>
 
-        <Button
-          className="bg-llm-btn hover:bg-llm-btn_hover text-white rounded-xl relative"
-          onClick={handleEvaluation}
-          disabled={!selectedChoice}
-          id='end-eval-button'
-          data-testid='end-eval-button'
-        >
-          <div className="fixed pointer-events-none">
-            <Lottie
-              eventListeners={[
-                {
-                  eventName: "complete",
-                  callback: () => {
-                    setIsStopped(true);
+        <div ref={sectionRef}>
+          <Button
+            className="bg-llm-btn hover:bg-llm-btn_hover text-white rounded-xl relative"
+            onClick={handleEvaluation}
+            disabled={!selectedChoice}
+            id="end-eval-button"
+            data-testid="end-eval-button"
+          >
+            <div className="fixed pointer-events-none">
+              <Lottie
+                eventListeners={[
+                  {
+                    eventName: "complete",
+                    callback: () => {
+                      setIsStopped(true);
+                    },
                   },
-                },
-              ]}
-              width={300}
-              height={150}
-              options={defaultOptions}
-              isStopped={isStopped}
-            />
-          </div>
-          End evaluation and see results
-        </Button>
+                ]}
+                width={300}
+                height={150}
+                options={defaultOptions}
+                isStopped={isStopped}
+              />
+            </div>
+            End evaluation and see results
+          </Button>
+        </div>
       </div>
     </div>
   );

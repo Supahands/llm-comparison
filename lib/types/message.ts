@@ -6,6 +6,9 @@ export type Message = {
   choice?: string;
   responseTime1?: string;
   responseTime2?: string;
+  image_url: string[];
+  explain_choice?: string;
+  ideal_response?: string;
 };
 
 export type ConfigRequest = {

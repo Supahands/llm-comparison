@@ -1,9 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import {
-  PutObjectCommand,
-  S3Client,
-  S3ServiceException,
-} from "@aws-sdk/client-s3";
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
 export async function POST(request: NextRequest) {
   try {
@@ -12,7 +8,6 @@ export async function POST(request: NextRequest) {
     const files = formData.getAll("files") as File[];
 
     const uploadAll = async (file: File) => {
-      console.log(file.name);
       const buffer = await file.arrayBuffer();
 
       const command = new PutObjectCommand({

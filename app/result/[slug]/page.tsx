@@ -294,24 +294,47 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
 
     setAllMessage(
       data
-        ? data.map(
-            (x: {
-              id: number;
-              prompt: any;
-              response_model_1: any;
-              response_model_2: any;
-              selected_choice: any;
-              model_config: any;
-            }) => {
-              return {
-                id: x.id,
-                prompt: x.prompt,
-                response1: x.response_model_1,
-                response2: x.response_model_2,
-                choice: x.selected_choice,
-                config: JSON.parse(x.model_config),
-              };
-            }
+        ? await Promise.all(
+            data.map(
+              async (x: {
+                id: number;
+                prompt: any;
+                response_model_1: any;
+                response_model_2: any;
+                selected_choice: any;
+                model_config: any;
+                image_namefile: any;
+                explain_choice: any;
+                ideal_response: any;
+              }) => {
+                let temp_image: string[] = [];
+                await Promise.all(
+                  x.image_namefile?.map(async (y: string) => {
+                    const response = await fetch(
+                      `/api/get_image_url?namefile=${y}`,
+                      {
+                        method: "GET",
+                      }
+                    );
+
+                    const res = await response.json();
+                    const url = res.url;
+                    temp_image.push(url);
+                  }) || []
+                );
+                return {
+                  id: x.id,
+                  prompt: x.prompt,
+                  response1: x.response_model_1,
+                  response2: x.response_model_2,
+                  choice: x.selected_choice,
+                  config: JSON.parse(x.model_config),
+                  image_url: temp_image,
+                  explain_choice: x.explain_choice,
+                  ideal_response: x.ideal_response,
+                };
+              }
+            )
           )
         : []
     );
@@ -339,14 +362,9 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
           )
         : []
     );
-    console.log("model config", configModel);
 
     calculateProportion(data);
     setIsLoading(false);
-  };
-
-  const handleConfig = () => {
-    console.log("model config", configModel);
   };
 
   function formatStarCount(count: number): string {

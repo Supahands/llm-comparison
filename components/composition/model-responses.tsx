@@ -1,13 +1,13 @@
 "use client";
 
-import { ScrollArea } from "../ui/scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import ReactMarkdown from "react-markdown";
 import useAppStore from "@/hooks/store/useAppStore";
 import { useIsMutating } from "@tanstack/react-query";
 import { useCallback, useMemo } from "react";
 import remarkGfm from "remark-gfm";
 import Lottie from "react-lottie";
-import * as animationData from "../../public/animation/loading";
+import * as animationData from "@/public/animation/loading";
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { IoInformationOutline } from "react-icons/io5";

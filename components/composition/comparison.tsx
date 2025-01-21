@@ -79,15 +79,15 @@ export default function Comparison() {
     setImages,
     isModel1Multimodal,
     isModel2Multimodal,
+    explainChoice,
+    idealResponse,
   } = useAppStore();
 
   const recaptchaRef = useRef<ReCAPTCHA>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const posthog = usePostHog();
 
-  const [message, setMessage] = useState<string | null>(null);
   const [newMessage, setNewMessage] = useState<string>("");
-  const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [newImages, setNewImages] = useState<File[]>([]);
   const [convertedImages, setConvertedImages] = useState<string[]>([]);
@@ -279,6 +279,8 @@ export default function Comparison() {
           completion_token_2: completionToken2,
           model_config: `{"system_prompt":"${systemPrompt}","temperature":${temperature},"top_p":${topP},"max_tokens":${maxTokens},"json_format":${jsonFormat}}`,
           image_namefile: images.map((file) => file.name),
+          ideal_response: idealResponse,
+          explain_choice: explainChoice,
         },
       ]);
 
@@ -345,7 +347,7 @@ export default function Comparison() {
   return (
     <div className="mx-auto mt-4 w-full flex-grow">
       <DataConsentModal />
-      <Card className=" w-full mx-auto rounded-xl h-[69vh] bg-white flex-grow flex flex-col">
+      <Card className=" w-full mx-auto min-h-[69vh] rounded-xl bg-white flex-grow flex flex-col">
         <CardContent className="flex flex-col overflow-hidden flex-grow h-full p-1 relative">
           <PromptDisplay />
           {isRetryOverlay && (
@@ -368,7 +370,7 @@ export default function Comparison() {
           <ModelResponses />
         </CardContent>
         <CardFooter className="flex flex-col">
-          <div className="w-full space-y-3">
+          <div className="w-full space-y-4">
             {selectedModel1 && selectedModel2 && (
               <PromptSelector prompts={prompts} />
             )}

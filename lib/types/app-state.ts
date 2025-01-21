@@ -35,6 +35,8 @@ export interface AppState {
   images: File[];
   isModel1Multimodal?: boolean;
   isModel2Multimodal?: boolean;
+  explainChoice: string;
+  idealResponse: string;
 
   userChoices: UserChoice[];
   selectedChoice: ComboBoxItem | undefined;
@@ -43,6 +45,8 @@ export interface AppState {
 
   setImages: (updater: (prevFiles: File[]) => File[]) => void;
   setIsModel1Multimodal: (multimodal: boolean) => void;
+  setExplainChoice: (explainChoice: string) => void;
+  setIdealResponse: (idealResponse: string) => void;
   setIsModel2Multimodal: (multimodal: boolean) => void;
   setSessionId: (model: string) => void;
   setSelectedModel1: (model: string) => void;
