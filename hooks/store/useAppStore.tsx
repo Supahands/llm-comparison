@@ -33,9 +33,15 @@ const useAppStore = create<AppState>((set) => ({
   images: [],
   isModel1Multimodal: false,
   isModel2Multimodal: false,
+  explainChoice: "",
+  idealResponse: "",
 
   setSessionId: (sessionId: string) =>
     set((_state: AppState) => ({ sessionId: sessionId })),
+  setExplainChoice: (explainChoice: string) =>
+    set((_state: AppState) => ({ explainChoice: explainChoice })),
+  setIdealResponse: (idealResponse: string) =>
+    set((_state: AppState) => ({ idealResponse: idealResponse })),
   setIsModel1Multimodal: (multimodal: boolean) =>
     set((_state: AppState) => ({ isModel1Multimodal: multimodal })),
   setIsModel2Multimodal: (multimodal: boolean) =>
@@ -96,6 +102,8 @@ const useAppStore = create<AppState>((set) => ({
       isComparingModel: false,
       hasRoundEnded: false,
       isRetryOverlay: false,
+      explainChoice: "",
+      idealResponse: "",
     })),
   addUserChoices: (choice) =>
     set((state: AppState) => ({

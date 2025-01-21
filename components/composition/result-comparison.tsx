@@ -5,6 +5,8 @@ import { Message } from "@/lib/types/message";
 
 import { Button } from "@/components/ui/button";
 
+import { motion } from "framer-motion";
+
 import {
   Card,
   CardContent,
@@ -75,14 +77,67 @@ const ResultComparison = ({
                 <FloatingPanelRoot className="w-full">
                   <FloatingPanelTrigger
                     title="Prompt"
-                    className="focus-visible:outline-llm-primary50"
+                    className="focus-visible:outline-llm-primary50 bg-transparent"
                   >
                     <div className="bg-llm-grey4 p-1 mx-auto w-full text-center border border-solid border-llm-neutral90 rounded-xl text-llm-grey1 h-fit whitespace-pre-wrap line-clamp-1 focus-visible:outline-llm-primary50">
                       {allMessage[currentMessage].prompt}
                     </div>
                   </FloatingPanelTrigger>
                   <FloatingPanelContent>
-                    {allMessage[currentMessage].prompt}
+                    <div>
+                      {allMessage[currentMessage].image_url.length > 0 && (
+                        <div>
+                          <motion.div
+                            layout
+                            initial={{ opacity: 0, x: 0 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, x: -50 }}
+                            transition={{
+                              type: "spring",
+                              stiffness: 300,
+                              damping: 25,
+                              mass: 1,
+                            }}
+                            className="w-full flex flex-nowrap gap-4 py-2 overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent"
+                            style={{
+                              minHeight: "96px",
+                              scrollbarWidth: "thin",
+                            }}
+                          >
+                            {allMessage[currentMessage].image_url?.map(
+                              (url, index) => (
+                                <motion.div
+                                  layout
+                                  initial={{ opacity: 0, y: 50 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  exit={{
+                                    opacity: 0,
+                                    x: -50,
+                                    transition: {
+                                      type: "spring",
+                                      stiffness: 300,
+                                      damping: 25,
+                                      mass: 1,
+                                    },
+                                  }}
+                                  key={index}
+                                  className="relative flex-shrink-0"
+                                >
+                                  <div className="w-20 h-20 relative">
+                                    <img
+                                      src={url}
+                                      alt={`Selected ${index + 1}`}
+                                      className="w-20 h-20 object-cover rounded-xl"
+                                    />
+                                  </div>
+                                </motion.div>
+                              )
+                            )}
+                          </motion.div>
+                        </div>
+                      )}
+                      <div>{allMessage[currentMessage].prompt}</div>
+                    </div>
                   </FloatingPanelContent>
                 </FloatingPanelRoot>
                 <ScrollArea
@@ -134,6 +189,32 @@ const ResultComparison = ({
                         >
                           {allMessage[currentMessage].response2}
                         </ReactMarkdown>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex w-full flex-col  h-full flex-grow">
+                      <div className="flex flex-col h-full flex-grow gap-2">
+                        <p className="font-bold text-sm md:text-base">
+                          Explanation
+                        </p>
+                        <ScrollArea className="flex-grow w-full border text-sm lg:text-base h-20 border-gray-300 p-2 md:p-3 rounded-xl ">
+                          {allMessage
+                            ? allMessage[currentMessage].explain_choice
+                            : ""}
+                        </ScrollArea>
+                      </div>
+                    </div>
+                    <div className="flex w-full flex-col  h-full flex-grow">
+                      <div className="flex flex-col h-full flex-grow gap-2">
+                        <p className="font-bold text-sm md:text-base">
+                          Ideal Response
+                        </p>
+                        <ScrollArea className="flex-grow w-full border text-sm lg:text-base h-20 border-gray-300 p-2 md:p-3 rounded-xl ">
+                          {allMessage
+                            ? allMessage[currentMessage].explain_choice
+                            : ""}
+                        </ScrollArea>
                       </div>
                     </div>
                   </div>

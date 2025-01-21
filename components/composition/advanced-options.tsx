@@ -177,7 +177,7 @@ export function AdvancedOptions({ isDisabled }: AdvancedProps) {
           <div className="flex flex-col space-y-1">
             <p className="font-bold">System Prompt </p>
             <Textarea
-              className="h-20"
+              className="h-20 resize-none"
               value={currSystemPrompt}
               onChange={handleSystemPrompt}
               placeholder="Type your message here."
@@ -316,7 +316,7 @@ export function AdvancedOptions({ isDisabled }: AdvancedProps) {
         <DialogFooter className="w-full">
           <div className="flex flex-row w-full justify-between gap-2">
             <Button
-              className="bg-white text-black border hover:bg-gray-100"
+              className="bg-white text-black border rounded-lg focus-visible:ring-llm-primary50 hover:bg-gray-100"
               onClick={setDefaultValue}
               type="submit"
               disabled={isDisabled}
@@ -328,7 +328,7 @@ export function AdvancedOptions({ isDisabled }: AdvancedProps) {
                 type="submit"
                 onClick={setValue}
                 disabled={isDisabled}
-                className="bg-llm-primary50"
+                className="bg-llm-primary50 rounded-lg focus-visible:ring-llm-primary50"
               >
                 Save changes
               </Button>
