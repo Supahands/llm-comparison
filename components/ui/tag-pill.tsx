@@ -15,20 +15,23 @@ const stringToColor = (str: string) => {
   for (let i = 0; i < str.length; i++) {
     hash = str.charCodeAt(i) + ((hash << 5) - hash);
   }
-  let color = "#";
-  for (let i = 0; i < 3; i++) {
-    const value = (hash >> (i * 8)) & 0xff;
-    color += ("00" + value.toString(16)).substr(-2);
-  }
-  return color;
+
+  // Increase brightness by adjusting HSL values
+  const h = hash % 360;
+  const s = 65 + (hash % 20); // Saturation between 65-85%
+  const l = 65 + (hash % 15); // Lightness between 65-80%
+
+  return `hsl(${h}, ${s}%, ${l}%)`;
 };
 
 const getContrastColor = (hexcolor: string) => {
-  const r = parseInt(hexcolor.slice(1, 3), 16);
-  const g = parseInt(hexcolor.slice(3, 5), 16);
-  const b = parseInt(hexcolor.slice(5, 7), 16);
-  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-  return luminance > 0.5 ? "#000000" : "#FFFFFF";
+  // For HSL colors, we can determine text color based on lightness
+  const match = hexcolor.match(/hsl\(\d+,\s*\d+%,\s*(\d+)%\)/);
+  if (match) {
+    const lightness = parseInt(match[1]);
+    return lightness > 65 ? "#000000" : "#FFFFFF";
+  }
+  return "#000000";
 };
 
 export default function TagPill({ tag, onRemove, size = 'md', className, ...props }: TagPillProps) {
@@ -40,9 +43,10 @@ export default function TagPill({ tag, onRemove, size = 'md', className, ...prop
       style={{
         backgroundColor: bgColor,
         color: textColor,
+        border: '1px solid rgba(0,0,0,0.1)',
       }}
       className={cn(
-        "flex items-center gap-1 px-2 py-1 rounded-full opacity-90",
+        "flex items-center gap-1 px-2 py-1 rounded-full opacity-95 shadow-sm font-medium",
         size === 'sm' ? "text-[10px]" : "text-sm",
         className
       )}
