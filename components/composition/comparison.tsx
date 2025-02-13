@@ -238,7 +238,7 @@ export default function Comparison() {
     posthog?.capture("llm-compare.prompts.new", {
       prompt: newMessage,
     });
-    setPrompt(newMessage);
+    setPrompt({ question: newMessage, tags: [] });
     setNewMessage("");
     setNewImages([]);
   }, [newMessage, selectedChoice]);
@@ -290,7 +290,7 @@ export default function Comparison() {
   const payloadModel1 = useMemo<MessageRequest>(() => {
     return {
       model: selectedModel1,
-      message: prompt,
+      message: prompt?.question,
       images: convertedImages,
       config: {
         system_prompt: systemPrompt,
@@ -305,7 +305,7 @@ export default function Comparison() {
   const payloadModel2 = useMemo<MessageRequest>(() => {
     return {
       model: selectedModel2,
-      message: prompt,
+      message: prompt?.question,
       images: convertedImages,
       config: {
         system_prompt: systemPrompt,

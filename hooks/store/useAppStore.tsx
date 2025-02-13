@@ -1,12 +1,12 @@
 import { ComboBoxItem } from "@/components/ui/combo-box";
-import { AppState } from "@/lib/types/app-state";
+import { AppState, Prompt } from "@/lib/types/app-state";
 import { create } from "zustand";
 
 const useAppStore = create<AppState>((set) => ({
   sessionId: "",
   selectedModel1: "",
   selectedModel2: "",
-  prompt: "",
+  prompt: undefined,
   responseModel1: "",
   responseModel2: "",
   isPendingModel1: false,
@@ -69,7 +69,7 @@ const useAppStore = create<AppState>((set) => ({
     set((_state: AppState) => ({ selectedModel1: model })),
   setSelectedModel2: (model: string) =>
     set((_state: AppState) => ({ selectedModel2: model })),
-  setPrompt: (prompt: string) => set((_state: AppState) => ({ prompt })),
+  setPrompt: (prompt: Prompt) => set((_state: AppState) => ({ prompt })),
   setResponseModel1: (response: string) =>
     set((_state: AppState) => ({ responseModel1: response })),
   setResponseModel2: (response: string) =>

@@ -61,10 +61,12 @@ export default function WinnerSelector() {
   const posthog = usePostHog();
 
   const handleUserChoice = (choice: ComboBoxItem) => {
-    addUserChoices({
-      prompt: prompt,
-      choice: choice.value,
-    });
+    if (prompt?.question){
+      addUserChoices({
+        prompt: prompt.question,
+        choice: choice.value,
+      });
+    }
     setIsComparingModel(false);
   };
 

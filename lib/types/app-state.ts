@@ -8,11 +8,16 @@ type ModelOrder = {
   choice2: string;
 };
 
+export type Prompt = {
+  question: string;
+  tags: string[] | undefined;
+}
+
 export interface AppState {
   sessionId: string;
   selectedModel1: string;
   selectedModel2: string;
-  prompt: string;
+  prompt: Prompt | undefined;
   responseModel1: string;
   responseModel2: string;
   isPendingModel1: boolean;
@@ -58,7 +63,7 @@ export interface AppState {
   setMaxTokens: (model: number) => void;
   setResponseTime1: (model: number) => void;
   setResponseTime2: (model: number) => void;
-  setPrompt: (prompt: string) => void;
+  setPrompt: (prompt: Prompt) => void;
   setResponseModel1: (response: string) => void;
   setResponseModel2: (response: string) => void;
   setIsPendingModel1: (isPending: boolean) => void;

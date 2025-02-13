@@ -1,3 +1,4 @@
+
 export type Message = {
   id?: number;
   prompt: string;
@@ -20,7 +21,7 @@ export type ConfigRequest = {
 };
 
 export type MessageRequest = {
-  message: string;
+  message: string | undefined;
   images?: string[];
   model: string;
   config: ConfigRequest;
