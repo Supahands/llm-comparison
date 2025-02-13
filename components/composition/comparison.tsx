@@ -1,35 +1,33 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Send, RotateCcw } from "lucide-react";
-import PromptSelector from "./prompt-selector";
-import { MessageRequest } from "@/lib/types/message";
-import ModelResponses from "./model-responses";
-import PromptDisplay from "./prompt-display";
-import useAppStore from "@/hooks/store/useAppStore";
-import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
-import { API_URL } from "@/lib/constants/urls";
-import { Textarea } from "../ui/textarea";
-import WinnerSelector from "./winner-selector";
-import { v4 as uuidv4 } from "uuid";
-import { supabaseClient } from "@/lib/supabase/supabaseClient";
-import DataConsentModal from "./data-consent-modal";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { DATABASE_TABLE } from "@/lib/constants/databaseTables";
-import { usePostHog } from "posthog-js/react";
-import ReCAPTCHA from "react-google-recaptcha";
-import { Paperclip } from "lucide-react";
-import { X } from "lucide-react";
-import { motion } from "framer-motion";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import useAppStore from "@/hooks/store/useAppStore";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { DATABASE_TABLE } from "@/lib/constants/databaseTables";
+import { API_URL } from "@/lib/constants/urls";
+import { supabaseClient } from "@/lib/supabase/supabaseClient";
+import { MessageRequest } from "@/lib/types/message";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { motion } from "framer-motion";
+import { Paperclip, RotateCcw, Send, X } from "lucide-react";
+import { usePostHog } from "posthog-js/react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
+import { v4 as uuidv4 } from "uuid";
+import { Textarea } from "../ui/textarea";
+import DataConsentModal from "./data-consent-modal";
+import ModelResponses from "./model-responses";
+import PromptDisplay from "./prompt-display";
+import PromptSelector from "./prompt-selector";
+import WinnerSelector from "./winner-selector";
 
 const prompts = [
   "What are the most popular car brands in Japan?",
@@ -371,7 +369,7 @@ export default function Comparison() {
         </CardContent>
         <CardFooter className="flex flex-col">
           <div className="w-full space-y-4">
-            {selectedModel1 && selectedModel2 && (
+            {!isComparingModel && !(responseModel1 && responseModel2) && (
               <PromptSelector prompts={prompts} />
             )}
             <WinnerSelector />

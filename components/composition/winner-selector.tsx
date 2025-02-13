@@ -1,11 +1,20 @@
 "use client";
 
-import useAppStore from "@/hooks/store/useAppStore";
-import { Button } from "../ui/button";
-import { ComboBoxItem } from "../ui/combo-box";
-import { usePostHog } from "posthog-js/react";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import useAppStore from "@/hooks/store/useAppStore";
+import { usePostHog } from "posthog-js/react";
+import { Button } from "../ui/button";
+import { ComboBoxItem } from "../ui/combo-box";
+import PromptSelector from "./prompt-selector";
+
+const prompts = [
+  "What are the most popular car brands in Japan?",
+  "Gather the top insights on the Southeast Asian vehicle market",
+  "Give me the latest updates on the US Presidential elections",
+  "Compare the education system in the UK vs the USA",
+];
+
 
 const userInputs: ComboBoxItem[] = [
   {
@@ -128,6 +137,7 @@ export default function WinnerSelector() {
           {hasRoundEnded && (
             <div className="w-full text-center ">
               Round {roundCounter} complete. Ask another question! 👇
+              <PromptSelector prompts={prompts} />
             </div>
           )}
         </div>
