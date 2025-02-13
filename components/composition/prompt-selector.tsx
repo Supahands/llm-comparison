@@ -71,9 +71,6 @@ export default function PromptSelector({ prompts }: PromptSelectorProps) {
   const posthog = usePostHog();
   const [hasAnimated, setHasAnimated] = useState(false);
   const [error, setError] = useState(false);
-  const [selectedPrompt, setSelectedPrompt] = useState<SelectedPrompt | null>(
-    null
-  );
 
   // Add Lottie options
   const defaultOptions = {
@@ -86,16 +83,16 @@ export default function PromptSelector({ prompts }: PromptSelectorProps) {
   };
 
   const { data: questions, isLoading } = useQuery({
-    queryKey: ['questions', 'llama3.3', selectedPrompt, hasRoundEnded ? 'round-end' : 'initial'],
+    queryKey: ['questions', 'llama3.3', prompt, hasRoundEnded ? 'round-end' : 'initial'],
     queryFn: async () => {
       const response = await axios.post<QuestionResponse>(
         `${API_URL}/question_generation`,
         {
           model: "llama3.3",
-          ...(selectedPrompt?.question && {
+          ...(prompt?.question && {
             input_question: {
-              question: selectedPrompt.question,
-              tags: selectedPrompt.tags || [],
+              question: prompt.question,
+              tags: prompt.tags || [],
             },
           }),
         }
@@ -103,13 +100,11 @@ export default function PromptSelector({ prompts }: PromptSelectorProps) {
       const content = JSON.parse(response.data.choices[0].message.content);
       return content.questions as Question[];
     },
-    // Reset cache when component remounts or round ends
-    // cacheTime: 0,
     staleTime: 0,
-    // Don't refetch automatically
     refetchOnWindowFocus: false,
     refetchOnMount: true,
     refetchOnReconnect: false,
+    enabled: !prompt?.question || hasRoundEnded, // Only fetch when there's no prompt or round has ended
   });
 
   console.log("🚀 ~ PromptSelector ~ error:", error);
@@ -135,11 +130,6 @@ export default function PromptSelector({ prompts }: PromptSelectorProps) {
           transition={{ duration: 0.2 }}
           className="flex flex-col items-center w-full gap-4"
         >
-          {/* {isLoading && (
-            <p className="rounded-xl border border-solid border-llm-neutral90 hover:bg-llm-blurple4 bg-llm-grey4 text-llm-grey1 py-2 px-3">
-              We're loading custom questions for you!
-            </p>
-          )} */}
           {isLoading ? (
             <div className="w-full flex justify-center items-center">
               <Lottie
@@ -151,10 +141,10 @@ export default function PromptSelector({ prompts }: PromptSelectorProps) {
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-4 w-full max-w-[900px]">
-              {displayPrompts.map((prompt, index) => (
+              {displayPrompts.map((promptItem, index) => (
           <motion.div
             layout={false}
-            key={prompt.question}
+            key={promptItem.question}
             initial={{ opacity: 0, y: 30 }}
             animate={
               hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }
@@ -166,20 +156,19 @@ export default function PromptSelector({ prompts }: PromptSelectorProps) {
               onClick={(e) => {
                 e.preventDefault();
                 const promptData = {
-            question: prompt.question,
-            tags: prompt.tags || [],
+            question: promptItem.question,
+            tags: promptItem.tags || [],
                 };
                 posthog?.capture("llm-compare.prompts.new", promptData);
-                setSelectedPrompt(promptData);
-                setPrompt(prompt.question);
+                setPrompt(promptData);
               }}
               role="prompt-selector"
               className="w-full h-full overflow-hidden rounded-xl border border-solid border-llm-neutral90 hover:bg-llm-blurple4 bg-llm-grey4 text-llm-grey1 py-3 px-5 cursor-pointer focus-visible:outline-llm-primary50 flex flex-col pb-1"
             >
-              <span className="text-pretty">{prompt.question}</span>
+              <span className="text-pretty">{promptItem.question}</span>
               <div className="flex flex-wrap gap-1 mt-1">
                 {" "}
-                {prompt.tags.map((tag) => {
+                {promptItem.tags.map((tag) => {
             const bgColor = stringToColor(tag);
             return (
               <span
