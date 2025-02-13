@@ -70,6 +70,7 @@ export default function PromptSelector({ prompts }: PromptSelectorProps) {
     prompt,
     hasRoundEnded,
     preferredTags,
+    setPreferredTags,
   } = useAppStore();
   const posthog = usePostHog();
   const [hasAnimated, setHasAnimated] = useState(false);
@@ -121,6 +122,26 @@ export default function PromptSelector({ prompts }: PromptSelectorProps) {
     setHasAnimated(true);
   }, []);
 
+  const handlePromptSelection = (promptItem: { question: string; tags: string[] }) => {
+    // Create promptData object
+    const promptData = {
+      question: promptItem.question,
+      tags: promptItem.tags || [],
+    };
+
+    // Update preferredTags with new unique tags
+    const newTags = promptItem.tags.filter(
+      tag => !preferredTags.includes(tag) && preferredTags.length < 5
+    );
+    if (newTags.length > 0) {
+      setPreferredTags([...preferredTags, ...newTags].slice(0, 5));
+    }
+
+    // Capture analytics and set prompt
+    posthog?.capture("llm-compare.prompts.new", promptData);
+    setPrompt(promptData);
+  };
+
   return (
     <>
       {(!isComparingModel && !(responseModel1 && responseModel2)) ||
@@ -157,12 +178,7 @@ export default function PromptSelector({ prompts }: PromptSelectorProps) {
             <Button
               onClick={(e) => {
                 e.preventDefault();
-                const promptData = {
-            question: promptItem.question,
-            tags: promptItem.tags || [],
-                };
-                posthog?.capture("llm-compare.prompts.new", promptData);
-                setPrompt(promptData);
+                handlePromptSelection(promptItem);
               }}
               role="prompt-selector"
               className="w-full h-full overflow-hidden rounded-xl border border-solid border-llm-neutral90 hover:bg-llm-blurple4 bg-llm-grey4 text-llm-grey1 py-3 px-5 cursor-pointer focus-visible:outline-llm-primary50 flex flex-col pb-1"
