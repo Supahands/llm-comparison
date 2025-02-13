@@ -21,7 +21,7 @@ const useAppStore = create<AppState>((set) => ({
   completionToken1: 0,
   completionToken2: 0,
   isStopped: true,
-  roundCounter: 1,
+  roundCounter: 0,
   hasRoundEnded: false,
   isRetryOverlay: false,
   responseOrder: undefined,
@@ -36,8 +36,10 @@ const useAppStore = create<AppState>((set) => ({
   explainChoice: "",
   idealResponse: "",
   preferredTags: [],
+  showExplanationFields: false,
 
-
+  setShowExplanationFields: (show: boolean) => set({ showExplanationFields: show }),
+  setRoundCounter: (counter: number) => set({ roundCounter: counter }),
   setSessionId: (sessionId: string) =>
     set((_state: AppState) => ({ sessionId: sessionId })),
   setExplainChoice: (explainChoice: string) =>

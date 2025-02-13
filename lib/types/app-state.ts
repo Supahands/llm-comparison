@@ -42,6 +42,7 @@ export interface AppState {
   isModel2Multimodal?: boolean;
   explainChoice: string;
   idealResponse: string;
+  showExplanationFields: boolean;
 
   userChoices: UserChoice[];
   selectedChoice: ComboBoxItem | undefined;
@@ -52,6 +53,8 @@ export interface AppState {
   setImages: (updater: (prevFiles: File[]) => File[]) => void;
   setIsModel1Multimodal: (multimodal: boolean) => void;
   setExplainChoice: (explainChoice: string) => void;
+
+  setRoundCounter: (roundCounter: number) => void;
   setIdealResponse: (idealResponse: string) => void;
   setIsModel2Multimodal: (multimodal: boolean) => void;
   setSessionId: (model: string) => void;
@@ -82,6 +85,7 @@ export interface AppState {
   setIsRetryOverlay: (isOverlay: boolean) => void;
   setModelOrder: (order: ModelOrder) => void;
   setPreferredTags: (tags: string[]) => void;
+  setShowExplanationFields: (show: boolean) => void;
   reset: () => void;
 }
 
