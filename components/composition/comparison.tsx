@@ -269,7 +269,8 @@ export default function Comparison() {
             /<redacted>(.*?)<\/redacted>/g,
             "$1"
           ),
-          prompt: prompt,
+          prompt: prompt?.question,
+          question_tags: prompt?.tags,
           response_time_1: responseTime1,
           response_time_2: responseTime2,
           prompt_token: promptToken,

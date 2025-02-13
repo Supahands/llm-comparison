@@ -2,6 +2,7 @@
 
 import TagPill from "@/components/ui/tag-pill";
 import useAppStore from "@/hooks/store/useAppStore";
+import { usePromptGeneration } from "@/hooks/use-prompt-generation";
 import { API_URL } from "@/lib/constants/urls";
 import * as animationData from "@/public/animation/question_loading";
 import { useQuery } from "@tanstack/react-query";
@@ -76,41 +77,8 @@ export default function PromptSelector({ prompts }: PromptSelectorProps) {
   const [hasAnimated, setHasAnimated] = useState(false);
   const [error, setError] = useState(false);
 
-  // Add Lottie options
-  const defaultOptions = {
-    loop: true,
-    autoplay: true,
-    animationData: animationData,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice",
-    },
-  };
+  const { questions, isLoading } = usePromptGeneration();
 
-  const { data: questions, isLoading } = useQuery({
-    queryKey: ['questions', 'llama3.3', preferredTags, prompt?.question],
-    queryFn: async () => {
-      const response = await axios.post<QuestionResponse>(
-        `${API_URL}/question_generation`,
-        {
-          model: "llama3.3",
-          input_question: {
-            question: prompt?.question || "",
-            tags: preferredTags?.length ? preferredTags : (prompt?.tags || [])
-          }
-        }
-      );
-      const content = JSON.parse(response.data.choices[0].message.content);
-      return content.questions as Question[];
-    },
-    staleTime: 1000, // Add stale time to prevent rapid refetches
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
-    enabled: !isComparingModel && Array.isArray(preferredTags),
-  });
-
-  console.log("🚀 ~ PromptSelector ~ error:", error);
-  console.log("🚀 ~ :questions?.map ~ questions:", questions);
   const displayPrompts = error
     ? prompts.map((p) => ({ question: p, tags: [] }))
     : questions?.map((q) => ({
@@ -140,6 +108,16 @@ export default function PromptSelector({ prompts }: PromptSelectorProps) {
     // Capture analytics and set prompt
     posthog?.capture("llm-compare.prompts.new", promptData);
     setPrompt(promptData);
+  };
+
+  // Add Lottie options
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: animationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
   };
 
   return (

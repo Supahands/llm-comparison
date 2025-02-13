@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import TagPill from "@/components/ui/tag-pill";
 import useAppStore from "@/hooks/store/useAppStore";
-import { useQueryClient } from "@tanstack/react-query";
+import { usePromptGeneration } from "@/hooks/use-prompt-generation";
 import debounce from 'lodash/debounce';
 import { X } from "lucide-react";
 import { useCallback, useState } from "react";
@@ -33,34 +33,21 @@ const getContrastColor = (hexcolor: string) => {
 export default function TagSelector() {
   const { preferredTags = [], setPreferredTags } = useAppStore();
   const [newTag, setNewTag] = useState("");
-  const queryClient = useQueryClient();
+  const { invalidatePrompts } = usePromptGeneration();
 
-  // Debounce the query invalidation
-  const debouncedInvalidate = useCallback(
-    debounce(() => {
-      queryClient.invalidateQueries({ queryKey: ['questions'] });
-    }, 500),
-    []
-  );
-
-  const validateTag = (tag: string) => {
-    // Only allow alphanumeric characters and underscores
-    const cleanTag = tag.replace(/[^a-zA-Z0-9_]/g, '');
-    return cleanTag === tag && tag.length > 0;
-  }
   const handleAddTag = () => {
     if (newTag.trim() && (preferredTags?.length ?? 0) < 5) {
       const updatedTags = [...(preferredTags ?? []), newTag.trim().toLowerCase()];
       setPreferredTags(updatedTags);
       setNewTag("");
-      debouncedInvalidate();
+      invalidatePrompts();
     }
   };
 
   const handleRemoveTag = (indexToRemove: number) => {
     const updatedTags = (preferredTags ?? []).filter((_, index) => index !== indexToRemove);
     setPreferredTags(updatedTags);
-    debouncedInvalidate();
+    invalidatePrompts();
   };
 
   return (
