@@ -2,7 +2,6 @@
 
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ThinkBlock } from "@/components/ui/think-block";
 import useAppStore from "@/hooks/store/useAppStore";
 import * as animationData from "@/public/animation/loading";
 import { useIsMutating } from "@tanstack/react-query";
@@ -18,34 +17,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-
-const parseThinkBlocks = (content: string) => {
-  if (!content || typeof content !== "string") return "";
-
-  const parts = [];
-  let currentPos = 0;
-  const regex = /<think>([\s\S]*?)<\/think>/g;
-
-  let match;
-  while ((match = regex.exec(content)) !== null) {
-    // Add text before the think block
-    if (match.index > currentPos) {
-      parts.push(content.slice(currentPos, match.index));
-    }
-
-    // Add the think block
-    parts.push(<ThinkBlock key={match.index} content={match[1].trim()} />);
-
-    currentPos = match.index + match[0].length;
-  }
-
-  // Add any remaining text
-  if (currentPos < content.length) {
-    parts.push(content.slice(currentPos));
-  }
-
-  return parts;
-};
 
 const sanitizeMarkdown = (content: string | undefined) => {
   if (!content || typeof content !== "string") return "";
