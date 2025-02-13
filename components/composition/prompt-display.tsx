@@ -1,3 +1,4 @@
+import TagPill from "@/components/ui/tag-pill";
 import useAppStore from "@/hooks/store/useAppStore";
 import { motion } from "framer-motion";
 import {
@@ -42,21 +43,9 @@ export default function PromptDisplay() {
               <div>{prompt.question}</div>
               {prompt.tags && prompt.tags.length > 0 && (
                 <div className="flex flex-wrap gap-1 justify-center mt-1">
-                  {prompt.tags.map((tag) => {
-                    const bgColor = stringToColor(tag);
-                    return (
-                      <span
-                        key={tag}
-                        style={{
-                          backgroundColor: bgColor,
-                          color: getContrastColor(bgColor),
-                        }}
-                        className="mb-0 px-2 py-0.5 rounded-full text-[10px] font-medium whitespace-nowrap opacity-90"
-                      >
-                        {tag}
-                      </span>
-                    );
-                  })}
+                  {prompt.tags.map((tag) => (
+                    <TagPill key={tag} tag={tag} size="sm" />
+                  ))}
                 </div>
               )}
             </div>
@@ -115,21 +104,9 @@ export default function PromptDisplay() {
               <div>{prompt.question}</div>
               {prompt.tags && prompt.tags.length > 0 && (
                 <div className="flex flex-wrap gap-1 mt-2">
-                  {prompt.tags.map((tag) => {
-                    const bgColor = stringToColor(tag);
-                    return (
-                      <span
-                        key={tag}
-                        style={{
-                          backgroundColor: bgColor,
-                          color: getContrastColor(bgColor),
-                        }}
-                        className="mb-0 px-2 py-0.5 rounded-full text-xs font-medium whitespace-nowrap opacity-90"
-                      >
-                        {tag}
-                      </span>
-                    );
-                  })}
+                  {prompt.tags.map((tag) => (
+                    <TagPill key={tag} tag={tag} />
+                  ))}
                 </div>
               )}
             </div>

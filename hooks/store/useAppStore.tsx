@@ -35,6 +35,8 @@ const useAppStore = create<AppState>((set) => ({
   isModel2Multimodal: false,
   explainChoice: "",
   idealResponse: "",
+  preferredTags: [],
+
 
   setSessionId: (sessionId: string) =>
     set((_state: AppState) => ({ sessionId: sessionId })),
@@ -70,6 +72,7 @@ const useAppStore = create<AppState>((set) => ({
   setSelectedModel2: (model: string) =>
     set((_state: AppState) => ({ selectedModel2: model })),
   setPrompt: (prompt: Prompt) => set((_state: AppState) => ({ prompt })),
+  setPreferredTags: (tags: string[]) => set((_state: AppState) => ({ preferredTags: tags })),
   setResponseModel1: (response: string) =>
     set((_state: AppState) => ({ responseModel1: response })),
   setResponseModel2: (response: string) =>

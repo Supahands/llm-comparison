@@ -1,5 +1,6 @@
 "use client";
 
+import TagPill from "@/components/ui/tag-pill";
 import useAppStore from "@/hooks/store/useAppStore";
 import { API_URL } from "@/lib/constants/urls";
 import * as animationData from "@/public/animation/question_loading";
@@ -10,6 +11,7 @@ import { usePostHog } from "posthog-js/react";
 import { useEffect, useState } from "react";
 import Lottie from "react-lottie";
 import { Button } from "../ui/button";
+import TagSelector from "./tag-selector";
 
 interface Question {
   question: string;
@@ -67,6 +69,7 @@ export default function PromptSelector({ prompts }: PromptSelectorProps) {
     setPrompt,
     prompt,
     hasRoundEnded,
+    preferredTags,
   } = useAppStore();
   const posthog = usePostHog();
   const [hasAnimated, setHasAnimated] = useState(false);
@@ -83,28 +86,26 @@ export default function PromptSelector({ prompts }: PromptSelectorProps) {
   };
 
   const { data: questions, isLoading } = useQuery({
-    queryKey: ['questions', 'llama3.3', prompt, hasRoundEnded ? 'round-end' : 'initial'],
+    queryKey: ['questions', 'llama3.3', preferredTags, prompt?.question],
     queryFn: async () => {
       const response = await axios.post<QuestionResponse>(
         `${API_URL}/question_generation`,
         {
           model: "llama3.3",
-          ...(prompt?.question && {
-            input_question: {
-              question: prompt.question,
-              tags: prompt.tags || [],
-            },
-          }),
+          input_question: {
+            question: prompt?.question || "",
+            tags: preferredTags?.length ? preferredTags : (prompt?.tags || [])
+          }
         }
       );
       const content = JSON.parse(response.data.choices[0].message.content);
       return content.questions as Question[];
     },
-    staleTime: 0,
+    staleTime: 1000, // Add stale time to prevent rapid refetches
     refetchOnWindowFocus: false,
-    refetchOnMount: true,
+    refetchOnMount: false,
     refetchOnReconnect: false,
-    enabled: !prompt?.question || hasRoundEnded, // Only fetch when there's no prompt or round has ended
+    enabled: !isComparingModel && Array.isArray(preferredTags),
   });
 
   console.log("🚀 ~ PromptSelector ~ error:", error);
@@ -130,6 +131,7 @@ export default function PromptSelector({ prompts }: PromptSelectorProps) {
           transition={{ duration: 0.2 }}
           className="flex flex-col items-center w-full gap-4"
         >
+          <TagSelector />
           {isLoading ? (
             <div className="w-full flex justify-center items-center">
               <Lottie
@@ -167,22 +169,9 @@ export default function PromptSelector({ prompts }: PromptSelectorProps) {
             >
               <span className="text-pretty">{promptItem.question}</span>
               <div className="flex flex-wrap gap-1 mt-1">
-                {" "}
-                {promptItem.tags.map((tag) => {
-            const bgColor = stringToColor(tag);
-            return (
-              <span
-                key={tag}
-                style={{
-                  backgroundColor: bgColor,
-                  color: getContrastColor(bgColor),
-                }}
-                className="mb-0 px-2 py-0.5 rounded-full text-[10px] font-medium whitespace-nowrap opacity-90" // Added opacity for better readability
-              >
-                {tag}
-              </span>
-            );
-                })}
+                {promptItem.tags.map((tag) => (
+                  <TagPill key={tag} tag={tag} size="sm" />
+                ))}
               </div>
             </Button>
           </motion.div>

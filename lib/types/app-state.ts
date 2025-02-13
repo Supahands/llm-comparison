@@ -47,6 +47,7 @@ export interface AppState {
   selectedChoice: ComboBoxItem | undefined;
   isStopped: boolean;
   responseOrder: ModelOrder | undefined;
+  preferredTags: string[];
 
   setImages: (updater: (prevFiles: File[]) => File[]) => void;
   setIsModel1Multimodal: (multimodal: boolean) => void;
@@ -80,6 +81,7 @@ export interface AppState {
   incrementRoundCounter: () => void;
   setIsRetryOverlay: (isOverlay: boolean) => void;
   setModelOrder: (order: ModelOrder) => void;
+  setPreferredTags: (tags: string[]) => void;
   reset: () => void;
 }
 
