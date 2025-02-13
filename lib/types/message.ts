@@ -2,6 +2,7 @@
 export type Message = {
   id?: number;
   prompt: string;
+  question_tags: string[];
   response1: string;
   response2: string;
   choice?: string;

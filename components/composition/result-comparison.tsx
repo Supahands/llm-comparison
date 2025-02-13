@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
 import { Message } from "@/lib/types/message";
+import React, { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 
@@ -17,16 +17,17 @@ import {
 
 import { Skeleton } from "@/components/ui/skeleton";
 
-import ReactMarkdown from "react-markdown";
+import TagPill from "@/components/ui/tag-pill";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { ScrollArea } from "../ui/scroll-area";
+import { CheckIcon, XIcon } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import {
   FloatingPanelContent,
   FloatingPanelRoot,
   FloatingPanelTrigger,
 } from "../ui/floating-panel";
-import { CheckIcon, XIcon } from "lucide-react";
+import { ScrollArea } from "../ui/scroll-area";
 
 interface DataProps {
   allMessage: Message[];
@@ -41,6 +42,7 @@ const ResultComparison = ({
   modelB,
   isLoading,
 }: DataProps) => {
+  console.log("🚀 ~ allMessage:", allMessage)
   const [currentMessage, setCurrentMessage] = useState<number>(0);
 
   const calculateMaxHeight = () => {
@@ -80,7 +82,14 @@ const ResultComparison = ({
                     className="focus-visible:outline-llm-primary50 bg-transparent"
                   >
                     <div className="bg-llm-grey4 p-1 mx-auto w-full text-center border border-solid border-llm-neutral90 rounded-xl text-llm-grey1 h-fit whitespace-pre-wrap line-clamp-1 focus-visible:outline-llm-primary50">
-                      {allMessage[currentMessage].prompt}
+                      <div>{allMessage[currentMessage].prompt}</div>
+                      {allMessage[currentMessage].question_tags && allMessage[currentMessage].question_tags.length > 0 && (
+                        <div className="flex flex-wrap gap-1 justify-center mt-1">
+                          {allMessage[currentMessage].question_tags.map((tag: string) => (
+                            <TagPill key={tag} tag={tag} size="sm" />
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </FloatingPanelTrigger>
                   <FloatingPanelContent>
@@ -137,6 +146,13 @@ const ResultComparison = ({
                         </div>
                       )}
                       <div>{allMessage[currentMessage].prompt}</div>
+                      {allMessage[currentMessage].question_tags && allMessage[currentMessage].question_tags.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mt-2">
+                          {allMessage[currentMessage].question_tags.map((tag: string) => (
+                            <TagPill key={tag} tag={tag} />
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </FloatingPanelContent>
                 </FloatingPanelRoot>
