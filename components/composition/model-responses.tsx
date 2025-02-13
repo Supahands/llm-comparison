@@ -1,16 +1,16 @@
 "use client";
 
-import { ScrollArea } from "@/components/ui/scroll-area";
-import ReactMarkdown from "react-markdown";
-import useAppStore from "@/hooks/store/useAppStore";
-import { useIsMutating } from "@tanstack/react-query";
-import { useCallback, useMemo } from "react";
-import remarkGfm from "remark-gfm";
-import Lottie from "react-lottie";
-import * as animationData from "@/public/animation/loading";
-import React from "react";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { ThinkBlock } from "@/components/ui/think-block";
+import useAppStore from "@/hooks/store/useAppStore";
+import * as animationData from "@/public/animation/loading";
+import { useIsMutating } from "@tanstack/react-query";
+import React, { useCallback, useMemo } from "react";
 import { IoInformationOutline } from "react-icons/io5";
+import Lottie from "react-lottie";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 import {
   Tooltip,
@@ -18,6 +18,97 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+
+const parseThinkBlocks = (content: string) => {
+  if (!content || typeof content !== "string") return "";
+
+  const parts = [];
+  let currentPos = 0;
+  const regex = /<think>([\s\S]*?)<\/think>/g;
+
+  let match;
+  while ((match = regex.exec(content)) !== null) {
+    // Add text before the think block
+    if (match.index > currentPos) {
+      parts.push(content.slice(currentPos, match.index));
+    }
+
+    // Add the think block
+    parts.push(<ThinkBlock key={match.index} content={match[1].trim()} />);
+
+    currentPos = match.index + match[0].length;
+  }
+
+  // Add any remaining text
+  if (currentPos < content.length) {
+    parts.push(content.slice(currentPos));
+  }
+
+  return parts;
+};
+
+const sanitizeMarkdown = (content: string | undefined) => {
+  if (!content || typeof content !== "string") return "";
+
+  // First ensure the content is properly stringified if it's an object
+  const stringContent =
+    typeof content === "object" ? JSON.stringify(content) : content;
+
+  return stringContent
+    .replace(/\\n/g, "\n")
+    .replace(/\\\*/g, "*")
+    .replace(/\\"/g, '"')
+    .replace(/\\\\/g, "\\")
+    .replace(/,\[object Object\],/g, ""); // Remove problematic object literals
+};
+
+const MarkdownContent = ({ content }: { content: string }) => {
+  const sanitizedContent = sanitizeMarkdown(content);
+  const thinkMatch = /<think>([\s\S]*?)<\/think>/g.exec(sanitizedContent);
+  const [isThinkOpen, setIsThinkOpen] = React.useState(false);
+
+  // Remove think blocks from content and store them separately
+  const cleanContent = sanitizedContent.replace(
+    /<think>[\s\S]*?<\/think>/g,
+    ""
+  );
+  const thinkContent = thinkMatch ? thinkMatch[1].trim() : null;
+
+  return (
+    <div>
+      {thinkContent && (
+        <div className="mb-4">
+          <Button
+            onClick={() => setIsThinkOpen(!isThinkOpen)}
+            variant="outline"
+            className="w-full justify-between"
+          >
+            <span>Thought Process</span>
+            <span>{isThinkOpen ? "▼" : "▶"}</span>
+          </Button>
+          {isThinkOpen && (
+            <div className="mt-2 p-4 bg-muted rounded-md">{thinkContent}</div>
+          )}
+        </div>
+      )}
+      <ReactMarkdown
+        className="prose dark:prose-invert max-w-none"
+        remarkPlugins={[remarkGfm]}
+        components={{
+          p: ({ children }) => <p className="mb-4">{children}</p>,
+          ul: ({ children }) => (
+            <ul className="list-disc ml-6 mb-4">{children}</ul>
+          ),
+          ol: ({ children }) => (
+            <ol className="list-decimal ml-6 mb-4">{children}</ol>
+          ),
+        }}
+      >
+        {cleanContent}
+      </ReactMarkdown>
+    </div>
+  );
+};
 
 export default function ModelResponses() {
   const [open, setOpen] = React.useState<boolean>(false);
@@ -137,15 +228,14 @@ export default function ModelResponses() {
                   </TooltipProvider>
                 </div>
                 <div className="p-2 rounded-lg bg-llm-grey4 border border-solid border-llm-neutral90 text-llm-response">
-                  <ReactMarkdown
-                    className="prose dark:prose-invert"
-                    remarkPlugins={[remarkGfm]}
-                  >
-                    {responseOrder?.model.replace(
-                      /<redacted>(.+?)<\/redacted>/g,
-                      (match: any, content: any) => "█".repeat(content.length)
-                    )}
-                  </ReactMarkdown>
+                  {responseOrder?.model && (
+                    <MarkdownContent
+                      content={responseOrder.model.replace(
+                        /<redacted>(.+?)<\/redacted>/g,
+                        (match, content) => "█".repeat(content.length)
+                      )}
+                    />
+                  )}
                 </div>
               </div>
             )}
@@ -186,15 +276,14 @@ export default function ModelResponses() {
                 </div>
                 {/* <Button variant="link">@nextjs</Button> */}
                 <div className="p-2 rounded-lg bg-llm-grey4 text-llm-response border border-solid border-llm-neutral90">
-                  <ReactMarkdown
-                    className="prose dark:prose-invert"
-                    remarkPlugins={[remarkGfm]}
-                  >
-                    {responseOrder?.otherModel.replace(
-                      /<redacted>(.+?)<\/redacted>/g,
-                      (match: any, content: any) => "█".repeat(content.length)
-                    )}
-                  </ReactMarkdown>
+                  {responseOrder?.otherModel && (
+                    <MarkdownContent
+                      content={responseOrder.otherModel.replace(
+                        /<redacted>(.+?)<\/redacted>/g,
+                        (match, content) => "█".repeat(content.length)
+                      )}
+                    />
+                  )}
                 </div>
               </div>
             )}
