@@ -1,12 +1,12 @@
 import { ComboBoxItem } from "@/components/ui/combo-box";
-import { AppState } from "@/lib/types/app-state";
+import { AppState, Prompt } from "@/lib/types/app-state";
 import { create } from "zustand";
 
 const useAppStore = create<AppState>((set) => ({
   sessionId: "",
   selectedModel1: "",
   selectedModel2: "",
-  prompt: "",
+  prompt: undefined,
   responseModel1: "",
   responseModel2: "",
   isPendingModel1: false,
@@ -21,7 +21,7 @@ const useAppStore = create<AppState>((set) => ({
   completionToken1: 0,
   completionToken2: 0,
   isStopped: true,
-  roundCounter: 1,
+  roundCounter: 0,
   hasRoundEnded: false,
   isRetryOverlay: false,
   responseOrder: undefined,
@@ -35,7 +35,11 @@ const useAppStore = create<AppState>((set) => ({
   isModel2Multimodal: false,
   explainChoice: "",
   idealResponse: "",
+  preferredTags: [],
+  showExplanationFields: false,
 
+  setShowExplanationFields: (show: boolean) => set({ showExplanationFields: show }),
+  setRoundCounter: (counter: number) => set({ roundCounter: counter }),
   setSessionId: (sessionId: string) =>
     set((_state: AppState) => ({ sessionId: sessionId })),
   setExplainChoice: (explainChoice: string) =>
@@ -69,7 +73,8 @@ const useAppStore = create<AppState>((set) => ({
     set((_state: AppState) => ({ selectedModel1: model })),
   setSelectedModel2: (model: string) =>
     set((_state: AppState) => ({ selectedModel2: model })),
-  setPrompt: (prompt: string) => set((_state: AppState) => ({ prompt })),
+  setPrompt: (prompt: Prompt) => set((_state: AppState) => ({ prompt })),
+  setPreferredTags: (tags: string[]) => set((_state: AppState) => ({ preferredTags: tags })),
   setResponseModel1: (response: string) =>
     set((_state: AppState) => ({ responseModel1: response })),
   setResponseModel2: (response: string) =>

@@ -299,6 +299,7 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
               async (x: {
                 id: number;
                 prompt: any;
+                question_tags: any;
                 response_model_1: any;
                 response_model_2: any;
                 selected_choice: any;
@@ -325,6 +326,7 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
                 return {
                   id: x.id,
                   prompt: x.prompt,
+                  question_tags: x.question_tags,
                   response1: x.response_model_1,
                   response2: x.response_model_2,
                   choice: x.selected_choice,

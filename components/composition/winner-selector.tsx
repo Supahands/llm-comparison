@@ -1,11 +1,21 @@
 "use client";
 
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
 import useAppStore from "@/hooks/store/useAppStore";
+import { usePostHog } from "posthog-js/react";
 import { Button } from "../ui/button";
 import { ComboBoxItem } from "../ui/combo-box";
-import { usePostHog } from "posthog-js/react";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import PromptSelector from "./prompt-selector";
+
+const prompts = [
+  "What are the most popular car brands in Japan?",
+  "Gather the top insights on the Southeast Asian vehicle market",
+  "Give me the latest updates on the US Presidential elections",
+  "Compare the education system in the UK vs the USA",
+];
+
 
 const userInputs: ComboBoxItem[] = [
   {
@@ -37,6 +47,7 @@ export default function WinnerSelector() {
     responseModel2,
     prompt,
     roundCounter,
+    setRoundCounter,
     hasRoundEnded,
     setIsStopped,
     addUserChoices,
@@ -47,15 +58,19 @@ export default function WinnerSelector() {
     idealResponse,
     setExplainChoice,
     setIdealResponse,
+    showExplanationFields,
+    setShowExplanationFields,
   } = useAppStore();
-
+  
   const posthog = usePostHog();
 
   const handleUserChoice = (choice: ComboBoxItem) => {
-    addUserChoices({
-      prompt: prompt,
-      choice: choice.value,
-    });
+    if (prompt?.question){
+      addUserChoices({
+        prompt: prompt.question,
+        choice: choice.value,
+      });
+    }
     setIsComparingModel(false);
   };
 
@@ -66,6 +81,7 @@ export default function WinnerSelector() {
     handleUserChoice(input);
     setSelectedChoice(input);
     setIsStopped(false);
+    setRoundCounter(roundCounter + 1);
     if (hasRoundEnded) return;
     else {
       setRoundEnd(true);
@@ -101,33 +117,53 @@ export default function WinnerSelector() {
               ))}
             </div>
           </div>
-          <div className="text-sm space-y-1">
-            <p>Explain your choice:</p>
-            <Textarea
-              placeholder="Type your message here."
-              value={explainChoice}
-              onChange={(e) => {
-                setExplainChoice(e.target.value);
-              }}
-              className="rounded-xl bg-transparent resize-none focus-visible:ring-llm-primary50"
-              id="message-2"
-            />
-          </div>
-          <div className="text-sm space-y-1">
-            <p>Ideal response (optional):</p>
-            <Textarea
-              placeholder="Type your message here."
-              className="rounded-xl bg-transparent resize-none focus-visible:ring-llm-primary50"
-              id="message-2"
-              value={idealResponse}
-              onChange={(e) => {
-                setIdealResponse(e.target.value);
-              }}
-            />
-          </div>
+
+          {(roundCounter === 1 || showExplanationFields) && (
+            <div className="flex items-center justify-end gap-2 text-sm text-gray-600 mb-2">
+              <label htmlFor="explanation-toggle">
+                {roundCounter === 1 ? "Show explanations for future rounds?" : "Show explanations"}
+              </label>
+              <Switch
+                id="explanation-toggle"
+                checked={showExplanationFields}
+                onCheckedChange={setShowExplanationFields}
+              />
+            </div>
+          )}
+
+          {(roundCounter === 1 || showExplanationFields) && (
+            <>
+              <div className="text-sm space-y-1">
+                <p>Explain your choice:</p>
+                <Textarea
+                  placeholder="Type your message here."
+                  value={explainChoice}
+                  onChange={(e) => {
+                    setExplainChoice(e.target.value);
+                  }}
+                  className="rounded-xl bg-transparent resize-none focus-visible:ring-llm-primary50"
+                  id="message-2"
+                />
+              </div>
+              <div className="text-sm space-y-1">
+                <p>Ideal response (optional):</p>
+                <Textarea
+                  placeholder="Type your message here."
+                  className="rounded-xl bg-transparent resize-none focus-visible:ring-llm-primary50"
+                  id="message-2"
+                  value={idealResponse}
+                  onChange={(e) => {
+                    setIdealResponse(e.target.value);
+                  }}
+                />
+              </div>
+            </>
+          )}
+
           {hasRoundEnded && (
             <div className="w-full text-center ">
               Round {roundCounter} complete. Ask another question! 👇
+              <PromptSelector prompts={prompts} />
             </div>
           )}
         </div>

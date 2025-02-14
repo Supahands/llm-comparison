@@ -1,6 +1,8 @@
+
 export type Message = {
   id?: number;
   prompt: string;
+  question_tags: string[];
   response1: string;
   response2: string;
   choice?: string;
@@ -20,7 +22,7 @@ export type ConfigRequest = {
 };
 
 export type MessageRequest = {
-  message: string;
+  message: string | undefined;
   images?: string[];
   model: string;
   config: ConfigRequest;
