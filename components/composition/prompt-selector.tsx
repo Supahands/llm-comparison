@@ -29,6 +29,7 @@ interface QuestionResponse {
 
 interface PromptSelectorProps {
   prompts: string[]; // Fallback prompts
+  disablePromptGeneration?: boolean;
 }
 
 interface SelectedPrompt {
@@ -62,7 +63,7 @@ const getContrastColor = (hexcolor: string) => {
   return luminance > 0.5 ? "#000000" : "#FFFFFF";
 };
 
-export default function PromptSelector({ prompts }: PromptSelectorProps) {
+export default function PromptSelector({ prompts, disablePromptGeneration = false }: PromptSelectorProps) {
   const {
     isComparingModel,
     responseModel1,
@@ -76,8 +77,8 @@ export default function PromptSelector({ prompts }: PromptSelectorProps) {
   const posthog = usePostHog();
   const [hasAnimated, setHasAnimated] = useState(false);
   const [error, setError] = useState(false);
-
-  const { questions, isLoading } = usePromptGeneration();
+  
+  const { questions, isLoading } = usePromptGeneration(disablePromptGeneration);
 
   const displayPrompts = error
     ? prompts.map((p) => ({ question: p, tags: [] }))
