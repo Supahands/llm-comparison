@@ -90,7 +90,10 @@ export default function PromptSelector({ prompts }: PromptSelectorProps) {
     setHasAnimated(true);
   }, []);
 
-  const handlePromptSelection = (promptItem: { question: string; tags: string[] }) => {
+  const handlePromptSelection = (promptItem: {
+    question: string;
+    tags: string[];
+  }) => {
     // Create promptData object
     const promptData = {
       question: promptItem.question,
@@ -99,7 +102,7 @@ export default function PromptSelector({ prompts }: PromptSelectorProps) {
 
     // Update preferredTags with new unique tags
     const newTags = promptItem.tags.filter(
-      tag => !preferredTags.includes(tag) && preferredTags.length < 5
+      (tag) => !preferredTags.includes(tag) && preferredTags.length < 5
     );
     if (newTags.length > 0) {
       setPreferredTags([...preferredTags, ...newTags].slice(0, 5));
@@ -134,41 +137,41 @@ export default function PromptSelector({ prompts }: PromptSelectorProps) {
           {isLoading ? (
             <div className="w-full flex justify-center items-center">
               <Lottie
-          style={{ pointerEvents: "none" }}
-          options={defaultOptions}
-          height={200}
-          width={200}
+                style={{ pointerEvents: "none" }}
+                options={defaultOptions}
+                height={200}
+                width={200}
               />
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-4 w-full max-w-[900px]">
               {displayPrompts.map((promptItem, index) => (
-          <motion.div
-            layout={false}
-            key={promptItem.question}
-            initial={{ opacity: 0, y: 30 }}
-            animate={
-              hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }
-            }
-            transition={{ duration: 0.5, delay: index * 0.05 }}
-            className="h-full w-full" // Fixed height container
-          >
-            <Button
-              onClick={(e) => {
-                e.preventDefault();
-                handlePromptSelection(promptItem);
-              }}
-              role="prompt-selector"
-              className="w-full h-full overflow-hidden rounded-xl border border-solid border-llm-neutral90 hover:bg-llm-blurple4 bg-llm-grey4 text-llm-grey1 py-3 px-5 cursor-pointer focus-visible:outline-llm-primary50 flex flex-col pb-1"
-            >
-              <span className="text-pretty">{promptItem.question}</span>
-              <div className="flex flex-wrap gap-1 mt-1">
-                {promptItem.tags.map((tag) => (
-                  <TagPill key={tag} tag={tag} size="sm" />
-                ))}
-              </div>
-            </Button>
-          </motion.div>
+                <motion.div
+                  layout={false}
+                  key={promptItem.question}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={
+                    hasAnimated ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }
+                  }
+                  transition={{ duration: 0.5, delay: index * 0.05 }}
+                  className="h-full w-full" // Fixed height container
+                >
+                  <Button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handlePromptSelection(promptItem);
+                    }}
+                    role="prompt-selector"
+                    className="w-full h-full overflow-hidden rounded-xl border border-solid border-llm-neutral90 hover:bg-llm-blurple4 bg-llm-grey4 text-llm-grey1 py-3 px-5 cursor-pointer focus-visible:outline-llm-primary50 flex flex-col pb-1"
+                  >
+                    <span className="text-pretty">{promptItem.question}</span>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {promptItem.tags.map((tag) => (
+                        <TagPill key={tag} tag={tag} size="sm" />
+                      ))}
+                    </div>
+                  </Button>
+                </motion.div>
               ))}
             </div>
           )}
