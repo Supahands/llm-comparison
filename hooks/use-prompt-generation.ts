@@ -20,9 +20,20 @@ interface QuestionResponse {
 
 export const PROMPT_GENERATION_KEY = 'prompt-generation';
 
-export function usePromptGeneration() {
+export function usePromptGeneration(disabled = false) {
   const { prompt, preferredTags, isComparingModel } = useAppStore();
   const queryClient = useQueryClient();
+  
+  // If disabled, don't even create the query
+  if (disabled) {
+    return {
+      questions: undefined,
+      isLoading: false,
+      invalidatePrompts: () => {
+        queryClient.invalidateQueries({ queryKey: [PROMPT_GENERATION_KEY] });
+      }
+    };
+  }
 
   const { data: questions, isLoading } = useQuery({
     queryKey: [PROMPT_GENERATION_KEY, preferredTags, prompt?.question],
@@ -31,7 +42,7 @@ export function usePromptGeneration() {
       const hasTags = preferredTags?.length > 0 || (prompt?.tags && prompt.tags.length > 0);
       
       const requestBody = {
-        model: "llama3.3",
+        model: "llama3.3:70b-instruct-q6_K",
         ...(hasQuestions || hasTags ? {
           input_question: {
             question: prompt?.question || "",
