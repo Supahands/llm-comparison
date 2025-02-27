@@ -5,8 +5,6 @@ import { Input } from "@/components/ui/input";
 import TagPill from "@/components/ui/tag-pill";
 import useAppStore from "@/hooks/store/useAppStore";
 import { usePromptGeneration } from "@/hooks/use-prompt-generation";
-import debounce from 'lodash/debounce';
-import { X } from "lucide-react";
 import { useCallback, useState } from "react";
 
 const stringToColor = (str: string) => {
@@ -54,10 +52,10 @@ export default function TagSelector() {
     <div className="w-full max-w-[900px] mx-auto mb-4 p-4 bg-llm-grey4 rounded-xl border border-llm-neutral90">
       <div className="text-sm mb-2">
         <span className="text-llm-grey1">
-          Select tags for your prompts (max 5). First tag will be the main category.
+          Select tags for your prompts (max 10). First tag will be the main category.
         </span>
       </div>
-      <div className="flex gap-2 items-center">
+      <div className="flex gap-2">
         <Input
           value={newTag}
           onChange={(e) => setNewTag(e.target.value)}
@@ -67,6 +65,7 @@ export default function TagSelector() {
               handleAddTag();
             }
           }}
+          characterLimit={20}
           placeholder="Add a tag"
           className="bg-white"
           disabled={(preferredTags?.length ?? 0) >= 5}
