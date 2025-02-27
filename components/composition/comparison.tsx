@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import IconButton from "@/components/ui/icon-button";
 import {
   Tooltip,
   TooltipContent,
@@ -17,7 +18,7 @@ import { MessageRequest } from "@/lib/types/message";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { motion } from "framer-motion";
-import { Paperclip, RotateCcw, Send, X } from "lucide-react";
+import { Paperclip, RotateCcw, Send, Wand, X } from "lucide-react";
 import { usePostHog } from "posthog-js/react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
@@ -387,6 +388,12 @@ export default function Comparison() {
                 sitekey={process.env.NEXT_PUBLIC_CAPTCHA_SITE_KEY || ""}
               />
               <div className="flex flex-col w-full bg-white justify-center">
+                <div className="flex justify-end pb-2 pr-2">
+                  <IconButton
+                    popoverContent={"Try out the AI search!"}
+                    icon={Wand}
+                  />
+                </div>
                 <div className="flex justify-center z-0">
                   <motion.div
                     layout
@@ -462,6 +469,7 @@ export default function Comparison() {
                     )}
                   </motion.div>
                 </div>
+
                 <div className="border z-10 bg-white p-1 flex flex-col rounded-xl">
                   <div>
                     <Textarea
