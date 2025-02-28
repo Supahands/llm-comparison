@@ -80,6 +80,8 @@ export default function Comparison() {
     isModel2Multimodal,
     explainChoice,
     idealResponse,
+    setUseAIGeneratedPrompt,
+    useAIGeneratedPrompt,
   } = useAppStore();
 
   const recaptchaRef = useRef<ReCAPTCHA>(null);
@@ -392,6 +394,7 @@ export default function Comparison() {
                   <IconButton
                     popoverContent={"Try out the AI search!"}
                     icon={Wand}
+                    onClick={() => { setUseAIGeneratedPrompt(!useAIGeneratedPrompt); }}
                   />
                 </div>
                 <div className="flex justify-center z-0">

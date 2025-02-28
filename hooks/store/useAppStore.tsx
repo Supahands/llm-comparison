@@ -37,6 +37,7 @@ const useAppStore = create<AppState>((set) => ({
   idealResponse: "",
   preferredTags: [],
   showExplanationFields: false,
+  useAIGeneratedPrompt: false,
 
   setShowExplanationFields: (show: boolean) => set({ showExplanationFields: show }),
   setRoundCounter: (counter: number) => set({ roundCounter: counter }),
@@ -96,6 +97,8 @@ const useAppStore = create<AppState>((set) => ({
     set((_state: AppState) => ({ isRetryOverlay: isOverlay })),
   setModelOrder: (order) =>
     set((_state: AppState) => ({ responseOrder: order })),
+  setUseAIGeneratedPrompt: (useAIGeneratedPrompt: boolean) =>
+    set((_state: AppState) => ({ useAIGeneratedPrompt })),
   reset: () =>
     set((state: AppState) => ({
       responseModel1: "",
@@ -109,6 +112,7 @@ const useAppStore = create<AppState>((set) => ({
       isRetryOverlay: false,
       explainChoice: "",
       idealResponse: "",
+      useAIGeneratedPrompt: false,
     })),
   addUserChoices: (choice) =>
     set((state: AppState) => ({

@@ -11,7 +11,7 @@ type ModelOrder = {
 export type Prompt = {
   question: string;
   tags: string[] | undefined;
-}
+};
 
 export interface AppState {
   sessionId: string;
@@ -50,6 +50,8 @@ export interface AppState {
   responseOrder: ModelOrder | undefined;
   preferredTags: string[];
 
+  useAIGeneratedPrompt: boolean;
+
   setImages: (updater: (prevFiles: File[]) => File[]) => void;
   setIsModel1Multimodal: (multimodal: boolean) => void;
   setExplainChoice: (explainChoice: string) => void;
@@ -86,6 +88,9 @@ export interface AppState {
   setModelOrder: (order: ModelOrder) => void;
   setPreferredTags: (tags: string[]) => void;
   setShowExplanationFields: (show: boolean) => void;
+
+  setUseAIGeneratedPrompt: (useAIGeneratedPrompt: boolean) => void;
+
   reset: () => void;
 }
 

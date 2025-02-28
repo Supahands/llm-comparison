@@ -24,9 +24,9 @@ const IconButton = ({ onClick, icon, popoverContent}: IconButtonProps) => {
     <TooltipProvider>
       <TooltipRoot>
         <TooltipTrigger asChild>
-          <Button className="inline-flex size-[35px] items-center animate-shimmer justify-center rounded-full bg-white text-violet11 shadow-[0_2px_10px] shadow-blackA4 outline-none hover:bg-violet3 focus:shadow-[0_0_0_2px] text-slate-400 transition-colors focus:shadow-black bg-[linear-gradient(110deg,#000103,45%,#1e2631,55%,#000103)] bg-[length:200%_100%] focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50" onClick={onClick}>
+            <Button className="inline-flex size-[35px] items-center animate-shimmer justify-center rounded-full bg-white text-violet11 shadow-[0_2px_10px] shadow-blackA4 outline-none hover:bg-violet3 focus:shadow-[0_0_0_2px] text-white font-bold transition-colors focus:shadow-black bg-[linear-gradient(110deg,#ff0000,45%,#ff5555,55%,#ff0000)] bg-[length:200%_100%] focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 focus:ring-offset-slate-50" onClick={onClick}>
             {React.createElement(icon)}
-          </Button>
+            </Button>
         </TooltipTrigger>
         <TooltipPortal>
           <TooltipContent
