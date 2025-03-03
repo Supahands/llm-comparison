@@ -49,7 +49,7 @@ export interface AppState {
   isStopped: boolean;
   responseOrder: ModelOrder | undefined;
   preferredTags: string[];
-
+  maxTagCount: number;
   useAIGeneratedPrompt: boolean;
 
   setImages: (updater: (prevFiles: File[]) => File[]) => void;
@@ -87,6 +87,7 @@ export interface AppState {
   setIsRetryOverlay: (isOverlay: boolean) => void;
   setModelOrder: (order: ModelOrder) => void;
   setPreferredTags: (tags: string[]) => void;
+  setMaxTagCount: (maxTagCount: number) => void;
   setShowExplanationFields: (show: boolean) => void;
 
   setUseAIGeneratedPrompt: (useAIGeneratedPrompt: boolean) => void;

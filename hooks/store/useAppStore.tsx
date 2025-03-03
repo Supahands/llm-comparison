@@ -36,6 +36,7 @@ const useAppStore = create<AppState>((set) => ({
   explainChoice: "",
   idealResponse: "",
   preferredTags: [],
+  maxTagCount: 10,
   showExplanationFields: false,
   useAIGeneratedPrompt: false,
 
@@ -76,6 +77,7 @@ const useAppStore = create<AppState>((set) => ({
     set((_state: AppState) => ({ selectedModel2: model })),
   setPrompt: (prompt: Prompt) => set((_state: AppState) => ({ prompt })),
   setPreferredTags: (tags: string[]) => set((_state: AppState) => ({ preferredTags: tags })),
+  setMaxTagCount: (maxTagCount: number) => set((_state: AppState) => ({ maxTagCount })), // Added this line
   setResponseModel1: (response: string) =>
     set((_state: AppState) => ({ responseModel1: response })),
   setResponseModel2: (response: string) =>

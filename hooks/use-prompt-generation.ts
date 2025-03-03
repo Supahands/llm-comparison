@@ -21,7 +21,7 @@ interface QuestionResponse {
 export const PROMPT_GENERATION_KEY = 'prompt-generation';
 
 export function usePromptGeneration(disabled = false) {
-  const { prompt, preferredTags, isComparingModel } = useAppStore();
+  const { prompt, preferredTags, isComparingModel, maxTagCount } = useAppStore();
   const queryClient = useQueryClient();
   
   // If disabled, don't even create the query
@@ -48,7 +48,7 @@ export function usePromptGeneration(disabled = false) {
             question: prompt?.question || "",
             tags: preferredTags?.length ? preferredTags : (prompt?.tags || [])
           },
-          tag_limit: 10
+          tag_limit: maxTagCount
         } : {})
       };
 

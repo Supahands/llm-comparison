@@ -8,12 +8,12 @@ import { usePromptGeneration } from "@/hooks/use-prompt-generation";
 import { useCallback, useState } from "react";
 
 export default function TagSelector() {
-  const { preferredTags = [], setPreferredTags } = useAppStore();
+  const { preferredTags = [], setPreferredTags, maxTagCount } = useAppStore();
   const [newTag, setNewTag] = useState("");
   const { invalidatePrompts } = usePromptGeneration();
 
   const handleAddTag = () => {
-    if (newTag.trim() && (preferredTags?.length ?? 0) < 10) {
+    if (newTag.trim() && (preferredTags?.length ?? 0) < maxTagCount) {
       const updatedTags = [
         ...(preferredTags ?? []),
         newTag.trim().toLowerCase(),
@@ -36,7 +36,7 @@ export default function TagSelector() {
     <div className="w-full max-w-[900px] mx-auto mb-4 p-4 bg-llm-grey4 rounded-xl border border-llm-neutral90">
       <div className="text-sm mb-2">
         <span className="text-llm-grey1">
-          Select tags for your prompts (max 10). First tag will be the main
+          Select tags for your prompts (max {maxTagCount}). First tag will be the main
           category.
         </span>
       </div>
@@ -54,11 +54,11 @@ export default function TagSelector() {
           characterLimit={50}
           placeholder="Add a tag"
           className="bg-white"
-          disabled={(preferredTags?.length ?? 0) >= 10}
+          disabled={(preferredTags?.length ?? 0) >= maxTagCount}
         />
         <Button
           onClick={handleAddTag}
-          disabled={(preferredTags?.length ?? 0) >= 10}
+          disabled={(preferredTags?.length ?? 0) >= maxTagCount}
           className="bg-llm-primary50 hover:bg-llm-hover_primary50"
         >
           Add
