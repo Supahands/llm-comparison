@@ -11,12 +11,10 @@ import Lottie from "react-lottie";
 import { Button } from "../ui/button";
 import TagSelector from "./tag-selector";
 
-
 interface PromptSelectorProps {
   prompts: string[]; // Fallback prompts
   disablePromptGeneration?: boolean;
 }
-
 
 export default function PromptSelector({
   prompts,
@@ -38,7 +36,7 @@ export default function PromptSelector({
 
   const { questions, isLoading } = usePromptGeneration(disablePromptGeneration);
 
-  const displayPrompts = error
+  const displayPrompts = error || !useAIGeneratedPrompt
     ? prompts.map((p) => ({ question: p, tags: [] }))
     : questions?.map((q) => ({
         question: q.question,
