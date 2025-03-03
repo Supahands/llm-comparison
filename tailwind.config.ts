@@ -1,5 +1,5 @@
+import { blackA, violet } from "@radix-ui/colors";
 import type { Config } from "tailwindcss";
-
 const config = {
   darkMode: ["class"],
   content: [
@@ -34,6 +34,8 @@ const config = {
           primary95: "#EBE8F5",
           peach50: "#FDF3F3",
           hover_primary50: "#0B06B2",
+          ...violet,
+          ...blackA,
         },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -102,11 +104,43 @@ const config = {
             "background-position": "0% 0%",
           },
         },
+        shimmer: {
+          from: {
+            "backgroundPosition": "0 0"
+          },
+          to: {
+            "backgroundPosition": "-200% 0"
+          }
+        },
+        slideDownAndFade: {
+					from: { opacity: "0", transform: "translateY(-2px)" },
+					to: { opacity: "1", transform: "translateY(0)" },
+				},
+				slideLeftAndFade: {
+					from: { opacity: "0", transform: "translateX(2px)" },
+					to: { opacity: "1", transform: "translateX(0)" },
+				},
+				slideUpAndFade: {
+					from: { opacity: "0", transform: "translateY(2px)" },
+					to: { opacity: "1", transform: "translateY(0)" },
+				},
+				slideRightAndFade: {
+					from: { opacity: "0", transform: "translateX(-2px)" },
+					to: { opacity: "1", transform: "translateX(0)" },
+				},
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         shine: "shine var(--duration) infinite linear",
+        shimmer: "shimmer 2s linear infinite",
+        slideDownAndFade:
+					"slideDownAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1)",
+				slideLeftAndFade:
+					"slideLeftAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1)",
+				slideUpAndFade: "slideUpAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1)",
+				slideRightAndFade:
+					"slideRightAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1)",
       },
     },
   },

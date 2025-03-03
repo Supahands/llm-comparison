@@ -36,7 +36,9 @@ const useAppStore = create<AppState>((set) => ({
   explainChoice: "",
   idealResponse: "",
   preferredTags: [],
+  maxTagCount: 10,
   showExplanationFields: false,
+  useAIGeneratedPrompt: false,
 
   setShowExplanationFields: (show: boolean) => set({ showExplanationFields: show }),
   setRoundCounter: (counter: number) => set({ roundCounter: counter }),
@@ -75,6 +77,7 @@ const useAppStore = create<AppState>((set) => ({
     set((_state: AppState) => ({ selectedModel2: model })),
   setPrompt: (prompt: Prompt) => set((_state: AppState) => ({ prompt })),
   setPreferredTags: (tags: string[]) => set((_state: AppState) => ({ preferredTags: tags })),
+  setMaxTagCount: (maxTagCount: number) => set((_state: AppState) => ({ maxTagCount })), // Added this line
   setResponseModel1: (response: string) =>
     set((_state: AppState) => ({ responseModel1: response })),
   setResponseModel2: (response: string) =>
@@ -96,6 +99,8 @@ const useAppStore = create<AppState>((set) => ({
     set((_state: AppState) => ({ isRetryOverlay: isOverlay })),
   setModelOrder: (order) =>
     set((_state: AppState) => ({ responseOrder: order })),
+  setUseAIGeneratedPrompt: (useAIGeneratedPrompt: boolean) =>
+    set((_state: AppState) => ({ useAIGeneratedPrompt })),
   reset: () =>
     set((state: AppState) => ({
       responseModel1: "",
@@ -109,6 +114,7 @@ const useAppStore = create<AppState>((set) => ({
       isRetryOverlay: false,
       explainChoice: "",
       idealResponse: "",
+      useAIGeneratedPrompt: false,
     })),
   addUserChoices: (choice) =>
     set((state: AppState) => ({

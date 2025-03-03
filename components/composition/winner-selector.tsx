@@ -163,7 +163,7 @@ export default function WinnerSelector() {
           {hasRoundEnded && (
             <div className="w-full text-center ">
               Round {roundCounter} complete. Ask another question! 👇
-              <PromptSelector prompts={prompts} />
+              <PromptSelector prompts={prompts} disablePromptGeneration={!hasRoundEnded} />
             </div>
           )}
         </div>
