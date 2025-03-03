@@ -42,12 +42,13 @@ export function usePromptGeneration(disabled = false) {
       const hasTags = preferredTags?.length > 0 || (prompt?.tags && prompt.tags.length > 0);
       
       const requestBody = {
-        model: "llama3.2",
+        model: "llama-3.3-70b-instruct-fp8-fast",
         ...(hasQuestions || hasTags ? {
           input_question: {
             question: prompt?.question || "",
             tags: preferredTags?.length ? preferredTags : (prompt?.tags || [])
-          }
+          },
+          tag_limit: 10
         } : {})
       };
 
