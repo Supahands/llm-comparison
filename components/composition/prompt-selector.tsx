@@ -3,10 +3,7 @@
 import TagPill from "@/components/ui/tag-pill";
 import useAppStore from "@/hooks/store/useAppStore";
 import { usePromptGeneration } from "@/hooks/use-prompt-generation";
-import { API_URL } from "@/lib/constants/urls";
 import * as animationData from "@/public/animation/question_loading";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 import { motion } from "framer-motion";
 import { usePostHog } from "posthog-js/react";
 import { useEffect, useState } from "react";
@@ -14,28 +11,12 @@ import Lottie from "react-lottie";
 import { Button } from "../ui/button";
 import TagSelector from "./tag-selector";
 
-interface Question {
-  question: string;
-  tags: string[];
-}
-
-interface QuestionResponse {
-  choices: Array<{
-    message: {
-      content: string;
-    };
-  }>;
-}
 
 interface PromptSelectorProps {
   prompts: string[]; // Fallback prompts
   disablePromptGeneration?: boolean;
 }
 
-interface SelectedPrompt {
-  question: string;
-  tags?: string[];
-}
 
 export default function PromptSelector({
   prompts,
@@ -46,7 +27,6 @@ export default function PromptSelector({
     responseModel1,
     responseModel2,
     setPrompt,
-    prompt,
     hasRoundEnded,
     preferredTags,
     setPreferredTags,
