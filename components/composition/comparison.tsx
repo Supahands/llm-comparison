@@ -92,6 +92,8 @@ export default function Comparison() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [newImages, setNewImages] = useState<File[]>([]);
   const [convertedImages, setConvertedImages] = useState<string[]>([]);
+  const [isAIGenerationEnabled, setIsAIGenerationEnabled] = useState(false);
+  const [isTooltipVisible, setIsTooltipVisible] = useState(false);
 
   async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     const files = event.target.files ? Array.from(event.target.files) : [];
@@ -346,6 +348,21 @@ export default function Comparison() {
     }
   }, [newMessage]);
 
+  // Handle tooltip visibility with auto-hide timer
+  useEffect(() => {
+    let tooltipTimer: NodeJS.Timeout;
+    
+    if (isTooltipVisible) {
+      tooltipTimer = setTimeout(() => {
+        setIsTooltipVisible(false);
+      }, 10000); // 10 seconds
+    }
+    
+    return () => {
+      if (tooltipTimer) clearTimeout(tooltipTimer);
+    };
+  }, [isTooltipVisible]);
+
   return (
     <div className="mx-auto mt-4 w-full flex-grow">
       <DataConsentModal />
@@ -392,9 +409,25 @@ export default function Comparison() {
               <div className="flex flex-col w-full bg-white justify-center">
                 <div className="flex justify-end pb-2 pr-2">
                   <IconButton
-                    popoverContent={"Try out the AI search!"}
-                    icon={Wand}
-                    onClick={() => { setUseAIGeneratedPrompt(!useAIGeneratedPrompt); }}
+                    // This is a little custom logic that toggles the Tooltip text and icon
+                    popoverContent={
+                      isAIGenerationEnabled
+                        ? "Disable AI-generated questions"
+                        : "Generate your questions with AI!"
+                    }
+                    icon={isAIGenerationEnabled ? X : Wand}
+                    open={isTooltipVisible}
+                    // This will also control when the api is called or not for question generation
+                    onClick={() => {
+                      // Toggle the AI generation state
+                      setIsAIGenerationEnabled(!isAIGenerationEnabled);
+                      setUseAIGeneratedPrompt(!isAIGenerationEnabled);
+                      
+                      // Make the tooltip visible when clicked
+                      setIsTooltipVisible(true);
+                    }}
+  
+                    delayOpen={150}
                   />
                 </div>
                 <div className="flex justify-center z-0">

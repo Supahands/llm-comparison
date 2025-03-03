@@ -13,8 +13,11 @@ export default function TagSelector() {
   const { invalidatePrompts } = usePromptGeneration();
 
   const handleAddTag = () => {
-    if (newTag.trim() && (preferredTags?.length ?? 0) < 5) {
-      const updatedTags = [...(preferredTags ?? []), newTag.trim().toLowerCase()];
+    if (newTag.trim() && (preferredTags?.length ?? 0) < 10) {
+      const updatedTags = [
+        ...(preferredTags ?? []),
+        newTag.trim().toLowerCase(),
+      ];
       setPreferredTags(updatedTags);
       setNewTag("");
       invalidatePrompts();
@@ -22,7 +25,9 @@ export default function TagSelector() {
   };
 
   const handleRemoveTag = (indexToRemove: number) => {
-    const updatedTags = (preferredTags ?? []).filter((_, index) => index !== indexToRemove);
+    const updatedTags = (preferredTags ?? []).filter(
+      (_, index) => index !== indexToRemove
+    );
     setPreferredTags(updatedTags);
     invalidatePrompts();
   };
@@ -31,7 +36,8 @@ export default function TagSelector() {
     <div className="w-full max-w-[900px] mx-auto mb-4 p-4 bg-llm-grey4 rounded-xl border border-llm-neutral90">
       <div className="text-sm mb-2">
         <span className="text-llm-grey1">
-          Select tags for your prompts (max 10). First tag will be the main category.
+          Select tags for your prompts (max 10). First tag will be the main
+          category.
         </span>
       </div>
       <div className="flex gap-2">
@@ -42,16 +48,17 @@ export default function TagSelector() {
             if (e.key === "Enter") {
               e.preventDefault();
               handleAddTag();
+              e.target.value = "";
             }
           }}
-          characterLimit={20}
+          characterLimit={50}
           placeholder="Add a tag"
           className="bg-white"
-          disabled={(preferredTags?.length ?? 0) >= 5}
+          disabled={(preferredTags?.length ?? 0) >= 10}
         />
         <Button
           onClick={handleAddTag}
-          disabled={(preferredTags?.length ?? 0) >= 5}
+          disabled={(preferredTags?.length ?? 0) >= 10}
           className="bg-llm-primary50 hover:bg-llm-hover_primary50"
         >
           Add
