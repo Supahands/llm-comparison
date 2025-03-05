@@ -47,6 +47,7 @@ export default function WinnerSelector() {
     responseModel2,
     prompt,
     roundCounter,
+    isSingleModelMode,
     setRoundCounter,
     hasRoundEnded,
     setIsStopped,
@@ -61,11 +62,11 @@ export default function WinnerSelector() {
     showExplanationFields,
     setShowExplanationFields,
   } = useAppStore();
-  
+
   const posthog = usePostHog();
 
   const handleUserChoice = (choice: ComboBoxItem) => {
-    if (prompt?.question){
+    if (prompt?.question) {
       addUserChoices({
         prompt: prompt.question,
         choice: choice.value,
@@ -104,11 +105,10 @@ export default function WinnerSelector() {
                   className={
                     !selectedChoice
                       ? "w-full rounded-lg border border-solid border-llm-primary95 hover:bg-llm-primary50 hover:text-white text-llm-primary50 bg-llm-primary95 py-3 px-5 cursor-pointer "
-                      : `${
-                          selectedChoice?.value === input.value
-                            ? "bg-llm-primary95 text-llm-primary50 border-llm-primary50 hover:bg-llm-primary95"
-                            : "bg-llm-neutral90 text-white border-llm-neutral90 hover:bg-llm-grey2"
-                        } border border-solid w-full rounded-lg py-3 px-5 cursor-pointer !focus-visible:ring-llm-primary50 `
+                      : `${selectedChoice?.value === input.value
+                        ? "bg-llm-primary95 text-llm-primary50 border-llm-primary50 hover:bg-llm-primary95"
+                        : "bg-llm-neutral90 text-white border-llm-neutral90 hover:bg-llm-grey2"
+                      } border border-solid w-full rounded-lg py-3 px-5 cursor-pointer !focus-visible:ring-llm-primary50 `
                   }
                   id={`winner-${input.value}`}
                 >

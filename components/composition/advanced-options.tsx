@@ -19,6 +19,7 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { Slider } from "@/components/ui/slider";
 import { useState } from "react";
+import { RadioGroup, RadioGroupItem } from "../ui/radio-group";
 
 export function TextareaDemo() {
   return <Textarea placeholder="Type your message here." />;
@@ -45,6 +46,9 @@ export function AdvancedOptions({ isDisabled }: AdvancedProps) {
     setSystemPrompt,
     jsonFormat,
     setJSONFormat,
+    isSingleModelMode,
+    setIsSingleModelMode,
+    reset
   } = useAppStore();
   const posthog = usePostHog();
 
@@ -154,6 +158,22 @@ export function AdvancedOptions({ isDisabled }: AdvancedProps) {
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-3 w-full overflow-auto">
+          <p className="font-bold">Mode</p>
+          <div className="flex flex-row w-full justify-between gap-3">
+            <RadioGroup defaultValue={isSingleModelMode ? 'single' : 'compare'} onValueChange={(value) => {
+              setIsSingleModelMode(value === 'single')
+              reset()
+            }}>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="single" id="r2" />
+                <Label htmlFor="r2">Single Model</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="compare" id="r3" />
+                <Label htmlFor="r3">Compare Models</Label>
+              </div>
+            </RadioGroup>
+          </div>
           <div className="flex flex-row w-full justify-between gap-3">
             <div className="flex flex-col w-1/2 ">
               <p className="font-bold">Model 1</p>
@@ -164,15 +184,21 @@ export function AdvancedOptions({ isDisabled }: AdvancedProps) {
                 defaultValue={selectedModel1}
               />
             </div>
-            <div className="flex flex-col w-1/2 ">
-              <p className="font-bold">Model 2</p>
-              <ComboBox
-                items={availableModels}
-                onItemSelect={handleModel2Select}
-                disabled={isDisabled}
-                defaultValue={selectedModel2}
-              />
-            </div>
+            {
+              !isSingleModelMode &&
+              (
+                <div className="flex flex-col w-1/2 ">
+                  <p className="font-bold">Model 2</p>
+                  <ComboBox
+                    items={availableModels}
+                    onItemSelect={handleModel2Select}
+                    disabled={isDisabled}
+                    defaultValue={selectedModel2}
+                  />
+                </div>
+              )
+            }
+
           </div>
           <div className="flex flex-col space-y-1">
             <p className="font-bold">System Prompt </p>
@@ -190,9 +216,8 @@ export function AdvancedOptions({ isDisabled }: AdvancedProps) {
           </div>
           <div className="flex flex-col w-full space-y-1">
             <p
-              className={`font-bold ${
-                0 > currTemp || currTemp > 1 ? "text-red-600" : "llm-primary50"
-              }`}
+              className={`font-bold ${0 > currTemp || currTemp > 1 ? "text-red-600" : "llm-primary50"
+                }`}
             >
               Temperature : {currTemp}
             </p>
@@ -204,9 +229,8 @@ export function AdvancedOptions({ isDisabled }: AdvancedProps) {
                 onValueChange={(newValue: number[]) => {
                   setCurrTemp(newValue[0]);
                 }}
-                indicatorColor={`${
-                  0 > currTemp || currTemp > 1 ? "red-600" : "llm-primary50"
-                }`}
+                indicatorColor={`${0 > currTemp || currTemp > 1 ? "red-600" : "llm-primary50"
+                  }`}
                 value={[currTemp]}
                 disabled={isDisabled}
               />
@@ -225,9 +249,8 @@ export function AdvancedOptions({ isDisabled }: AdvancedProps) {
           </div>
           <div className="flex flex-col w-full space-y-1">
             <p
-              className={`font-bold ${
-                0 > currTopP || currTopP > 1 ? "text-red-600" : "llm-primary50"
-              }`}
+              className={`font-bold ${0 > currTopP || currTopP > 1 ? "text-red-600" : "llm-primary50"
+                }`}
             >
               Top P : {currTopP}
             </p>
@@ -239,9 +262,8 @@ export function AdvancedOptions({ isDisabled }: AdvancedProps) {
                 onValueChange={(newValue: number[]) => {
                   setCurrTopP(newValue[0]);
                 }}
-                indicatorColor={`${
-                  0 > currTopP || currTopP > 1 ? "red-600" : "llm-primary50"
-                }`}
+                indicatorColor={`${0 > currTopP || currTopP > 1 ? "red-600" : "llm-primary50"
+                  }`}
                 value={[currTopP]}
                 disabled={isDisabled}
               />
@@ -259,18 +281,16 @@ export function AdvancedOptions({ isDisabled }: AdvancedProps) {
             </div>
           </div>
           <div
-            className={`flex flex-col w-full space-y-1 ${
-              100 >= currMaxTokens && currMaxTokens >= 4000
-                ? "border-2 border-red-600"
-                : "llm-primary50"
-            }`}
+            className={`flex flex-col w-full space-y-1 ${100 >= currMaxTokens && currMaxTokens >= 4000
+              ? "border-2 border-red-600"
+              : "llm-primary50"
+              }`}
           >
             <p
-              className={`font-bold ${
-                100 > currMaxTokens || currMaxTokens > 4000
-                  ? "text-red-600"
-                  : "llm-primary50"
-              }`}
+              className={`font-bold ${100 > currMaxTokens || currMaxTokens > 4000
+                ? "text-red-600"
+                : "llm-primary50"
+                }`}
             >
               Max Tokens : {currMaxTokens}
             </p>
@@ -283,11 +303,10 @@ export function AdvancedOptions({ isDisabled }: AdvancedProps) {
                 onValueChange={(newValue: number[]) => {
                   setCurrMaxTokens(newValue[0]);
                 }}
-                indicatorColor={`${
-                  100 > currMaxTokens || currMaxTokens > 4000
-                    ? "red-600"
-                    : "llm-primary50"
-                }`}
+                indicatorColor={`${100 > currMaxTokens || currMaxTokens > 4000
+                  ? "red-600"
+                  : "llm-primary50"
+                  }`}
                 value={[currMaxTokens]}
               />
               <Input

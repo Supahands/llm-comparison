@@ -39,6 +39,7 @@ const useAppStore = create<AppState>((set) => ({
   maxTagCount: 10,
   showExplanationFields: false,
   useAIGeneratedPrompt: false,
+  isSingleModelMode: false,
 
   setShowExplanationFields: (show: boolean) => set({ showExplanationFields: show }),
   setRoundCounter: (counter: number) => set({ roundCounter: counter }),
@@ -101,6 +102,8 @@ const useAppStore = create<AppState>((set) => ({
     set((_state: AppState) => ({ responseOrder: order })),
   setUseAIGeneratedPrompt: (useAIGeneratedPrompt: boolean) =>
     set((_state: AppState) => ({ useAIGeneratedPrompt })),
+  setIsSingleModelMode: (isSingleModelMode: boolean) =>
+    set((_state: AppState) => ({ isSingleModelMode })),
   reset: () =>
     set((state: AppState) => ({
       responseModel1: "",

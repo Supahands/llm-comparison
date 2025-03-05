@@ -5,7 +5,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import useAppStore from "@/hooks/store/useAppStore";
 import * as animationData from "@/public/animation/loading";
 import { useIsMutating } from "@tanstack/react-query";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { IoInformationOutline } from "react-icons/io5";
 import Lottie from "react-lottie";
 import ReactMarkdown from "react-markdown";
@@ -92,6 +92,7 @@ export default function ModelResponses() {
     selectedModel1,
     selectedModel2,
     responseOrder,
+    isSingleModelMode,
   } = useAppStore();
 
   const mutationModel1 = useIsMutating({
@@ -102,13 +103,48 @@ export default function ModelResponses() {
     mutationKey: ["model2"],
   });
 
+  const randomizeResponses = useCallback(() => {
+    const model1Order = {
+      model: responseModel1,
+      otherModel: responseModel2,
+      order: "1",
+      choice1: selectedModel1,
+      choice2: selectedModel2,
+    }
+
+    const model2Order = {
+      model: responseModel2,
+      otherModel: responseModel1,
+      order: "2",
+      choice1: selectedModel2,
+      choice2: selectedModel1,
+    }
+
+    if (isSingleModelMode) return model1Order
+
+    return Math.random() < 0.5
+      ? model1Order
+      : model2Order;
+  }, [responseModel1, responseModel2, isSingleModelMode]);
+
+  useEffect(() => {
+    const random = randomizeResponses();
+    setModelOrder(random);
+  }, [randomizeResponses])
+
+
+  useEffect(() => {
+    console.log(responseOrder)
+  }, [responseOrder])
+
   const isPendingModel1 = useMemo(() => {
     return mutationModel1 > 0;
   }, [mutationModel1]);
 
   const isPendingModel2 = useMemo(() => {
+    if (isSingleModelMode) return false
     return mutationModel2 > 0;
-  }, [mutationModel2]);
+  }, [mutationModel2, isSingleModelMode]);
 
   const calculateMaxHeight = () => {
     return `calc(100vh - 460px)`;
@@ -123,29 +159,6 @@ export default function ModelResponses() {
     },
   };
 
-  const randomizeResponses = useCallback(() => {
-    return Math.random() < 0.5
-      ? {
-          model: responseModel1,
-          otherModel: responseModel2,
-          order: "1",
-          choice1: selectedModel1,
-          choice2: selectedModel2,
-        }
-      : {
-          model: responseModel2,
-          otherModel: responseModel1,
-          order: "2",
-          choice1: selectedModel2,
-          choice2: selectedModel1,
-        };
-  }, [responseModel1, responseModel2]);
-
-  const responses = useMemo(() => {
-    const random = randomizeResponses();
-    setModelOrder(random);
-    return random;
-  }, [randomizeResponses]);
 
   return (
     <div className="flex-grow min-h-[10vh] ">
@@ -163,7 +176,7 @@ export default function ModelResponses() {
             ></Lottie>
           </div>
         )}
-        <div className="grid grid-cols-2 gap-4 h-full mb-2">
+        <div className={`grid gap-4 h-full mb-2 ${isSingleModelMode ? 'grid-cols-1' : 'grid-cols-2'}`}>
           <div className="model-a-response">
             {!isPendingModel1 && !isPendingModel2 && responseModel1 && (
               <div>
@@ -203,7 +216,7 @@ export default function ModelResponses() {
                     <MarkdownContent
                       content={responseOrder.model.replace(
                         /<redacted>(.+?)<\/redacted>/g,
-                        (match, content) => "█".repeat(content.length)
+                        (match: any, content: any) => "█".repeat(content.length)
                       )}
                     />
                   )}
@@ -251,7 +264,7 @@ export default function ModelResponses() {
                     <MarkdownContent
                       content={responseOrder.otherModel.replace(
                         /<redacted>(.+?)<\/redacted>/g,
-                        (match, content) => "█".repeat(content.length)
+                        (match: any, content: any) => "█".repeat(content.length)
                       )}
                     />
                   )}
