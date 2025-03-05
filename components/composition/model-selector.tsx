@@ -78,7 +78,7 @@ export default function ModelSelector() {
   }, []);
 
   useEffect(() => {
-    if (isComparingModel) {
+    if (isComparingModel && !isSingleModelMode) {
       setShowModelSelector(false);
     }
   }, [isComparingModel]);
@@ -152,29 +152,37 @@ export default function ModelSelector() {
               </div>
             </div>
           </div>
-          <div
-            className={`p-4 h-full ${!showModelSelector ? "flex" : "hidden"
-              } flex-row items-center justify-between gap-4`}
-          >
-            <div className="flex flex-col gap-2">
-              <div>Models have been randomized and hidden to remove bias.</div>
-              <div className="text-2xl">🤫</div>
-            </div>
-          </div>
+          {
+            !isSingleModelMode && (
+              <div
+                className={`p-4 h-full ${!showModelSelector ? "flex" : "hidden"
+                  } flex-row items-center justify-between gap-4`}
+              >
+                <div className="flex flex-col gap-2">
+                  <div>Models have been randomized and hidden to remove bias.</div>
+                  <div className="text-2xl">🤫</div>
+                </div>
+              </div>)
+          }
+
         </div>
-        <div
-          className={`${isComparingModel || userChoices.length > 0 ? "" : "hidden"
-            }`}
-        >
-          <button
-            className={`p-2`}
-            onClick={() => {
-              setShowModelSelector(!showModelSelector);
-            }}
-          >
-            {showModelSelector ? <EyeClosed /> : <EyeOff />}
-          </button>
-        </div>
+        {
+          !isSingleModelMode && (
+            <div
+              className={`${isComparingModel || userChoices.length > 0 ? "" : "hidden"
+                }`}
+            >
+              <button
+                className={`p-2`}
+                onClick={() => {
+                  setShowModelSelector(!showModelSelector);
+                }}
+              >
+                {showModelSelector ? <EyeClosed /> : <EyeOff />}
+              </button>
+            </div>)
+        }
+
       </div>
     </div>
   );

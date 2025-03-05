@@ -48,6 +48,7 @@ export default function Home() {
     images,
     idealResponse,
     explainChoice,
+    isSingleModelMode
   } = useAppStore();
 
   const posthog = usePostHog();
@@ -234,34 +235,37 @@ export default function Home() {
             </div>
           </div>
         </div>
+        {
+          !isSingleModelMode && (
+            <div ref={sectionRef}>
+              <Button
+                className="bg-llm-btn hover:bg-llm-btn_hover text-white rounded-xl relative"
+                onClick={handleEvaluation}
+                disabled={!selectedChoice}
+                id="end-eval-button"
+                data-testid="end-eval-button"
+              >
+                <div className="fixed pointer-events-none">
+                  <Lottie
+                    eventListeners={[
+                      {
+                        eventName: "complete",
+                        callback: () => {
+                          setIsStopped(true);
+                        },
+                      },
+                    ]}
+                    width={300}
+                    height={150}
+                    options={defaultOptions}
+                    isStopped={isStopped}
+                  />
+                </div>
+                End evaluation and see results
+              </Button>
+            </div>)
+        }
 
-        <div ref={sectionRef}>
-          <Button
-            className="bg-llm-btn hover:bg-llm-btn_hover text-white rounded-xl relative"
-            onClick={handleEvaluation}
-            disabled={!selectedChoice}
-            id="end-eval-button"
-            data-testid="end-eval-button"
-          >
-            <div className="fixed pointer-events-none">
-              <Lottie
-                eventListeners={[
-                  {
-                    eventName: "complete",
-                    callback: () => {
-                      setIsStopped(true);
-                    },
-                  },
-                ]}
-                width={300}
-                height={150}
-                options={defaultOptions}
-                isStopped={isStopped}
-              />
-            </div>
-            End evaluation and see results
-          </Button>
-        </div>
       </div>
     </div>
   );

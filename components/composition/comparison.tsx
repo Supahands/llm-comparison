@@ -83,7 +83,9 @@ export default function Comparison() {
     idealResponse,
     setUseAIGeneratedPrompt,
     useAIGeneratedPrompt,
-    isSingleModelMode
+    isSingleModelMode,
+    isPendingModel1,
+    isPendingModel2
   } = useAppStore();
 
   const recaptchaRef = useRef<ReCAPTCHA>(null);
@@ -527,7 +529,7 @@ export default function Comparison() {
                       ref={textareaRef}
                       value={newMessage}
                       disabled={
-                        !(selectedModel1 && selectedModel2) || isComparingModel
+                        !(selectedModel1 && selectedModel2) || (isComparingModel && !isSingleModelMode) || isPendingModel1 || isPendingModel2
                       }
                       placeholder={
                         userChoices.length === 0
@@ -573,7 +575,9 @@ export default function Comparison() {
                             disabled={
                               !isModel1Multimodal ||
                               !isModel2Multimodal ||
-                              isComparingModel
+                              (isComparingModel && !isSingleModelMode) ||
+                              isPendingModel1 ||
+                              isPendingModel2
                             }
                             size="icon"
                             className="rounded-lg justify-center w-8 h-8 p-0 text-llm-primary50 border border-llm-primary50 hover:bg-gray-100 bg-white focus-visible:outline-llm-primary50"
@@ -591,7 +595,9 @@ export default function Comparison() {
                       size="icon"
                       disabled={
                         !(selectedModel1 && selectedModel2) ||
-                        isComparingModel ||
+                        (isComparingModel && !isSingleModelMode) ||
+                        isPendingModel1 ||
+                        isPendingModel2 ||
                         newMessage.trim().length === 0
                       }
                       className="rounded-lg justify-center w-8 h-8 p-0 bg-llm-primary50 focus-visible:outline-llm-primary50"

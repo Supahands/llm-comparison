@@ -47,7 +47,8 @@ export function AdvancedOptions({ isDisabled }: AdvancedProps) {
     jsonFormat,
     setJSONFormat,
     isSingleModelMode,
-    setIsSingleModelMode
+    setIsSingleModelMode,
+    reset
   } = useAppStore();
   const posthog = usePostHog();
 
@@ -161,6 +162,7 @@ export function AdvancedOptions({ isDisabled }: AdvancedProps) {
           <div className="flex flex-row w-full justify-between gap-3">
             <RadioGroup defaultValue={isSingleModelMode ? 'single' : 'compare'} onValueChange={(value) => {
               setIsSingleModelMode(value === 'single')
+              reset()
             }}>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="single" id="r2" />

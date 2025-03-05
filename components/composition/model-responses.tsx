@@ -103,6 +103,36 @@ export default function ModelResponses() {
     mutationKey: ["model2"],
   });
 
+  const randomizeResponses = useCallback(() => {
+    const model1Order = {
+      model: responseModel1,
+      otherModel: responseModel2,
+      order: "1",
+      choice1: selectedModel1,
+      choice2: selectedModel2,
+    }
+
+    const model2Order = {
+      model: responseModel2,
+      otherModel: responseModel1,
+      order: "2",
+      choice1: selectedModel2,
+      choice2: selectedModel1,
+    }
+
+    if (isSingleModelMode) return model1Order
+
+    return Math.random() < 0.5
+      ? model1Order
+      : model2Order;
+  }, [responseModel1, responseModel2, isSingleModelMode]);
+
+  useEffect(() => {
+    const random = randomizeResponses();
+    setModelOrder(random);
+  }, [randomizeResponses])
+
+
   useEffect(() => {
     console.log(responseOrder)
   }, [responseOrder])
@@ -146,7 +176,7 @@ export default function ModelResponses() {
             ></Lottie>
           </div>
         )}
-        <div className="grid grid-cols-2 gap-4 h-full mb-2">
+        <div className={`grid gap-4 h-full mb-2 ${isSingleModelMode ? 'grid-cols-1' : 'grid-cols-2'}`}>
           <div className="model-a-response">
             {!isPendingModel1 && !isPendingModel2 && responseModel1 && (
               <div>
