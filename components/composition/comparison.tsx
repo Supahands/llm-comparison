@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import IconButton from "@/components/ui/icon-button";
+import { AxiosResponse } from "axios";
 import {
   Tooltip,
   TooltipContent,
@@ -82,6 +83,9 @@ export default function Comparison() {
     idealResponse,
     setUseAIGeneratedPrompt,
     useAIGeneratedPrompt,
+    isSingleModelMode,
+    isPendingModel1,
+    isPendingModel2
   } = useAppStore();
 
   const recaptchaRef = useRef<ReCAPTCHA>(null);
@@ -205,26 +209,39 @@ export default function Comparison() {
   const { mutate: mutateModel2 } = useMutation({
     mutationKey: ["model2"],
     mutationFn: (data: MessageRequest) => {
+      if (isSingleModelMode) {
+        return new Promise<AxiosResponse<any, any>>(
+          () => { return true })
+      }
       return axios.post(`${API_URL}/message`, data);
     },
-    onSuccess: async (response) => {
-      const data = response.data;
-      const choices = data.choices;
-      const responseModel2Content =
-        (choices[0]?.message?.content as string) || "";
-      setResponseModel2(responseModel2Content);
-      if (responseModel2Content === "") {
-        setIsRetryOverlay(true);
+    onSuccess: async (response: AxiosResponse<any, any>) => {
+      if (isSingleModelMode) {
+        setResponseModel2("_")
+        setResponseTime2(0)
+        setPromptToken(0)
+        setCompletionToken2(0)
+        setIsComparingModel(false)
+      } else {
+        const data = response.data;
+        const choices = data.choices;
+        const responseModel2Content =
+          (choices[0]?.message?.content as string) || "";
+        setResponseModel2(responseModel2Content);
+        if (responseModel2Content === "") {
+          setIsRetryOverlay(true);
+        }
+        setResponseTime2(data.usage.response_time);
+        setPromptToken(data.usage.prompt_tokens);
+        setCompletionToken2(data.usage.completion_tokens);
       }
-      setResponseTime2(data.usage.response_time);
-      setPromptToken(data.usage.prompt_tokens);
-      setCompletionToken2(data.usage.completion_tokens);
+
     },
     onError: (error) => {
       console.log("error2", error);
       setIsRetryOverlay(true);
     },
-    onSettled: () => {},
+    onSettled: () => { },
   });
 
   const handleSendPrompt = useCallback(() => {
@@ -351,13 +368,13 @@ export default function Comparison() {
   // Handle tooltip visibility with auto-hide timer
   useEffect(() => {
     let tooltipTimer: NodeJS.Timeout;
-    
+
     if (isTooltipVisible) {
       tooltipTimer = setTimeout(() => {
         setIsTooltipVisible(false);
       }, 10000); // 10 seconds
     }
-    
+
     return () => {
       if (tooltipTimer) clearTimeout(tooltipTimer);
     };
@@ -422,11 +439,11 @@ export default function Comparison() {
                       // Toggle the AI generation state
                       setIsAIGenerationEnabled(!isAIGenerationEnabled);
                       setUseAIGeneratedPrompt(!isAIGenerationEnabled);
-                      
+
                       // Make the tooltip visible when clicked
                       setIsTooltipVisible(true);
                     }}
-  
+
                     delayOpen={150}
                   />
                 </div>
@@ -512,7 +529,7 @@ export default function Comparison() {
                       ref={textareaRef}
                       value={newMessage}
                       disabled={
-                        !(selectedModel1 && selectedModel2) || isComparingModel
+                        !(selectedModel1 && selectedModel2) || (isComparingModel && !isSingleModelMode) || isPendingModel1 || isPendingModel2
                       }
                       placeholder={
                         userChoices.length === 0
@@ -558,7 +575,9 @@ export default function Comparison() {
                             disabled={
                               !isModel1Multimodal ||
                               !isModel2Multimodal ||
-                              isComparingModel
+                              (isComparingModel && !isSingleModelMode) ||
+                              isPendingModel1 ||
+                              isPendingModel2
                             }
                             size="icon"
                             className="rounded-lg justify-center w-8 h-8 p-0 text-llm-primary50 border border-llm-primary50 hover:bg-gray-100 bg-white focus-visible:outline-llm-primary50"
@@ -576,7 +595,9 @@ export default function Comparison() {
                       size="icon"
                       disabled={
                         !(selectedModel1 && selectedModel2) ||
-                        isComparingModel ||
+                        (isComparingModel && !isSingleModelMode) ||
+                        isPendingModel1 ||
+                        isPendingModel2 ||
                         newMessage.trim().length === 0
                       }
                       className="rounded-lg justify-center w-8 h-8 p-0 bg-llm-primary50 focus-visible:outline-llm-primary50"

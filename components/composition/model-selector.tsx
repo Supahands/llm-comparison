@@ -26,6 +26,8 @@ export default function ModelSelector() {
     setIsModel1Multimodal,
     setIsModel2Multimodal,
     responseOrder,
+    isSingleModelMode,
+    setIsSingleModelMode
   } = useAppStore();
   const [showModelSelector, setShowModelSelector] = useState<boolean>(true);
   const posthog = usePostHog();
@@ -76,7 +78,7 @@ export default function ModelSelector() {
   }, []);
 
   useEffect(() => {
-    if (isComparingModel) {
+    if (isComparingModel && !isSingleModelMode) {
       setShowModelSelector(false);
     }
   }, [isComparingModel]);
@@ -96,79 +98,91 @@ export default function ModelSelector() {
   };
 
   return (
-    <div className="flex flex-row items-center w-full h-full">
-      <div className="flex flex-col lg:flex-row w-full">
-        <div
-          className={`p-4 h-full w-full  ${
-            !showModelSelector ? "hidden" : "flex flex-row"
-          } items-center gap-4 `}
-        >
-          <div className=" w-full space-y-2">
-            <div className="flex flex-row gap-4 justify-center  w-full">
-              <div className="flex flex-col w-1/2">
-                <div>Model 1</div>
-                <div className="w-full">
-                  <ComboBox
-                    items={availableModels}
-                    onItemSelect={handleModel1Select}
-                    disabled={isComparingModel || userChoices.length > 0}
-                    defaultValue={selectedModel1}
-                    setMultimodal={setIsModel1Multimodal}
-                  />
+    <div className="flex flex-col">
+      <div className="flex flex-row items-center w-full h-full">
+        <div className="flex flex-col lg:flex-row w-full">
+          <div
+            className={`p-4 h-full w-full  ${!showModelSelector ? "hidden" : "flex flex-row"
+              } items-center gap-4 `}
+          >
+            <div className=" w-full space-y-2">
+              <div className={`flex flex-row gap-4  w-full ${isSingleModelMode ? 'justify-start' : 'justify-center'}`}>
+                <div className="flex flex-col w-1/2">
+                  <div>Model 1</div>
+                  <div className="w-full">
+                    <ComboBox
+                      items={availableModels}
+                      onItemSelect={handleModel1Select}
+                      disabled={isComparingModel || userChoices.length > 0}
+                      defaultValue={selectedModel1}
+                      setMultimodal={setIsModel1Multimodal}
+                    />
+                  </div>
                 </div>
+                {
+                  !isSingleModelMode && (
+                    <div className="flex flex-col w-1/2">
+                      <div>Model 2</div>
+                      <div className="w-full">
+                        <ComboBox
+                          items={availableModels}
+                          onItemSelect={handleModel2Select}
+                          disabled={isComparingModel || userChoices.length > 0}
+                          defaultValue={selectedModel2}
+                          setMultimodal={setIsModel2Multimodal}
+                        />
+                      </div>
+                    </div>
+                  )
+                }
+
+                <Button
+                  size={"icon"}
+                  disabled={isComparingModel || userChoices.length > 0}
+                  className="rounded-lg w-8 h-8 p-1 bg-white hover:bg-llm-primary95 self-end mb-1 block focus-visible:outline-llm-primary50"
+                  onClick={randomizeModel}
+                >
+                  <Dices className=" text-llm-grey1 !w-full !h-6"></Dices>
+                </Button>
               </div>
-              <div className="flex flex-col w-1/2">
-                <div>Model 2</div>
-                <div className="w-full">
-                  <ComboBox
-                    items={availableModels}
-                    onItemSelect={handleModel2Select}
-                    disabled={isComparingModel || userChoices.length > 0}
-                    defaultValue={selectedModel2}
-                    setMultimodal={setIsModel2Multimodal}
-                  />
-                </div>
+              <div>
+                <AdvancedOptions
+                  isDisabled={isComparingModel || userChoices.length > 0}
+                />
               </div>
-              <Button
-                size={"icon"}
-                disabled={isComparingModel || userChoices.length > 0}
-                className="rounded-lg w-8 h-8 p-1 bg-white hover:bg-llm-primary95 self-end mb-1 block focus-visible:outline-llm-primary50"
-                onClick={randomizeModel}
+            </div>
+          </div>
+          {
+            !isSingleModelMode && (
+              <div
+                className={`p-4 h-full ${!showModelSelector ? "flex" : "hidden"
+                  } flex-row items-center justify-between gap-4`}
               >
-                <Dices className=" text-llm-grey1 !w-full !h-6"></Dices>
-              </Button>
-            </div>
-            <div>
-              <AdvancedOptions
-                isDisabled={isComparingModel || userChoices.length > 0}
-              />
-            </div>
-          </div>
+                <div className="flex flex-col gap-2">
+                  <div>Models have been randomized and hidden to remove bias.</div>
+                  <div className="text-2xl">🤫</div>
+                </div>
+              </div>)
+          }
+
         </div>
-        <div
-          className={`p-4 h-full ${
-            !showModelSelector ? "flex" : "hidden"
-          } flex-row items-center justify-between gap-4`}
-        >
-          <div className="flex flex-col gap-2">
-            <div>Models have been randomized and hidden to remove bias.</div>
-            <div className="text-2xl">🤫</div>
-          </div>
-        </div>
-      </div>
-      <div
-        className={`${
-          isComparingModel || userChoices.length > 0 ? "" : "hidden"
-        }`}
-      >
-        <button
-          className={`p-2`}
-          onClick={() => {
-            setShowModelSelector(!showModelSelector);
-          }}
-        >
-          {showModelSelector ? <EyeClosed /> : <EyeOff />}
-        </button>
+        {
+          !isSingleModelMode && (
+            <div
+              className={`${isComparingModel || userChoices.length > 0 ? "" : "hidden"
+                }`}
+            >
+              <button
+                className={`p-2`}
+                onClick={() => {
+                  setShowModelSelector(!showModelSelector);
+                }}
+              >
+                {showModelSelector ? <EyeClosed /> : <EyeOff />}
+              </button>
+            </div>)
+        }
+
       </div>
     </div>
   );
