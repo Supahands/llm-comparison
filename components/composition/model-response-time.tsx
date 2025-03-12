@@ -26,6 +26,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import useAppStore from "@/hooks/store/useAppStore";
 
 export const description = "A multiple bar chart";
 
@@ -63,6 +64,9 @@ export function ModelResponseTime({
     ...allResponseTime.flatMap((data) => [data.timeModelA, data.timeModelB])
   );
   const adaptiveMax = maxDataValue * 1.1;
+  const {
+    isSingleModelMode
+  } = useAppStore();
 
   return (
     <Card className="rounded-xl w-full">
@@ -115,18 +119,22 @@ export function ModelResponseTime({
                   className="text-xs md:text-sm font-light"
                 />
               </Bar>
-              <Bar
-                dataKey="timeModelB"
-                fill={chartConfig.timeModelB.color}
-                radius={4}
-              >
-                <LabelList
-                  dataKey="timeModelB"
-                  position="top"
-                  offset={10}
-                  className="text-xs md:text-sm font-light"
-                />
-              </Bar>
+              {
+                !isSingleModelMode && (
+                  <Bar
+                    dataKey="timeModelB"
+                    fill={chartConfig.timeModelB.color}
+                    radius={4}
+                  >
+                    <LabelList
+                      dataKey="timeModelB"
+                      position="top"
+                      offset={10}
+                      className="text-xs md:text-sm font-light"
+                    />
+                  </Bar>
+                )
+              }
               <ChartLegend
                 className="text-sm font-semibold"
                 content={<ChartLegendContent />}

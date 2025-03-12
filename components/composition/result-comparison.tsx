@@ -28,6 +28,7 @@ import {
   FloatingPanelTrigger,
 } from "../ui/floating-panel";
 import { ScrollArea } from "../ui/scroll-area";
+import useAppStore from '@/hooks/store/useAppStore';
 
 interface DataProps {
   allMessage: Message[];
@@ -44,6 +45,10 @@ const ResultComparison = ({
 }: DataProps) => {
   console.log("🚀 ~ allMessage:", allMessage)
   const [currentMessage, setCurrentMessage] = useState<number>(0);
+
+  const {
+    isSingleModelMode,
+  } = useAppStore();
 
   const calculateMaxHeight = () => {
     return `calc(100vh - 460px)`;
@@ -160,12 +165,12 @@ const ResultComparison = ({
                   className={`flex-grow lg:p-4 p-1 overflow-y-auto`}
                   style={{ maxHeight: calculateMaxHeight(), height: "500px" }}
                 >
-                  <div className="grid grid-cols-2 gap-4 mb-5">
+                  <div className={`grid ${isSingleModelMode ? "grid-cols-1" : "grid-cols-2"} gap-4 mb-5`}>
                     <div className="model-a-response">
                       <div className="w-full bg-llm-neutral95 text-black p-1 my-2 text-center flex justify-center font-semibold">
                         {modelA}
                         {allMessage[currentMessage].choice === "AB" ||
-                        allMessage[currentMessage].choice === "A" ? (
+                          allMessage[currentMessage].choice === "A" ? (
                           <div className="bg-green-500 rounded-full mx-2">
                             <CheckIcon className="text-white p-1" />
                           </div>
@@ -184,29 +189,34 @@ const ResultComparison = ({
                         </ReactMarkdown>
                       </div>
                     </div>
-                    <div className="model-b-response">
-                      <div className="w-full bg-llm-neutral95 text-black p-1 my-2 text-center flex justify-center font-semibold">
-                        {modelB}
-                        {allMessage[currentMessage].choice === "AB" ||
-                        allMessage[currentMessage].choice === "B" ? (
-                          <div className="bg-green-500 rounded-full mx-2">
-                            <CheckIcon className="text-white p-1" />
+                    {
+                      !isSingleModelMode && (
+                        <div className="model-b-response">
+                          <div className="w-full bg-llm-neutral95 text-black p-1 my-2 text-center flex justify-center font-semibold">
+                            {modelB}
+                            {allMessage[currentMessage].choice === "AB" ||
+                              allMessage[currentMessage].choice === "B" ? (
+                              <div className="bg-green-500 rounded-full mx-2">
+                                <CheckIcon className="text-white p-1" />
+                              </div>
+                            ) : (
+                              <div className="bg-red-500 rounded-full mx-2">
+                                <XIcon className="text-white p-1" />
+                              </div>
+                            )}
                           </div>
-                        ) : (
-                          <div className="bg-red-500 rounded-full mx-2">
-                            <XIcon className="text-white p-1" />
+                          <div className="p-2 rounded-lg bg-llm-grey4 border border-solid border-llm-neutral90 text-llm-response">
+                            <ReactMarkdown
+                              className="prose dark:prose-invert"
+                              remarkPlugins={[remarkGfm]}
+                            >
+                              {allMessage[currentMessage].response2}
+                            </ReactMarkdown>
                           </div>
-                        )}
-                      </div>
-                      <div className="p-2 rounded-lg bg-llm-grey4 border border-solid border-llm-neutral90 text-llm-response">
-                        <ReactMarkdown
-                          className="prose dark:prose-invert"
-                          remarkPlugins={[remarkGfm]}
-                        >
-                          {allMessage[currentMessage].response2}
-                        </ReactMarkdown>
-                      </div>
-                    </div>
+                        </div>
+                      )
+                    }
+
                   </div>
                   <div className="space-y-2">
                     <div className="flex w-full flex-col  h-full flex-grow">

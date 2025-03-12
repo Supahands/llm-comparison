@@ -1,30 +1,31 @@
-"use client";
+'use client';
 
-import React, { useEffect } from "react";
+import React, { useEffect } from 'react';
 
-import ResultComparison from "@/components/composition/result-comparison";
-import { Card, CardContent } from "@/components/ui/card";
-import ModelSelector from "@/components/composition/model-selector";
-import { LinkPreview } from "@/components/ui/link-preview";
-import Title from "@/components/ui/title";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { ModelResponseTime } from "@/components/composition/model-response-time";
-import { supabaseClient } from "@/lib/supabase/supabaseClient";
-import { ConfigRequest, Message } from "@/lib/types/message";
-import { DATABASE_TABLE } from "@/lib/constants/databaseTables";
-import { DataProps } from "@/components/composition/model-response-time";
-import { MetricsComposed } from "@/components/composition/metrics-composed";
-import OverallPage from "@/components/composition/overall";
-import { useRouter } from "next/navigation";
-import { FaDownload } from "react-icons/fa6";
-import OverallSessionPage from "@/components/composition/overall-session";
-import { IoMdShare } from "react-icons/io";
-import { useToast } from "@/hooks/use-toast";
-import ModelConfig from "@/components/composition/model-config";
+import ResultComparison from '@/components/composition/result-comparison';
+import { Card, CardContent } from '@/components/ui/card';
+import ModelSelector from '@/components/composition/model-selector';
+import { LinkPreview } from '@/components/ui/link-preview';
+import Title from '@/components/ui/title';
+import Image from 'next/image';
+import { Button } from '@/components/ui/button';
+import { ModelResponseTime } from '@/components/composition/model-response-time';
+import { supabaseClient } from '@/lib/supabase/supabaseClient';
+import { ConfigRequest, Message } from '@/lib/types/message';
+import { DATABASE_TABLE } from '@/lib/constants/databaseTables';
+import { DataProps } from '@/components/composition/model-response-time';
+import { MetricsComposed } from '@/components/composition/metrics-composed';
+import OverallPage from '@/components/composition/overall';
+import { useRouter } from 'next/navigation';
+import { FaDownload } from 'react-icons/fa6';
+import OverallSessionPage from '@/components/composition/overall-session';
+import { IoMdShare } from 'react-icons/io';
+import { useToast } from '@/hooks/use-toast';
+import ModelConfig from '@/components/composition/model-config';
 
-import { FaGithub } from "react-icons/fa";
-import { IoStarOutline } from "react-icons/io5";
+import { FaGithub } from 'react-icons/fa';
+import { IoStarOutline } from 'react-icons/io5';
+import useAppStore from '@/hooks/store/useAppStore';
 
 interface DatabaseProps {
   id: number;
@@ -54,42 +55,32 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
   const router = useRouter();
   const { toast } = useToast();
 
-  const [stars, setStars] = React.useState<string>("");
+  const { isSingleModelMode } = useAppStore();
+
+  const [stars, setStars] = React.useState<string>('');
   const [allMessage, setAllMessage] = React.useState<Message[]>([]);
   const [allResponseTime, setAllResponseTime] = React.useState<DataProps[]>([]);
-  const [statProportion, setStatProportion] = React.useState<MetricsProps[]>(
-    []
-  );
+  const [statProportion, setStatProportion] = React.useState<MetricsProps[]>([]);
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
-  const [modelA, setModelA] = React.useState<string>("");
-  const [modelB, setModelB] = React.useState<string>("");
+  const [modelA, setModelA] = React.useState<string>('');
+  const [modelB, setModelB] = React.useState<string>('');
   const [configModel, setConfigModel] = React.useState<ConfigRequest | null>();
 
   const [winRateModelA, setWinRateModelA] = React.useState<number>(0);
   const [winRateModelB, setWinRateModelB] = React.useState<number>(0);
   const [averageTokenA, setAverageTokenA] = React.useState<number>(0);
   const [averageTokenB, setAverageTokenB] = React.useState<number>(0);
-  const [averageResponseTimeA, setAverageResponseTimeA] =
-    React.useState<number>(0);
-  const [averageResponseTimeB, setAverageResponseTimeB] =
-    React.useState<number>(0);
-  const [avgTokenPerResponseTimeA, setAvgTokenPerResponseTimeA] =
-    React.useState<number>(0);
-  const [avgTokenPerResponseTimeB, setAvgTokenPerResponseTimeB] =
-    React.useState<number>(0);
+  const [averageResponseTimeA, setAverageResponseTimeA] = React.useState<number>(0);
+  const [averageResponseTimeB, setAverageResponseTimeB] = React.useState<number>(0);
+  const [avgTokenPerResponseTimeA, setAvgTokenPerResponseTimeA] = React.useState<number>(0);
+  const [avgTokenPerResponseTimeB, setAvgTokenPerResponseTimeB] = React.useState<number>(0);
 
-  const [winRateModelASession, setWinRateModelASession] =
-    React.useState<number>(0);
-  const [winRateModelBSession, setWinRateModelBSession] =
-    React.useState<number>(0);
-  const [averageTokenASession, setAverageTokenASession] =
-    React.useState<number>(0);
-  const [averageTokenBSession, setAverageTokenBSession] =
-    React.useState<number>(0);
-  const [averageResponseTimeASession, setAverageResponseTimeASession] =
-    React.useState<number>(0);
-  const [averageResponseTimeBSession, setAverageResponseTimeBSession] =
-    React.useState<number>(0);
+  const [winRateModelASession, setWinRateModelASession] = React.useState<number>(0);
+  const [winRateModelBSession, setWinRateModelBSession] = React.useState<number>(0);
+  const [averageTokenASession, setAverageTokenASession] = React.useState<number>(0);
+  const [averageTokenBSession, setAverageTokenBSession] = React.useState<number>(0);
+  const [averageResponseTimeASession, setAverageResponseTimeASession] = React.useState<number>(0);
+  const [averageResponseTimeBSession, setAverageResponseTimeBSession] = React.useState<number>(0);
   const [avgTokenPerResponseTimeASession, setAvgTokenPerResponseTimeASession] =
     React.useState<number>(0);
   const [avgTokenPerResponseTimeBSession, setAvgTokenPerResponseTimeBSession] =
@@ -116,12 +107,12 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
     });
 
     // Create a Blob with the JSON data
-    const blob = new Blob([jsonString], { type: "application/json" });
+    const blob = new Blob([jsonString], { type: 'application/json' });
 
     // Create a download link and click it to start the download
-    const link = document.createElement("a");
+    const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = "data.json"; // Name of the downloaded file
+    link.download = 'data.json'; // Name of the downloaded file
     link.click();
 
     // Clean up the URL object
@@ -131,25 +122,25 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
   const calculateProportion = (data: DatabaseProps[] | null) => {
     const modelA = data
       ? data.reduce((counter, x) => {
-          if (x.selected_choice === "A") counter += 1;
+          if (x.selected_choice === 'A') counter += 1;
           return counter;
         }, 0)
       : 0;
     const modelB = data
       ? data.reduce((counter, x) => {
-          if (x.selected_choice === "B") counter += 1;
+          if (x.selected_choice === 'B') counter += 1;
           return counter;
         }, 0)
       : 0;
     const draw = data
       ? data.reduce((counter, x) => {
-          if (x.selected_choice === "AB") counter += 1;
+          if (x.selected_choice === 'AB') counter += 1;
           return counter;
         }, 0)
       : 0;
     const reject = data
       ? data.reduce((counter, x) => {
-          if (x.selected_choice === "!AB") counter += 1;
+          if (x.selected_choice === '!AB') counter += 1;
           return counter;
         }, 0)
       : 0;
@@ -193,7 +184,7 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
 
     setStatProportion([
       {
-        task: "summary",
+        task: 'summary',
         modelA: data ? Number(((modelA / data.length) * 100).toFixed(2)) : 0,
         modelB: data ? Number(((modelB / data.length) * 100).toFixed(2)) : 0,
         draw: data ? Number(((draw / data.length) * 100).toFixed(2)) : 0,
@@ -206,7 +197,7 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
     const { data, error } = await supabaseClient
       .from(DATABASE_TABLE.RESPONSE)
       .select()
-      .eq("session_id", sessionId);
+      .eq('session_id', sessionId);
 
     return { data, error };
   }
@@ -218,7 +209,7 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
       .or(
         `and(model_1.eq.${modelA},model_2.eq.${modelB}),and(model_1.eq.${modelB},model_2.eq.${modelA})`
       )
-      .order("id", { ascending: false })
+      .order('id', { ascending: false })
       .limit(100);
 
     calculateDataAllTime(data ? data : [], modelA, modelB);
@@ -226,11 +217,7 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
     return { dataAllTime: data, errorAllTime: error };
   }
 
-  function calculateDataAllTime(
-    data: DatabaseProps[],
-    modelA: string,
-    modelB: string
-  ) {
+  function calculateDataAllTime(data: DatabaseProps[], modelA: string, modelB: string) {
     let winA = 0;
     let winB = 0;
     let totalTokenA = 0;
@@ -244,15 +231,15 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
         totalTokenB += x.completion_token_2;
         responseTimeA += x.response_time_1;
         responseTimeB += x.response_time_2;
-        if (x.selected_choice === "A") winA += 1;
-        else if (x.selected_choice === "B") winB += 1;
+        if (x.selected_choice === 'A') winA += 1;
+        else if (x.selected_choice === 'B') winB += 1;
       } else {
         totalTokenA += x.completion_token_2;
         totalTokenB += x.completion_token_1;
         responseTimeA += x.response_time_2;
         responseTimeB += x.response_time_1;
-        if (x.selected_choice === "B") winA += 1;
-        else if (x.selected_choice === "A") winB += 1;
+        if (x.selected_choice === 'B') winA += 1;
+        else if (x.selected_choice === 'A') winB += 1;
       }
     });
 
@@ -260,18 +247,10 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
     setWinRateModelB(winB);
     setAverageTokenA(totalTokenA / data.length);
     setAverageTokenB(totalTokenB / data.length);
-    setAverageResponseTimeA(
-      Number((responseTimeA / data.length / 1000).toFixed(2))
-    );
-    setAverageResponseTimeB(
-      Number((responseTimeB / data.length / 1000).toFixed(2))
-    );
-    setAvgTokenPerResponseTimeA(
-      Number((totalTokenA / (responseTimeA / 1000)).toFixed(2))
-    );
-    setAvgTokenPerResponseTimeB(
-      Number((totalTokenB / (responseTimeB / 1000)).toFixed(2))
-    );
+    setAverageResponseTimeA(Number((responseTimeA / data.length / 1000).toFixed(2)));
+    setAverageResponseTimeB(Number((responseTimeB / data.length / 1000).toFixed(2)));
+    setAvgTokenPerResponseTimeA(Number((totalTokenA / (responseTimeA / 1000)).toFixed(2)));
+    setAvgTokenPerResponseTimeB(Number((totalTokenB / (responseTimeB / 1000)).toFixed(2)));
 
     return;
   }
@@ -282,12 +261,12 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
     const { data, error } = await fetchDataBySessionId(params.slug);
 
     const { dataAllTime, errorAllTime } = await fetchDataAllTime(
-      data ? data[0].model_1 : "",
-      data ? data[0].model_2 : ""
+      data ? data[0].model_1 : '',
+      data ? data[0].model_2 : ''
     );
 
     if (error) {
-      console.log("error fetching", error);
+      console.log('error fetching', error);
       setIsLoading(false);
       return;
     }
@@ -311,12 +290,9 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
                 let temp_image: string[] = [];
                 await Promise.all(
                   x.image_namefile?.map(async (y: string) => {
-                    const response = await fetch(
-                      `/api/get_image_url?namefile=${y}`,
-                      {
-                        method: "GET",
-                      }
-                    );
+                    const response = await fetch(`/api/get_image_url?namefile=${y}`, {
+                      method: 'GET',
+                    });
 
                     const res = await response.json();
                     const url = res.url;
@@ -341,27 +317,21 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
         : []
     );
 
-    setModelA(data ? data[0].model_1 : "");
-    setModelB(data ? data[0].model_2 : "");
+    setModelA(data ? data[0].model_1 : '');
+    setModelB(data ? data[0].model_2 : '');
     setConfigModel(data ? JSON.parse(data[0].model_config) : {});
 
     let i = 1;
     setAllResponseTime(
       data
-        ? data.map(
-            (x: {
-              id: number;
-              response_time_1: number;
-              response_time_2: number;
-            }) => {
-              return {
-                task: `Q${i++}`,
-                id: x.id,
-                timeModelA: Number((x.response_time_1 / 1000).toFixed(2)),
-                timeModelB: Number((x.response_time_2 / 1000).toFixed(2)),
-              };
-            }
-          )
+        ? data.map((x: { id: number; response_time_1: number; response_time_2: number }) => {
+            return {
+              task: `Q${i++}`,
+              id: x.id,
+              timeModelA: Number((x.response_time_1 / 1000).toFixed(2)),
+              timeModelB: Number((x.response_time_2 / 1000).toFixed(2)),
+            };
+          })
         : []
     );
 
@@ -371,9 +341,9 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
 
   function formatStarCount(count: number): string {
     if (count >= 1000000) {
-      return (count / 1000000).toFixed(1) + "M";
+      return (count / 1000000).toFixed(1) + 'M';
     } else if (count >= 1000) {
-      return (count / 1000).toFixed(1) + "K";
+      return (count / 1000).toFixed(1) + 'K';
     }
     return count.toString();
   }
@@ -381,7 +351,7 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
   const getStarsRepo = async (): Promise<void> => {
     try {
       const response = await fetch(
-        "https://api.github.com/repos/Supahands/llm-comparison-frontend"
+        'https://api.github.com/repos/Supahands/llm-comparison-frontend'
       );
       if (!response.ok) {
         throw new Error(`Failed to fetch: ${response.statusText}`);
@@ -390,8 +360,8 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
       const data = (await response.json()) as { stargazers_count: number };
       setStars(formatStarCount(data.stargazers_count || 0));
     } catch (error) {
-      console.error("Error fetching stars:", error);
-      setStars("0");
+      console.error('Error fetching stars:', error);
+      setStars('0');
     }
   };
 
@@ -405,10 +375,10 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
       <Title>Evaluation Summary</Title>
       <div className="grid grid-cols-1 md:grid-cols-2 justify-between gap-4 items-center">
         <div className="bg-white border border-gray-200 p-5 rounded-xl">
-          Review your blind test results and decide which Large Language Model
-          is the best for your use case. Want to start over?
+          Review your blind test results and decide which Large Language Model is the best for your
+          use case. Want to start over?
           <a className="hover:underline" href="/">
-            {" "}
+            {' '}
             Click Here!
           </a>
         </div>
@@ -420,11 +390,11 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
                 .writeText(textToCopy)
                 .then(() => {
                   toast({
-                    description: "Copied to Clipboard!",
+                    description: 'Copied to Clipboard!',
                   });
                 })
                 .catch((err) => {
-                  console.error("Failed to copy text: ", err);
+                  console.error('Failed to copy text: ', err);
                 });
             }}
             className="bg-llm-primary50 hover:bg-llm-hover_primary50 text-white rounded-3xl"
@@ -448,12 +418,7 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
       <div>
         <Title>Session</Title>
       </div>
-      <ModelConfig
-        config={configModel}
-        modelA={modelA}
-        modelB={modelB}
-        isLoading={isLoading}
-      />
+      <ModelConfig config={configModel} modelA={modelA} modelB={modelB} isLoading={isLoading} />
       <div className="grid grid-cols-1 md:grid-cols-2 justify-stretch gap-4">
         <ModelResponseTime
           allResponseTime={allResponseTime}
@@ -461,27 +426,46 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
           modelB={modelB}
           isLoading={isLoading}
         />
-        <MetricsComposed
-          allMetricsComposed={statProportion}
-          modelA={modelA}
-          modelB={modelB}
-          isLoading={isLoading}
-        />
+        {!isSingleModelMode && (
+          <MetricsComposed
+            allMetricsComposed={statProportion}
+            modelA={modelA}
+            modelB={modelB}
+            isLoading={isLoading}
+          />
+        )}
+        {isSingleModelMode && (
+          <OverallSessionPage
+            modelA={modelA}
+            modelB={modelB}
+            avgTime1={averageResponseTimeASession}
+            avgTime2={averageResponseTimeBSession}
+            totalWinA={winRateModelASession}
+            totalWinB={winRateModelBSession}
+            avgTokenA={averageTokenASession}
+            avgTokenB={averageTokenBSession}
+            avgTokenPerTimeA={avgTokenPerResponseTimeASession}
+            avgTokenPerTimeB={avgTokenPerResponseTimeBSession}
+            isLoading={isLoading}
+          />
+        )}
       </div>
       <div className="flex gap-4">
-        <OverallSessionPage
-          modelA={modelA}
-          modelB={modelB}
-          avgTime1={averageResponseTimeASession}
-          avgTime2={averageResponseTimeBSession}
-          totalWinA={winRateModelASession}
-          totalWinB={winRateModelBSession}
-          avgTokenA={averageTokenASession}
-          avgTokenB={averageTokenBSession}
-          avgTokenPerTimeA={avgTokenPerResponseTimeASession}
-          avgTokenPerTimeB={avgTokenPerResponseTimeBSession}
-          isLoading={isLoading}
-        />
+        {!isSingleModelMode && (
+          <OverallSessionPage
+            modelA={modelA}
+            modelB={modelB}
+            avgTime1={averageResponseTimeASession}
+            avgTime2={averageResponseTimeBSession}
+            totalWinA={winRateModelASession}
+            totalWinB={winRateModelBSession}
+            avgTokenA={averageTokenASession}
+            avgTokenB={averageTokenBSession}
+            avgTokenPerTimeA={avgTokenPerResponseTimeASession}
+            avgTokenPerTimeB={avgTokenPerResponseTimeBSession}
+            isLoading={isLoading}
+          />
+        )}
       </div>
       <ResultComparison
         allMessage={allMessage}
@@ -492,19 +476,22 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
       <div>
         <Title>Global</Title>
       </div>
-      <OverallPage
-        modelA={modelA}
-        modelB={modelB}
-        avgTime1={averageResponseTimeA}
-        avgTime2={averageResponseTimeB}
-        totalWinA={winRateModelA}
-        totalWinB={winRateModelB}
-        avgTokenA={averageTokenA}
-        avgTokenB={averageTokenB}
-        avgTokenPerTimeA={avgTokenPerResponseTimeA}
-        avgTokenPerTimeB={avgTokenPerResponseTimeB}
-        isLoading={isLoading}
-      />
+      <div className={`${isSingleModelMode ? 'w-1/2' : 'w-full'}`}>
+        <OverallPage
+          modelA={modelA}
+          modelB={modelB}
+          avgTime1={averageResponseTimeA}
+          avgTime2={averageResponseTimeB}
+          totalWinA={winRateModelA}
+          totalWinB={winRateModelB}
+          avgTokenA={averageTokenA}
+          avgTokenB={averageTokenB}
+          avgTokenPerTimeA={avgTokenPerResponseTimeA}
+          avgTokenPerTimeB={avgTokenPerResponseTimeB}
+          isLoading={isLoading}
+        />
+      </div>
+
       <div className="flex flex-row w-full justify-between">
         <div className="flex gap-4 items-center w-full mb-6">
           <LinkPreview
@@ -522,16 +509,14 @@ const ResultPage = ({ params }: { params: { slug: string } }) => {
           <div
             className=" items-center flex font-extralight h-full group"
             onClick={() => {
-              router.push(
-                "https://github.com/Supahands/llm-comparison-frontend"
-              );
+              router.push('https://github.com/Supahands/llm-comparison-frontend');
             }}
           >
             <div className="bg-white w-[40px] flex h-full group-hover:bg-gray-300 items-center justify-center rounded-l-lg border-t border-l border-b">
               <FaGithub size={24} />
             </div>
             <div className="p-2 text-base font-semibold flex gap-[3px] justify-center items-center border-t border-r border-b bg-transparent group-hover:bg-gray-300 rounded-r-lg h-full">
-              <IoStarOutline /> {stars === "0" ? "Star" : stars}
+              <IoStarOutline /> {stars === '0' ? 'Star' : stars}
             </div>
           </div>
         </div>

@@ -221,7 +221,6 @@ export default function Comparison() {
         setResponseTime2(0)
         setPromptToken(0)
         setCompletionToken2(0)
-        setIsComparingModel(false)
       } else {
         const data = response.data;
         const choices = data.choices;
@@ -253,9 +252,6 @@ export default function Comparison() {
 
     if (selectedChoice) {
       handleDataSaving(selectedChoice.value);
-      if (hasRoundEnded) {
-        incrementRoundCounter();
-      }
     }
     posthog?.capture("llm-compare.prompts.new", {
       prompt: newMessage,
@@ -407,7 +403,7 @@ export default function Comparison() {
         </CardContent>
         <CardFooter className="flex flex-col">
           <div className="w-full space-y-4">
-            {!isComparingModel && !(responseModel1 && responseModel2) && (
+            {!isComparingModel && !(responseModel1 && (responseModel2 || !responseModel2 && isSingleModelMode)) && (
               <PromptSelector prompts={prompts} />
             )}
             <WinnerSelector />

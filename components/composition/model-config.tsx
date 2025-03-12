@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
+import useAppStore from '@/hooks/store/useAppStore';
 
 export function BadgeDestructive() {
   return <Badge variant="destructive">Destructive</Badge>;
@@ -32,12 +33,17 @@ export default function ModelConfig({
   modelB,
   isLoading,
 }: ModelConfigProps) {
+
+  const {
+    isSingleModelMode
+  } = useAppStore();
+
   return (
     <Card className="rounded-xl w-full">
       <CardHeader>
         <CardTitle>Model Config</CardTitle>
         <CardDescription>
-          Custom made configuration for both models.
+          Custom made configuration for {isSingleModelMode ? modelA : "both"} models.
         </CardDescription>
       </CardHeader>
       <CardContent className="px-6 pb-6 h-full">
@@ -50,15 +56,23 @@ export default function ModelConfig({
                   Model A
                 </p>
               </div>
-              <span className="text-xl text-center w-[5vw] font-medium text-gray-400">
-                vs
-              </span>
-              <div className="text-center w-full">
-                <Skeleton className="px-4 py-2 md:px-6 md:py-3 w-32 rounded-full justify-self-center h-14" />
-                <p className="text-xs md:text-base text-gray-500 mt-1">
-                  Model B
-                </p>
-              </div>
+              {
+                !isSingleModelMode && (
+                  <span className="text-xl text-center w-[5vw] font-medium text-gray-400">
+                    vs
+                  </span>
+                )
+              }
+              {
+                !isSingleModelMode && (
+                  <div className="text-center w-full">
+                    <Skeleton className="px-4 py-2 md:px-6 md:py-3 w-32 rounded-full justify-self-center h-14" />
+                    <p className="text-xs md:text-base text-gray-500 mt-1">
+                      Model B
+                    </p>
+                  </div>
+                )
+              }
             </div>
 
             <Separator className="my-6" />
@@ -123,20 +137,28 @@ export default function ModelConfig({
                   Model A
                 </p>
               </div>
-              <span className="text-xl text-center w-[5vw] font-medium text-gray-400">
-                vs
-              </span>
-              <div className="text-center w-full">
-                <Badge
-                  variant="secondary"
+              {
+                !isSingleModelMode && (
+                  <span className="text-xl text-center w-[5vw] font-medium text-gray-400">
+                    vs
+                  </span>
+                )
+              }
+              {
+                !isSingleModelMode && (
+                  <div className="text-center w-full">
+                    <Badge
+                      variant="secondary"
                   className="text-xs md:text-lg px-4 py-2 md:px-6 md:py-3"
                 >
                   {modelB}
                 </Badge>
                 <p className="text-xs md:text-base text-gray-500 mt-1">
                   Model B
-                </p>
-              </div>
+                    </p>
+                  </div>
+                )
+              }
             </div>
 
             <Separator className="my-6" />

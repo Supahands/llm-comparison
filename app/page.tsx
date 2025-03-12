@@ -141,6 +141,11 @@ export default function Home() {
       posthog?.capture("llm-compare.app.end-evaluation");
       await handleDataSaving(selectedChoice.value);
       router.push(`/result/${sessionId}`);
+      console.log("selectedChoice", selectedChoice);
+    } else if (isSingleModelMode) {
+      posthog?.capture("llm-compare.app.end-evaluation");
+      await handleDataSaving("A");
+      router.push(`/result/${sessionId}`);
     }
   };
 
@@ -235,37 +240,33 @@ export default function Home() {
             </div>
           </div>
         </div>
-        {
-          !isSingleModelMode && (
-            <div ref={sectionRef}>
-              <Button
-                className="bg-llm-btn hover:bg-llm-btn_hover text-white rounded-xl relative"
-                onClick={handleEvaluation}
-                disabled={!selectedChoice}
-                id="end-eval-button"
-                data-testid="end-eval-button"
-              >
-                <div className="fixed pointer-events-none">
-                  <Lottie
-                    eventListeners={[
-                      {
-                        eventName: "complete",
-                        callback: () => {
-                          setIsStopped(true);
-                        },
-                      },
-                    ]}
-                    width={300}
-                    height={150}
-                    options={defaultOptions}
-                    isStopped={isStopped}
-                  />
-                </div>
-                End evaluation and see results
-              </Button>
-            </div>)
-        }
-
+        <div ref={sectionRef}>
+          <Button
+            className="bg-llm-btn hover:bg-llm-btn_hover text-white rounded-xl relative"
+            onClick={handleEvaluation}
+            disabled={(!selectedChoice && !isSingleModelMode)}
+            id="end-eval-button"
+            data-testid="end-eval-button"
+          >
+            <div className="fixed pointer-events-none">
+              <Lottie
+                eventListeners={[
+                  {
+                    eventName: "complete",
+                    callback: () => {
+                      setIsStopped(true);
+                    },
+                  },
+                ]}
+                width={300}
+                height={150}
+                options={defaultOptions}
+                isStopped={isStopped}
+              />
+            </div>
+            End evaluation and see results
+          </Button>
+        </div>
       </div>
     </div>
   );

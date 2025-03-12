@@ -8,6 +8,7 @@ import { usePostHog } from "posthog-js/react";
 import { Button } from "../ui/button";
 import { ComboBoxItem } from "../ui/combo-box";
 import PromptSelector from "./prompt-selector";
+import { useEffect } from "react";
 
 const prompts = [
   "What are the most popular car brands in Japan?",
@@ -75,27 +76,42 @@ export default function WinnerSelector() {
     setIsComparingModel(false);
   };
 
+  useEffect(() => {
+    console.log("Round counter", roundCounter);
+  }, [roundCounter]);
+
   const handleRoundEnd = (input: ComboBoxItem) => {
-    posthog?.capture("llm-compare.models.winner", {
-      choice: input.value,
-    });
-    handleUserChoice(input);
-    setSelectedChoice(input);
-    setIsStopped(false);
-    setRoundCounter(roundCounter + 1);
-    if (hasRoundEnded) return;
+    console.log("Round counter", roundCounter);
+    if (hasRoundEnded) {
+      handleUserChoice(input);
+      setSelectedChoice(input);
+      return;
+    }
     else {
       setRoundEnd(true);
+      posthog?.capture("llm-compare.models.winner", {
+        choice: input.value,
+      });
+      handleUserChoice(input);
+      setSelectedChoice(input);
+      setIsStopped(false);
+      setRoundCounter(roundCounter + 1);
     }
+    
   };
+
+  useEffect(() => {
+    console.log("responseModel1", responseModel1);
+    console.log("responseModel2", responseModel2);
+  }, [responseModel1, responseModel2]);
 
   return (
     <>
-      {responseModel1 && responseModel2 && (
+      {responseModel1 && (responseModel2 || !responseModel2 && isSingleModelMode) && (
         <div className="w-full space-y-2 -mt-5 py-2">
           <div className="flex justify-center w-full">
-            <div className="grid grid-cols-4 gap-2">
-              {userInputs.map((input, index) => (
+            <div className={`grid ${isSingleModelMode ? "grid-cols-2" : "grid-cols-4"} gap-2`}>
+              {!isSingleModelMode && userInputs.map((input, index) => (
                 <Button
                   key={input.value}
                   onClick={(e) => {
@@ -115,6 +131,35 @@ export default function WinnerSelector() {
                   {input.label}
                 </Button>
               ))}
+              {
+                isSingleModelMode && userInputs.filter(input => input.value === "A" || input.value === "B").map(x => {
+                  if (x.value === "A") {
+                    x.label = "Good"
+                  } else if (x.value === "B") {
+                    x.label = "Bad"
+                  }
+                  return (
+                    <Button
+                      key={x.value}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleRoundEnd(x);
+                      }}
+                      className={
+                        !selectedChoice
+                          ? "w-full rounded-lg border border-solid border-llm-primary95 hover:bg-llm-primary50 hover:text-white text-llm-primary50 bg-llm-primary95 py-3 px-5 cursor-pointer "
+                          : `${selectedChoice?.value === x.value
+                            ? "bg-llm-primary95 text-llm-primary50 border-llm-primary50 hover:bg-llm-primary95"
+                            : "bg-llm-neutral90 text-white border-llm-neutral90 hover:bg-llm-grey2"
+                          } border border-solid w-full rounded-lg py-3 px-5 cursor-pointer !focus-visible:ring-llm-primary50 `
+                      }
+                      id={`winner-${x.value}`}
+                    >
+                      {x.label}
+                    </Button>
+                  )
+                })
+              }
             </div>
           </div>
 
