@@ -74,6 +74,7 @@ export default function Comparison() {
     temperature,
     topP,
     maxTokens,
+    useStreaming,
     jsonFormat,
     images,
     setImages,
@@ -321,6 +322,7 @@ export default function Comparison() {
         top_p: topP,
         max_tokens: maxTokens,
         json_format: jsonFormat,
+        stream: useStreaming,
       },
     };
   }, [prompt, selectedModel1, convertedImages]);
@@ -336,6 +338,7 @@ export default function Comparison() {
         top_p: topP,
         max_tokens: maxTokens,
         json_format: jsonFormat,
+        stream: useStreaming,
       },
     };
   }, [prompt, selectedModel2, convertedImages]);

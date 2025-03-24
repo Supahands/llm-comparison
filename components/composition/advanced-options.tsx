@@ -45,6 +45,8 @@ export function AdvancedOptions({ isDisabled }: AdvancedProps) {
     systemPrompt,
     setSystemPrompt,
     jsonFormat,
+    useStreaming,
+    setUseStreaming,
     setJSONFormat,
     isSingleModelMode,
     setIsSingleModelMode,
@@ -58,7 +60,7 @@ export function AdvancedOptions({ isDisabled }: AdvancedProps) {
     useState<string>(systemPrompt);
   const [currMaxTokens, setCurrMaxTokens] = useState<number>(maxTokens);
   const [currJSONFormat, setCurrJSONFormat] = useState<boolean>(jsonFormat);
-
+  const [currStreaming, setCurrStreaming] = useState<boolean>(useStreaming);
   const handleModel1Select = (model: string) => {
     posthog?.capture("llm-compare.models.select", {
       model,
@@ -91,6 +93,7 @@ export function AdvancedOptions({ isDisabled }: AdvancedProps) {
     setCurrTopP(1);
     setCurrMaxTokens(1000);
     setCurrJSONFormat(false);
+    setCurrStreaming(false);
   };
 
   const setCurrentValue = () => {
@@ -98,6 +101,7 @@ export function AdvancedOptions({ isDisabled }: AdvancedProps) {
     setCurrMaxTokens(maxTokens);
     setCurrSystemPrompt(systemPrompt);
     setCurrJSONFormat(jsonFormat);
+    setCurrStreaming(useStreaming);
     setCurrTopP(topP);
   };
 
@@ -107,6 +111,7 @@ export function AdvancedOptions({ isDisabled }: AdvancedProps) {
     setTopP(currTopP);
     setMaxTokens(currMaxTokens);
     setJSONFormat(currJSONFormat);
+    setUseStreaming(currStreaming);
   };
 
   const handleSystemPrompt = (
@@ -329,6 +334,15 @@ export function AdvancedOptions({ isDisabled }: AdvancedProps) {
               disabled={isDisabled}
               className="data-[state=checked]:bg-llm-primary50"
               onCheckedChange={(value: boolean) => setCurrJSONFormat(value)}
+            />
+          </div>
+          <div className="flex flex-row gap-2 items-center justify-between font-bold">
+            <p>Streaming : {currStreaming ? "On" : "Off"}</p>
+            <Switch
+              checked={currStreaming}
+              disabled={isDisabled}
+              className="data-[state=checked]:bg-llm-primary50"
+              onCheckedChange={(value: boolean) => setCurrStreaming(value)}
             />
           </div>
         </div>

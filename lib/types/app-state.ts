@@ -52,6 +52,7 @@ export interface AppState {
   maxTagCount: number;
   useAIGeneratedPrompt: boolean;
   isSingleModelMode: boolean;
+  useStreaming: boolean;
 
   setImages: (updater: (prevFiles: File[]) => File[]) => void;
   setIsModel1Multimodal: (multimodal: boolean) => void;
@@ -94,6 +95,7 @@ export interface AppState {
   setUseAIGeneratedPrompt: (useAIGeneratedPrompt: boolean) => void;
 
   setIsSingleModelMode: (isSingleModelMode: boolean) => void;
+  setUseStreaming: (useStreaming: boolean) => void;
   reset: () => void;
 }
 

@@ -40,6 +40,7 @@ const useAppStore = create<AppState>((set) => ({
   showExplanationFields: false,
   useAIGeneratedPrompt: false,
   isSingleModelMode: false,
+  useStreaming: true,
 
   setShowExplanationFields: (show: boolean) => set({ showExplanationFields: show }),
   setRoundCounter: (counter: number) => set({ roundCounter: counter }),
@@ -104,6 +105,8 @@ const useAppStore = create<AppState>((set) => ({
     set((_state: AppState) => ({ useAIGeneratedPrompt })),
   setIsSingleModelMode: (isSingleModelMode: boolean) =>
     set((_state: AppState) => ({ isSingleModelMode })),
+  setUseStreaming: (useStreaming: boolean) =>
+    set((_state: AppState) => ({ useStreaming })),
   reset: () =>
     set((state: AppState) => ({
       responseModel1: "",
@@ -118,6 +121,8 @@ const useAppStore = create<AppState>((set) => ({
       explainChoice: "",
       idealResponse: "",
       useAIGeneratedPrompt: false,
+      isSingleModelMode: false,
+      useStreaming: false,
     })),
   addUserChoices: (choice) =>
     set((state: AppState) => ({
